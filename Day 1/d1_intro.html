@@ -243,6 +243,7 @@ $(document).ready(function () {
 
 <style>
 h1, h2, h3, h4 {font-weight: bold;}
+.question {font-weight: bold; color: #4E23B8;}
 hr {border: 2px solid black;}
 a:link {color: white; text-decoration: none;}
 a:visited {color: white; text-decoration: none;}
@@ -277,7 +278,8 @@ Aims
 <a href="#1.4">Introduce rShiny.</a>
 </li>
 </ul>
-<p><br> If you’d like to view a specific section of the document, click on the aim above.</p>
+<p><br> If you’d like to view a specific section of the document, click on the aim above.<br />
+All instructions or questions will be given in italic blue text.</p>
 </div>
 <p><!--- End panel --></p>
 </div>
@@ -302,8 +304,10 @@ Aims
 </div>
 <p><!--- End grid --></p>
 <p>During this workshop, we will use functions available through in dplyr to subset and summarise data.</p>
-<p>Let’s install and load in our libraries and data for this section!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set your working directory to the source file location using the top menu:</span>
+<p class="question">
+Install and load in the libraries and data we need for this section
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set your working directory by clicking on the top menu:</span>
 <span class="co"># Session &gt; Set Working Directory &gt; To Source File Location</span>
 
 <span class="co"># Install packages</span>
@@ -324,102 +328,56 @@ dplyr
 Subsetting
 </h4>
 <p>Subsetting is commonly used in R to select data that you would like to use. The <code>select</code> function can be used to subset based on column name.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset for age and region columns without using the pipe</span>
-<span class="kw">select</span>(raw_data, Age, Region)</code></pre></div>
-<pre><code>##    Age Region
-## 1   15   Mara
-## 2   20 Arusha
-## 3   25   Mara
-## 4   30 Arusha
-## 5   35   Mara
-## 6   15 Arusha
-## 7   20   Mara
-## 8   25 Arusha
-## 9   30   Mara
-## 10  35 Arusha</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset for age and region columns using the pipe fully</span>
+<p class="question">
+Compare the results of using the function normally vs. with the pipe operator:
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(raw_data, Age, Region)
+
 raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(Age, Region)</code></pre></div>
-<pre><code>##    Age Region
-## 1   15   Mara
-## 2   20 Arusha
-## 3   25   Mara
-## 4   30 Arusha
-## 5   35   Mara
-## 6   15 Arusha
-## 7   20   Mara
-## 8   25 Arusha
-## 9   30   Mara
-## 10  35 Arusha</code></pre>
 <p>The <code>filter</code> function can be used to subset based on variables in your data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset for individuals from Mara region</span>
-raw_data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &quot;Mara&quot;</span>)</code></pre></div>
-<pre><code>##   Age Sex Region
-## 1  15   M   Mara
-## 2  25   M   Mara
-## 3  35   M   Mara
-## 4  20   F   Mara
-## 5  30   F   Mara</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset for individuals that are 30 years or older</span>
+<p class="question">
+What do each of these lines of code filter the data for?
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">raw_data <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &quot;Mara&quot;</span>)
+
 raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(Age <span class="op">&gt;=</span><span class="st"> </span><span class="dv">30</span>)</code></pre></div>
-<pre><code>##   Age Sex Region
-## 1  30   M Arusha
-## 2  35   M   Mara
-## 3  30   F   Mara
-## 4  35   F Arusha</code></pre>
 <p>These outputs can be saved as an object, exactly as you normally would.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset for individuals from Mara region, and save as an object</span>
+<p class="question">
+Save your output table as an object:
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Save output as an object</span>
 subsetted_data &lt;-<span class="st"> </span>raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(Region <span class="op">==</span><span class="st"> &quot;Mara&quot;</span>)
 
 <span class="co"># Print table</span>
 subsetted_data</code></pre></div>
-<pre><code>##   Age Sex Region
-## 1  15   M   Mara
-## 2  25   M   Mara
-## 3  35   M   Mara
-## 4  20   F   Mara
-## 5  30   F   Mara</code></pre>
 <p><br></p>
 <h4>
 Summarising
 </h4>
 <p>Sometimes, you may want to work with summaries of your data. The <code>summarise</code> function can be used to calculate summaries of variables in your data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate number of entries that are male</span>
-raw_data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_males =</span> <span class="kw">length</span>(<span class="kw">which</span>(Sex<span class="op">==</span><span class="st">&quot;M&quot;</span>)))</code></pre></div>
-<pre><code>##   n_males
-## 1       5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate total age of all individuals in data</span>
+<p class="question">
+What do each of the following filters summarise?
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">raw_data <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_males =</span> <span class="kw">length</span>(<span class="kw">which</span>(Sex<span class="op">==</span><span class="st">&quot;M&quot;</span>)))
+
 raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">total_age =</span> <span class="kw">sum</span>(Age))</code></pre></div>
-<pre><code>##   total_age
-## 1       250</code></pre>
-<p>As mentioned earlier, dplyr functions can be stacked using the <code>%&gt;%</code> (pipe) operator. For example, the <code>summarise</code> function can be combined with <code>group_by</code> to summarise variables according to your chosen column.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate number of entries that are male and female</span>
-raw_data <span class="op">%&gt;%</span><span class="st"> </span>
+<p>As mentioned earlier, dplyr functions can be stacked using the <code>%&gt;%</code> (pipe) operator. For example, the <code>summarise</code> function can be combined with <code>group_by</code> to summarise variables by one or more columns.</p>
+<p class="question">
+How are these two tables different?
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Sex) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_records =</span> <span class="kw">length</span>(Sex))</code></pre></div>
-<pre><code>## # A tibble: 2 x 2
-##   Sex   n_records
-##   &lt;fct&gt;     &lt;int&gt;
-## 1 F             5
-## 2 M             5</code></pre>
-<p>You can even choose multiple columns to <code>group_by</code>!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate total age of entries that are male and female in each Region</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_records =</span> <span class="kw">length</span>(Sex))
+
 raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Region, Sex) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">total_age =</span> <span class="kw">sum</span>(Age))</code></pre></div>
-<pre><code>## # A tibble: 4 x 3
-## # Groups:   Region [2]
-##   Region Sex   total_age
-##   &lt;fct&gt;  &lt;fct&gt;     &lt;int&gt;
-## 1 Arusha F            75
-## 2 Arusha M            50
-## 3 Mara   F            50
-## 4 Mara   M            75</code></pre>
 <p><br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.2. Building exploratory plots -->

@@ -14,6 +14,7 @@ raw_data <- read.csv("data/raw_data.csv")
 
 <style>
 h1, h2, h3, h4 {font-weight: bold;}
+.question {font-weight: bold; color: #4E23B8;}
 hr {border: 2px solid black;}
 a:link {color: white; text-decoration: none;}
 a:visited {color: white; text-decoration: none;}
@@ -38,7 +39,8 @@ a:active {color: white; text-decoration: none;}
 <li><a href="#1.4">Introduce rShiny.</a></li>
 </ul>
 <br>
-If you'd like to view a specific section of the document, click on the aim above.
+If you'd like to view a specific section of the document, click on the aim above.  
+All instructions or questions will be given in italic blue text.
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
@@ -56,9 +58,9 @@ If you'd like to view a specific section of the document, click on the aim above
 
 During this workshop, we will use functions available through in dplyr to subset and summarise data.  
 
-Let's install and load in our libraries and data for this section!
+<p class="question">Install and load in the libraries and data we need for this section</p>
 ``` {r, eval=FALSE}
-# Set your working directory to the source file location using the top menu:
+# Set your working directory by clicking on the top menu:
 # Session > Set Working Directory > To Source File Location
 
 # Install packages
@@ -79,33 +81,32 @@ dplyr functions can use the `` %>% `` (pipe) operator to chain together objects/
 <br>
 
 <h4> Subsetting </h4>
-Subsetting is commonly used in R to select data that you would like to use. The `` select `` function can be used to subset based on column name. 
+Subsetting is commonly used in R to select data that you would like to use. The `` select `` function can be used to subset based on column name.  
 
-```{r}
-# Subset for age and region columns without using the pipe
+<p class="question">Compare the results of using the function normally vs. with the pipe operator:</p>
+```{r, eval=FALSE}
 select(raw_data, Age, Region)
 
-# Subset for age and region columns using the pipe fully
 raw_data %>% 
   select(Age, Region)
 ```
 
 The `` filter `` function can be used to subset based on variables in your data.
 
-```{r}
-# Subset for individuals from Mara region
+<p class="question">What do each of these lines of code filter the data for?</p>
+```{r, eval=FALSE}
 raw_data %>% 
   filter(Region == "Mara")
 
-# Subset for individuals that are 30 years or older
 raw_data %>% 
   filter(Age >= 30)
 ```
 
-These outputs can be saved as an object, exactly as you normally would.
+These outputs can be saved as an object, exactly as you normally would.  
 
-```{r}
-# Subset for individuals from Mara region, and save as an object
+<p class="question">Save your output table as an object:</p>
+```{r, eval=FALSE}
+# Save output as an object
 subsetted_data <- raw_data %>% 
   filter(Region == "Mara")
 
@@ -116,31 +117,25 @@ subsetted_data
 <br>
 
 <h4> Summarising </h4>
-Sometimes, you may want to work with summaries of your data. The `` summarise `` function can be used to calculate summaries of variables in your data. 
+Sometimes, you may want to work with summaries of your data. The `` summarise `` function can be used to calculate summaries of variables in your data.  
 
-```{r}
-# Calculate number of entries that are male
+<p class="question">What do each of the following filters summarise?</p>
+```{r, eval=FALSE}
 raw_data %>% 
   summarise(n_males = length(which(Sex=="M")))
 
-# Calculate total age of all individuals in data
 raw_data %>% 
   summarise(total_age = sum(Age))
 ```
 
-As mentioned earlier, dplyr functions can be stacked using the `` %>% `` (pipe) operator. For example, the `` summarise `` function can be combined with `` group_by `` to summarise variables according to your chosen column. 
+As mentioned earlier, dplyr functions can be stacked using the `` %>% `` (pipe) operator. For example, the `` summarise `` function can be combined with `` group_by `` to summarise variables by one or more columns.  
 
-```{r}
-# Calculate number of entries that are male and female
+<p class="question">How are these two tables different?</p>
+```{r, eval=FALSE}
 raw_data %>% 
   group_by(Sex) %>% 
   summarise(n_records = length(Sex))
-```
 
-You can even choose multiple columns to `` group_by``!
-
-```{r}
-# Calculate total age of entries that are male and female in each Region
 raw_data %>% 
   group_by(Region, Sex) %>% 
   summarise(total_age = sum(Age))
