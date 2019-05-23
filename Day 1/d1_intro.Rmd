@@ -1,0 +1,188 @@
+---
+title: "Shiny Workshop: Day 1"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+raw_data <- read.csv("data/raw_data.csv")
+```
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+hr {border: 2px solid black;}
+a:link {color: white; text-decoration: none;}
+a:visited {color: white; text-decoration: none;}
+a:hover {color: #c9bde9; text-decoration: none;}
+a:active {color: white; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Aims section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Aims</h3>
+<ul>
+<li><a href="#1.1">Become comfortable with data subsetting and summarising.</a></li>
+<li><a href="#1.2">Build exploratory plots.</a></li>
+<li><a href="#1.3">Introduce rMarkdown.</a></li>
+<li><a href="#1.4">Introduce rShiny.</a></li>
+</ul>
+<br>
+If you'd like to view a specific section of the document, click on the aim above.
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.1. Data subsetting, grouping and summarising -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.1">1.1 &nbsp; Data subsetting and summarising</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+During this workshop, we will use functions available through in dplyr to subset and summarise data.  
+
+Let's install and load in our libraries and data for this section!
+``` {r, eval=FALSE}
+# Set your working directory to the source file location using the top menu:
+# Session > Set Working Directory > To Source File Location
+
+# Install packages
+install.packages("dplyr")
+
+# Load in libraries
+library(dplyr)
+
+# Load in data
+raw_data <- read.csv("data/raw_data.csv") # <- CURRENTLY A DUMMY DATASET, TO BE REPLACED BY ELAINE'S
+```
+
+<br>
+
+<h4> dplyr </h4>
+dplyr functions can use the `` %>% `` (pipe) operator to chain together objects/functions. This passes the output of one function directly into the next. It can be helpful to 'stack' multiple functions without creating multiple visible outputs. You'll see this in use in the following examples.
+
+<br>
+
+<h4> Subsetting </h4>
+Subsetting is commonly used in R to select data that you would like to use. The `` select `` function can be used to subset based on column name. 
+
+```{r}
+# Subset for age and region columns without using the pipe
+select(raw_data, Age, Region)
+
+# Subset for age and region columns using the pipe fully
+raw_data %>% 
+  select(Age, Region)
+```
+
+The `` filter `` function can be used to subset based on variables in your data.
+
+```{r}
+# Subset for individuals from Mara region
+raw_data %>% 
+  filter(Region == "Mara")
+
+# Subset for individuals that are 30 years or older
+raw_data %>% 
+  filter(Age >= 30)
+```
+
+These outputs can be saved as an object, exactly as you normally would.
+
+```{r}
+# Subset for individuals from Mara region, and save as an object
+subsetted_data <- raw_data %>% 
+  filter(Region == "Mara")
+
+# Print table
+subsetted_data
+```
+
+<br>
+
+<h4> Summarising </h4>
+Sometimes, you may want to work with summaries of your data. The `` summarise `` function can be used to calculate summaries of variables in your data. 
+
+```{r}
+# Calculate number of entries that are male
+raw_data %>% 
+  summarise(n_males = length(which(Sex=="M")))
+
+# Calculate total age of all individuals in data
+raw_data %>% 
+  summarise(total_age = sum(Age))
+```
+
+As mentioned earlier, dplyr functions can be stacked using the `` %>% `` (pipe) operator. For example, the `` summarise `` function can be combined with `` group_by `` to summarise variables according to your chosen column. 
+
+```{r}
+# Calculate number of entries that are male and female
+raw_data %>% 
+  group_by(Sex) %>% 
+  summarise(n_records = length(Sex))
+```
+
+You can even choose multiple columns to `` group_by``!
+
+```{r}
+# Calculate total age of entries that are male and female in each Region
+raw_data %>% 
+  group_by(Region, Sex) %>% 
+  summarise(total_age = sum(Age))
+```
+
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.2. Building exploratory plots -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.2">1.2 &nbsp; Building exploratory plots</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.3. Introducing rMarkdown -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.3">1.3 &nbsp; Introducing rMarkdown</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4. Introducing rShiny -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4">1.4 &nbsp; Introducing rShiny</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<br>
