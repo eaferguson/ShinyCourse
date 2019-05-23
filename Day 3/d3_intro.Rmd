@@ -1,0 +1,6 @@
+---
+title: "Shiny Workshop: Day 3"
+output: html_document
+---
+
+This folder contains data, R code and guides to the Workshop material for Day 3.
