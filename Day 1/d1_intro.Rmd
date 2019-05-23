@@ -40,7 +40,6 @@ a:active {color: white; text-decoration: none;}
 </ul>
 <br>
 If you'd like to view a specific section of the document, click on the aim above.  
-All instructions or questions will be given in italic blue text.
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
@@ -56,9 +55,9 @@ All instructions or questions will be given in italic blue text.
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-During this workshop, we will use functions available through in dplyr to subset and summarise data.  
+During this workshop, we will use functions available in the `` dplyr `` package to subset and summarise data.  
 
-<p class="question">Install and load in the libraries and data we need for this section</p>
+<p class="question">Install and load in the libraries and data we need for this section:</p>
 ``` {r, eval=FALSE}
 # Set your working directory by clicking on the top menu:
 # Session > Set Working Directory > To Source File Location
@@ -144,16 +143,20 @@ raw_data %>%
 <br>
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 1.2. Building exploratory plots -->
+<!--- 1.2. Build some exploratory plots -->
 
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="1.2">1.2 &nbsp; Building exploratory plots</h3>
+<h3 id="1.2">1.2 &nbsp; Build some exploratory plots</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
+
+<ul>
+<li>Introduce alternative plot methods baseR/ggplot2/leaflet</li>
+</ul>
 <br>
 
 <!--- ---------------------------------------------------------------------- -->
@@ -180,4 +183,10 @@ raw_data %>%
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
+<ul>
+<li>Provide template for simple layout</li>
+<li>Use exploratory plots</li>
+<li>Introduce reactive elements/inputs/widgets</li>
+<li>Single pane app with no tabs</li>
+</ul>
 <br>

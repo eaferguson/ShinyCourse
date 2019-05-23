@@ -1,6 +1,107 @@
 ---
 title: "Shiny Workshop: Day 3"
-output: html_document
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+
 ---
 
-This folder contains data, R code and guides to the Workshop material for Day 3.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+```
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.question {font-weight: bold; color: #4E23B8;}
+hr {border: 2px solid black;}
+a:link {color: white; text-decoration: none;}
+a:visited {color: white; text-decoration: none;}
+a:hover {color: #c9bde9; text-decoration: none;}
+a:active {color: white; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Aims section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Aims</h3>
+<ul>
+<li><a href="#3.1">Review Day 2. </a></li>
+<li><a href="#3.2">Build your own app. </a></li>
+<li><a href="#3.3">Introduce advanced rShiny functions. </a></li>
+<li><a href="#3.4">Share your app. </a></li>
+</ul>
+<br>
+If you'd like to view a specific section of the document, click on the aim above.  
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3.1. Review Day 2 -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3.1">3.1 &nbsp; Review Day 2</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3.2. Build your own app -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3.2">3.2 &nbsp; Build your own app! </h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li>No template provided, but participants can use their own apps from the other days as a guide</li>
+</ul>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3.3. Introducing advanced rShiny functions -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3.3">3.3 &nbsp; Introducing advanced rShiny functions</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li> Hover/Click elements </li>
+<li> Dashboard layout </li>
+</ul>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3.4. Sharing your app -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3.4">3.4 &nbsp; Sharing your app</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li> Sharing the code with other users to run on their computer </li>
+<li> Run the app from a server e.g. rShiny server </li>
+</ul>
+<br>
