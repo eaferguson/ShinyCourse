@@ -8,19 +8,12 @@ library(shiny)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-
-
   # Produce plot
   output$explPlot <- renderPlot({
-   if(input$xaxis=="sex"){
-     ggplot() +
+   ggplot() +
        geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill="#178B8B") +
+      labs(x=input$xaxis) +
        theme_classic()
-   } else if(input$xaxis=="species"){
-     ggplot() +
-       geom_bar(data=raw_data, aes(x=species), fill="#178B8B") +
-       theme_classic()
-   }
   })
 
 })
