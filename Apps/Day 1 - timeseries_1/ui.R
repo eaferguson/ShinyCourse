@@ -3,13 +3,22 @@
 # run the application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
+# Load in libraries
 library(shiny)
+library(dplyr)
+library(ggplot2)
+
+# Load in the raw data
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
+
+# Collect a list of regions for the dropdown menu
+regions_list <- c("All", sort(unique(raw_data$region)))
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots"),
+  titlePanel("Exploratory plots: Timeseries"),
 
   # Add a line break
   br(),
@@ -17,8 +26,8 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      selectInput("xaxis", label = h3("Select the x-axis variable:"),
-                  choices = list("Gender" = "sex", "Species" = "species"),
+      selectInput("select_region", label = h3("Select a Region:"),
+                  choices = regions_list,
                   selected = 1)
 
     ),
