@@ -21,11 +21,15 @@ shinyServer(function(input, output) {
   # Create a colour palette
   col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 
+  # Collect list of years
+  yrs <- sort(unique(substr(raw_data$date, 1, 4)))
+  plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
+
   # Summarise for 'all' data
   month_summary <- raw_data %>%
     group_by(month) %>%
     summarise(n = length(month)) %>%
-    mutate(region="All")
+    mutate(region="All Regions")
 
   # Subset for the chosen region
   region_subset <- reactive({
@@ -49,7 +53,8 @@ shinyServer(function(input, output) {
       geom_line(data=region_subset(), aes(x=month, y=n), color=col_palette[1], size=1.5) +
       ggtitle(paste0(input$select_region, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
-      scale_x_continuous(limits=c(min(month_summary$month), max(month_summary$month))) +
+      scale_x_continuous(breaks=plot_breaks, labels=yrs,
+                         limits=c(min(month_summary$month), max(month_summary$month))) +
       scale_y_continuous(limits=c(min(month_summary$month), max(month_summary$month))) +
       theme_classic() +
       theme(axis.text = element_text(size=14),
