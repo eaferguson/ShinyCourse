@@ -4,17 +4,32 @@ setwd("D:/Dropbox/ShinyCourse/Day 1")
 
 library(rgdal)
 library(lubridate)
+library(rgeos)
 
-set.seed(0)
+set.seed(4)
 
 
 ## Read in datasets
 #--------------------------
 
 ## Tanzania regions shapefile
-regions <- readOGR("data/Tz_Region_2012","TZ_Region_2012")
-regions <- spTransform(regions,CRS("+proj=utm +zone=37 +south +ellps=clrk80 +towgs84=-160,-6,-302,0,0,0,0 +units=m +no_defs"))
+regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
+# regions <- spTransform(regions,CRS("+proj=longlat"))
+# gIsValid(regions)
+# regions <- gBuffer(regions,width=0,byid=T)
+# gIsValid(regions)
+# writeOGR(regions, dsn="data/TZ_Region_2012","TZ_Region_2012", driver="ESRI Shapefile",overwrite_layer=T)
 plot(regions)
+
+## Protected Areas
+PAs <- readOGR("data/TZprotected_areas","TZprotected_areas")
+# PAs <- spTransform(PAs,CRS("+proj=longlat"))
+# writeOGR(PAs, dsn="data/TZprotected_areas","TZprotected_areas", driver="ESRI Shapefile",overwrite_layer=T)
+plot(PAs,col="khaki",add=T,border=F)
+plot(regions,add=T)
+
+## Human density
+
 
 
 
@@ -35,7 +50,7 @@ plot(casesMonth,type="l")
 
 
 
-## Get date for each case
+## Get exact date for each case
 #---------------------------
 
 ## Create data frame with month variable
@@ -45,7 +60,7 @@ data <- data.frame("month"=rep(1:months,casesMonth))
 data$date <- as.Date(NA)
 for(i in 1:months){
   daysMonth <- seq(startDate %m+% months(i-1),startDate %m+% months(i)-1,by="day")
-  data$date[which(data$month==i)] <- sort(sample(daysMonth,casesMonth[i]))
+  data$date[which(data$month==i)] <- sort(sample(daysMonth,casesMonth[i],replace=T))
 }
 
 
@@ -71,9 +86,34 @@ data$age <- runif(nrow(data),0,maxAgeSpecies[match(data$species,species)])
 ## Generate a random location for each case
 #---------------------------
 
-locs <- spsample(regions,nrow(data),type="random")
-# plot(regions)
-# plot(locs,add=T,col=match(data$species,species))
+## Set up columns for coordinates
+data$x <- data$y <- NA
 
+## Is case in a protected area?
+probPAspecies <- c(0.05,0.05,0.75,0.05,0.95)
+PAcase <- rbinom(nrow(data),1,probPAspecies[match(data$species,species)])
+
+## Draw locations for individuals located in PAs
+PAcoords <- spsample(PAs,sum(PAcase),type="random")
+data[which(PAcase==1),c("x","y")] <- PAcoords@coords
+
+## Draw locations for individuals located outside PAs
+region_PAs_diff <- regions-PAs
+notPAcoords <- spsample(region_PAs_diff,length(which(PAcase==0)),type="random")
+data[which(PAcase==0),c("x","y")] <- notPAcoords@coords
+
+
+plot(regions)
+points(data$x,data$y,col=match(data$species,species))
+
+coords <- rbind(PAcoords,notPAcoords)
+data$region <- over(coords,regions)$Region_Nam
+
+
+
+## Save data
+#---------------------------
+
+write.csv(data,file="data/raw_data.csv",row.names = F)
 
 
