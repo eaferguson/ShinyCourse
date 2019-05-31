@@ -272,10 +272,7 @@ Aims
 <a href="#1.2">Build exploratory plots.</a>
 </li>
 <li>
-<a href="#1.3">Introduce rMarkdown.</a>
-</li>
-<li>
-<a href="#1.4">Introduce rShiny.</a>
+<a href="#1.3">Introduce rShiny.</a>
 </li>
 </ul>
 <p><br> If you’d like to view a specific section of the document, click on the aim above.</p>
@@ -286,7 +283,7 @@ Aims
 </div>
 <p><!--- End grid --></p>
 <!--- ---------------------------------------------------------------------- -->
-<!--- 1.1. Data subsetting, grouping and summarising -->
+<!--- 1.1. Getting to know your data -->
 <div class="row">
 <!--- Setup grid for layout -->
 <div class="col-md-12">
@@ -294,7 +291,7 @@ Aims
 <div class="panel panel-section">
 <!--- Begin panel -->
 <h3 id="1.1">
-1.1   Data subsetting and summarising
+1.1   Getting to know your data
 </h3>
 </div>
 <p><!--- End panel --></p>
@@ -302,7 +299,6 @@ Aims
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
-<p>During this workshop, we will use functions available in the <code>dplyr</code> package to subset and summarise data.</p>
 <p class="question">
 Install and load in the libraries and data we need for this section:
 </p>
@@ -315,8 +311,40 @@ Install and load in the libraries and data we need for this section:
 <span class="co"># Load in libraries</span>
 <span class="kw">library</span>(dplyr)
 
+<span class="co"># If you are want to read the information for a function, type 1 question mark in front of the function name:</span>
+?read.csv
+
+<span class="co"># If you are want to know which package a function belongs to, type 2 question marks in front of the function name:</span>
+??read.csv
+
 <span class="co"># Load in data</span>
-raw_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>) <span class="co"># &lt;- CURRENTLY A DUMMY DATASET, TO BE REPLACED BY ELAINE'S</span></code></pre></div>
+raw_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>) </code></pre></div>
+<h4>
+Viewing your data
+</h4>
+<ul>
+<li>
+Highlight use of View(), summary(), head(), tail()
+</li>
+</ul>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.2. Data subsetting, grouping and summarising -->
+<div class="row">
+<!--- Setup grid for layout -->
+<div class="col-md-12">
+<!--- Begin column set -->
+<div class="panel panel-section">
+<!--- Begin panel -->
+<h3 id="1.2">
+1.2   Data subsetting and summarising
+</h3>
+</div>
+<p><!--- End panel --></p>
+</div>
+<p><!--- End column set --></p>
+</div>
+<p><!--- End grid --></p>
+<p>During this workshop, we will use functions available in the <code>dplyr</code> package to subset and summarise data.</p>
 <p><br></p>
 <h4>
 dplyr
@@ -345,7 +373,7 @@ raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(Age <span class="op">&gt;=</span><span class="st"> </span><span class="dv">30</span>)</code></pre></div>
 <p>These outputs can be saved as an object, exactly as you normally would.</p>
 <p class="question">
-Save your output table as an object:
+Store your output table as an object:
 </p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Save output as an object</span>
 subsetted_data &lt;-<span class="st"> </span>raw_data <span class="op">%&gt;%</span><span class="st"> </span>
@@ -378,16 +406,25 @@ raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Region, Sex) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">total_age =</span> <span class="kw">sum</span>(Age))</code></pre></div>
 <p><br></p>
+<h4>
+Summary
+</h4>
+<p class="question">
+Which function would you use for the following? Fill the blanks!
+</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Subset for only records with a dog </span>
+raw_data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">___</span>(species<span class="op">==</span><span class="st">&quot;dog&quot;</span>)</code></pre></div>
 <!--- ---------------------------------------------------------------------- -->
-<!--- 1.2. Build some exploratory plots -->
+<!--- 1.3. Build some exploratory plots -->
 <div class="row">
 <!--- Setup grid for layout -->
 <div class="col-md-12">
 <!--- Begin column set -->
 <div class="panel panel-section">
 <!--- Begin panel -->
-<h3 id="1.2">
-1.2   Build some exploratory plots
+<h3 id="1.3">
+1.3   Build some exploratory plots
 </h3>
 </div>
 <p><!--- End panel --></p>
@@ -400,24 +437,6 @@ raw_data <span class="op">%&gt;%</span><span class="st"> </span>
 Introduce alternative plot methods baseR/ggplot2/leaflet
 </li>
 </ul>
-<p><br></p>
-<!--- ---------------------------------------------------------------------- -->
-<!--- 1.3. Introducing rMarkdown -->
-<div class="row">
-<!--- Setup grid for layout -->
-<div class="col-md-12">
-<!--- Begin column set -->
-<div class="panel panel-section">
-<!--- Begin panel -->
-<h3 id="1.3">
-1.3   Introducing rMarkdown
-</h3>
-</div>
-<p><!--- End panel --></p>
-</div>
-<p><!--- End column set --></p>
-</div>
-<p><!--- End grid --></p>
 <p><br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4. Introducing rShiny -->
