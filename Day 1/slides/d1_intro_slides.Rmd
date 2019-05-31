@@ -1,0 +1,242 @@
+---
+title: "Data Visualisation using RShiny"
+author: "Rachel Steenson, Elaine Ferguson, and Laurie Baker"
+date: "**Tanzania**, August, 2019"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<style>
+div.footnotes {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  width: 80%;
+  font-size: 0.6em;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
+
+  $('footnote').each(function(index) {
+    var text  = $(this).html();
+    var fnNum = (index+1).toString();
+    $(this).html(fnNum.sup());
+
+    var footnote   = fnNum + '. ' + text + '<br/>';
+    var oldContent = $(this).parents('slide').children('div.footnotes').html();
+    var newContent = oldContent + footnote;
+    $(this).parents('slide').children('div.footnotes').html(newContent);
+  });
+});
+</script>
+
+
+## Background
+
+- Why RShiny
+- Data Visualisation
+
+## Course Overview
+
+- Day 1: Data subsetting and summarising
+    - Build exploratory plots
+
+## Breaking News!!
+
+
+```{r, out.width = "450px", out.height = "400px"}
+library(png)
+knitr::include_graphics("figures/headline.png")
+ 
+```
+
+- A deadly zombie virus is spreading through Tanzania!
+- **Your mission**: visualise the disease advance and save the wildlife and citizens of Tanzania.
+
+## Getting to know the data
+
+First install the packages **dplyr** and read in the data frame
+
+Step 1: Set the working directory
+Step 2: Install and load packages
+``install.packages("dplyr")``
+
+``library("dplyr")``
+
+Step 3: Read in the data
+```{r, echo = T}
+raw_data <- read.csv("data/raw_data.csv")
+```
+
+```{r, include = F}
+library("dplyr")
+```
+
+
+## Getting to know the data
+
+We have several tools to get to know our data
+
+- ``View()``: allows us to view the dataframe as a spreadsheet.
+- ``names()``: give us the names of the columns in our data frame
+- ``dim()``: tells us the dimensions of our dataframes. 
+- ``summary()``: gives us counts for Factors (categorical variables) or summary statistics (min, median, mean, max) for integers or continuous variables.
+- ``head()``: gives us the first 6 elements of the data
+- ``tail()``: gives us the last 6 elements of the data
+- ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer))
+
+Want to find out more about what a function does? Try ``?str()`` or ``??str()``
+
+## Your Turn
+
+- ``View(raw_data)``: how many entries does the data frame have?
+- ``names(raw_data)``: what are the names of the first 3 columns?
+- ``dim(raw_data)``: what are the dimensions of our data?
+- ``summary(raw_data)``: which species had more cases? What is the mean age of everything infected?
+- ``head(raw_data)``: In which region did the 1st case occur?
+- ``tail(raw_data)``: In which region did the last case occur?
+- ``str(raw_data)``: Which variables are numbers (num)?
+
+## ``View()``
+
+How many entries does the data frame have?
+
+```{r, echo = TRUE}
+
+View(raw_data)
+
+```
+
+
+## ``names()``
+
+What are the names of the first 3 columns?
+
+```{r, echo = TRUE}
+
+names(raw_data)
+
+```
+
+
+## ``dim()``
+
+What are the dimensions of our data?
+
+```{r, echo = TRUE}
+
+dim(raw_data)
+
+```
+
+## ``summary()`` 
+
+Which species had more cases? What is the mean age of everything infected?
+
+```{r, echo = TRUE}
+
+summary(raw_data)
+
+```
+
+
+## ``head()`` 
+
+In which region did the 1st case occur?
+
+```{r, echo = TRUE}
+
+head(raw_data)
+
+```
+
+
+## ``tail()`` 
+
+In which region did the last case occur?
+
+```{r}
+
+tail(raw_data)
+
+```
+
+
+## ``str()`` 
+
+Which variables are numbers (num)?
+
+```{r}
+
+str(raw_data)
+
+```
+
+
+## Data subsetting and summarising
+
+To understand the outbreak we may want to look more closely at a particular **region**, **time**, or **variable**. 
+
+The ``dplyr`` package allows us to filter and select different elements using *'verbs'*:
+
+ - ``select()`` picks variables based on their names.
+ - ``filter()`` picks cases based on their values.
+ - ``summarise()`` reduces multiple values down to a single summary.
+ - ``mutate()`` adds new variables that are functions of existing variables
+
+## ``dplyr`` and the piping function ``%>%``
+
+In ``dplyr`` you can use the piping function %>% where 
+
+``select(raw_data, species)``
+
+
+```{r}
+raw_data %>%
+  select(species)
+
+```
+
+
+## Subsetting and summarising using ``filter()`` 
+
+
+```{r}
+filter(raw_data, month > 40)
+```
+
+## Subsetting and summarising using **summarise()** reduces multiple values down to a single summary.
+ - **mutate()** adds new variables that are functions of existing variables
+
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
