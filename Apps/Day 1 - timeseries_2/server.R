@@ -29,28 +29,39 @@ shinyServer(function(input, output) {
   month_summary <- raw_data %>%
     group_by(month) %>%
     summarise(n = length(month)) %>%
+    mutate(region="All Regions",
+           sex="Both sexes")
+
+  # Summarise for 'all' sexes, divided by region data
+  region_summary <- raw_data %>%
+    group_by(month, region) %>%
+    summarise(n = length(month)) %>%
+    mutate(sex="Both sexes")
+
+  # Summarise for 'all' region, divided by sex data
+  sex_summary <- raw_data %>%
+    group_by(month, sex) %>%
+    summarise(n = length(month)) %>%
     mutate(region="All Regions")
 
+  # Join summary data together
+  summary_data <- bind_rows(month_summary, region_summary, sex_summary)
+
   # Subset for the chosen region
-  region_subset <- reactive({
-    # If "All" is selected, use month_summary dataframe
-    if(input$select_region=="All"){
-      month_summary
-    } else {
-      # otherwise, subset data using input region
-      region_sub = raw_data %>%
-        filter(region==input$select_region) %>%
-        group_by(month) %>%
-        summarise(n = length(month)) %>%
-        mutate(region=input$select_region)
-      as.data.frame(region_sub)
-    }
+  data_subset <- reactive({
+    data_sub = raw_data %>%
+      filter(region==input$select_region & sex==input$select_sex) %>%
+      group_by(month, region, sex) %>%
+      summarise(n = length(month)) %>%
+      mutate(region=input$select_region,
+             sex=input$select_sex)
+    as.data.frame(data_sub)
   })
 
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-      geom_line(data=region_subset(), aes(x=month, y=n), color=col_palette[1], size=1.5) +
+      geom_line(data=data_subset(), aes(x=month, y=n), color=col_palette[1], size=1.5) +
       ggtitle(paste0(input$select_region, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs,

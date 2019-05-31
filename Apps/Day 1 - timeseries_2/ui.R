@@ -26,9 +26,17 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
+
+      # Add a dropdown menu widget
       selectInput("select_region", label = h3("Select a Region:"),
                   choices = regions_list,
-                  selected = 1)
+                  selected = 1),
+      br(),
+
+      # Add a checkbox widget
+      checkboxGroupInput("select_sex", label = h3("Select a sex"),
+                         choices = list("Male" = "M", "Female" = "F"),
+                         selected = 1)
 
     ),
 
