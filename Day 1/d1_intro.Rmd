@@ -7,9 +7,17 @@ output:
 
 ---
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(dplyr)
-raw_data <- read.csv("data/raw_data.csv")
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+library(rgdal)
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
 ```
 
 <style>
@@ -31,15 +39,15 @@ a:active {color: white; text-decoration: none;}
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-aims"> <!--- Begin panel -->
-<h3>Aims</h3>
-<ul>
-<li><a href="#1.1">1.1 Get to know your data.</a></li>
-<li><a href="#1.2">1.2 Become comfortable with data subsetting and summarising.</a></li>
-<li><a href="#1.3">1.3 Build exploratory plots.</a></li>
-<li><a href="#1.4">1.4 Introduce rShiny.</a></li>
-</ul>
+<h3>Contents</h3>
+Click to view a specific section of the document.  
 <br>
-If you'd like to view a specific section of the document, click on the aim above.  
+<ul>
+<li><a href="#1.1">1.1 Get to know your data</a></li>
+<li><a href="#1.2">1.2 Data subsetting and summarising</a></li>
+<li><a href="#1.3">1.3 Building exploratory plots</a></li>
+<li><a href="#1.4">1.4 Introducing rShiny</a></li>
+</ul>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
@@ -167,11 +175,18 @@ raw_data %>%
 <br>
 
 <h4> Summary </h4>
- <p class="question"> Which function would you use for the following? Fill the blanks! </p>
+ <p class="question"> Fill in the blanks for the following lines in your R script </p>
 ```{r, eval=FALSE}
 # Subset for only records with a dog 
 raw_data %>%
   ___(species=="dog")
+
+# Subset for humans, and summarise the mean age per region
+raw_data %>%
+  ___(species=="human") %>%
+  group_by(___) %>%
+  ___(mean_age = ___(age))
+  
 ```
 
 <!--- ---------------------------------------------------------------------- -->
@@ -191,6 +206,72 @@ raw_data %>%
 </ul>
 <br>
 
+``` {r, eval=FALSE}
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+
+```
+
+<h4> Basic barplot in ggplot2 </h4>
+``` {r}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=sex), fill=col_palette[1]) + 
+  theme_classic()
+```
+
+<h4> More complicated barplot (time series) in ggplot2 </h4>
+```{r}
+# Set start and end dates for time series
+raw_data$date <- as.Date(raw_data$date)
+ts_start <- as.Date(paste0(substr(min(raw_data$date),1,7), "-01"))
+ts_end <- ceiling_date(max(raw_data$date),'month')
+ts_breaks <- seq(ts_start, ts_end, by="month")
+
+# Subset data
+male_data <- raw_data %>% filter(sex=="M")
+female_data <- raw_data %>% filter(sex=="F")
+
+# Use histogram function to summarise numbers for each month
+ts_male <- hist(male_data$date, plot=FALSE, breaks=ts_breaks)
+ts_female <- hist(female_data$date, plot=FALSE, breaks=ts_breaks)
+
+# Create a data frame containing the time series data
+ts_data <- data.frame(date = rep(ts_breaks[1:length(ts_breaks)-1], 2),
+                      sex = c(rep("Male", length(ts_male$counts)), 
+                              rep("Female", length(ts_female$counts))),
+                      n = c(ts_male$counts, ts_female$counts))
+
+# Plot
+ggplot() + 
+  geom_col(data=ts_data, aes(x=date, y=n, fill=sex)) + 
+  labs(x="Date", y="Number") + 
+  scale_fill_manual(name="Gender", values=col_palette[1:2]) + 
+  theme_classic()
+
+```
+
+<h4> Map in Leaflet </h4>
+```{r}
+# Create a new column specifying domestic vs. wildlife vs. human
+raw_data$species_type[which(raw_data$species=="dog" | raw_data$species=="cat")] <- "Domestic"
+raw_data$species_type[which(raw_data$species=="jackal" | raw_data$species=="lion")] <- "Wildlife"
+raw_data$species_type[which(raw_data$species=="human")] <- "Human"
+
+# Use only one year
+leaflet_data <- raw_data %>% 
+  mutate(year = substr(date, 1,4)) %>% 
+  filter(year == 2014)
+
+# Setup point colours using the colorFactor() function
+leaflet_pal <- colorFactor(palette=col_palette[1:3], domain = unique(leaflet_data$species_type))
+
+# Plot
+leaflet() %>%
+  addPolygons(data=region_shp, weight=1, color="black", fillColor = "white", fillOpacity=1) %>%
+  addCircleMarkers(data=leaflet_data, lng=~x, lat=~y, color=~leaflet_pal(species_type),
+                   radius=3, opacity = 1, fillOpacity=1, label=~species)
+```
 
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4. Introducing rShiny -->
