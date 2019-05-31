@@ -4,6 +4,9 @@
 # ---------------------------------------------------------------------------- #
 
 library(shiny)
+library(ggplot2)
+
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
