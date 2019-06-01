@@ -29,6 +29,7 @@ plot(PAs,col="khaki",add=T,border=F)
 plot(regions,add=T)
 
 ## Human density
+density <- raster("data/HumanPopulation.grd")
 
 
 
@@ -83,31 +84,63 @@ data$age <- runif(nrow(data),0,maxAgeSpecies[match(data$species,species)])
 
 
 
-## Generate a random location for each case
+## Determine whether cases are in a protected area
 #---------------------------
 
 ## Set up columns for coordinates
 data$x <- data$y <- NA
 
 ## Is case in a protected area?
-probPAspecies <- c(0.05,0.05,0.75,0.05,0.95)
+probPAspecies <- c(0.04,0.04,0.75,0.025,0.95)
 PAcase <- rbinom(nrow(data),1,probPAspecies[match(data$species,species)])
 
-## Draw locations for individuals located in PAs
+
+
+## Get coords for individuals located in PAs
+#---------------------------
+
+## Sample random coordinates
 PAcoords <- spsample(PAs,sum(PAcase),type="random")
 data[which(PAcase==1),c("x","y")] <- PAcoords@coords
 
-## Draw locations for individuals located outside PAs
-region_PAs_diff <- regions-PAs
-notPAcoords <- spsample(region_PAs_diff,length(which(PAcase==0)),type="random")
-data[which(PAcase==0),c("x","y")] <- notPAcoords@coords
 
 
+## Get coords for wildlife individuals located outside of PAs
+#---------------------------
+
+## subtract protected areas from region shapefile
+region_PAs_diff <- regions-PAs 
+
+## Sample random coordinates
+notPAwildlifeCoords <- spsample(region_PAs_diff,length(which(PAcase==0 & is.element(data$species,c("jackal","lion")))),type="random")
+data[which(PAcase==0 & is.element(data$species,c("jackal","lion"))),c("x","y")] <- notPAwildlifeCoords@coords
+
+
+
+## Get coords for non-wildlife individuals located outside of PAs
+#---------------------------
+
+## Draw a density raster cell for every non-wildlife individual located outside PAs
+rasterCoords <- SpatialPoints(coordinates(density), proj4string=region_PAs_diff@proj4string) # density raster coordinates
+densityNotPA <- density
+densityNotPA[which(is.na(over(rasterCoords,region_PAs_diff)$Loc_type))] <- NA  # find raster cells that are outside protected areas
+cells <- sample.int(length(which(!is.na(densityNotPA[]))),length(which(PAcase==0 & !is.element(data$species,c("jackal","lion")))),replace=T, prob=density[which(!is.na(densityNotPA[]))]) # draw a cell for each case with bias towards high density 
+
+## Add coordinates for individuals not in PAs to data frame
+notPAnotWildlifeCoords <- rasterCoords[which(!is.na(densityNotPA[])),][cells,]
+data[which(PAcase==0 & !is.element(data$species,c("jackal","lion"))),c("x","y")] <- jitter(notPAnotWildlifeCoords@coords)
+
+## Visual check
 plot(regions)
 points(data$x,data$y,col=match(data$species,species))
 
-coords <- rbind(PAcoords,notPAcoords)
-data$region <- over(coords,regions)$Region_Nam
+
+
+## Add density and region to dataframe
+#---------------------------
+
+data$density <- extract(density,data[,c("x","y")])
+data$region <- over(SpatialPoints(data[,c("x","y")],regions@proj4string),regions)$Region_Nam
 
 
 
@@ -115,5 +148,6 @@ data$region <- over(coords,regions)$Region_Nam
 #---------------------------
 
 write.csv(data,file="data/raw_data.csv",row.names = F)
+
 
 
