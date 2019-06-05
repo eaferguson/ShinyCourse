@@ -23,6 +23,13 @@ shinyUI(fluidPage(
   # Add a line break
   br(),
 
+  # Add text section
+  h4("This app is identical to the last, with a new widget: checkboxGroupInput"),
+  h4("Using these widgets, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
+
+  # Add a line break
+  br(),
+
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
