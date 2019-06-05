@@ -14,6 +14,13 @@ shinyUI(fluidPage(
   # Add a line break
   br(),
 
+  # Add text section
+  h4("This app our first introduction to rShiny!"),
+  h4("There is only 1 widget: selectInput - a dropdown menu. We have set this up to change the variable that is plotted on the x-axis."),
+
+  # Add a line break
+  br(),
+
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
