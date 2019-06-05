@@ -26,8 +26,8 @@ plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
 overall_summary <- raw_data %>%
   group_by(month) %>%
   summarise(n = length(month)) %>%
-  mutate(region="All Regions",
-         sex="Both sexes")
+  mutate(region="All data",
+         sex="All data")
 
 # Summarise for 'all' sexes, divided by region data
 region_allsexes_summary <- raw_data %>%
@@ -59,17 +59,17 @@ shinyServer(function(input, output) {
     # Subset for sex
     if(length(input$select_sex)==1){
       sex_subset = summary_data %>%
-        filter(sex==input$select_sex | sex=="Both sexes")
+        filter(sex==input$select_sex | sex=="Both sexes" | sex=="All data")
     } else if(length(input$select_sex)==2){
       sex_subset = summary_data
     } else {
-      sex_subset = sex_subset = summary_data %>%
-        filter(sex=="Both sexes")
+      sex_subset = summary_data %>%
+        filter(sex=="Both sexes" | sex=="All data")
     }
 
     # Subset for region
     region_sub = sex_subset %>%
-      filter(region==input$select_region)
+      filter(region==input$select_region | region=="All data")
 
     # Summarise data using subsets created above
     data_sub = region_sub %>%
@@ -81,9 +81,8 @@ shinyServer(function(input, output) {
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-      geom_line(data=overall_summary, aes(x=month, y=n), color=col_palette[1], size=1.5) +
       geom_line(data=data_subset(), aes(x=month, y=n, color=sex), size=1.5) +
-      scale_color_manual(name="Sex", values=c("Both sexes"=col_palette[2], "M"=col_palette[3], "F"=col_palette[4])) +
+      scale_color_manual(name="Sex", values=c("All data"=col_palette[1], "Both sexes"=col_palette[2], "M"=col_palette[3], "F"=col_palette[4])) +
       ggtitle(paste0(input$select_region, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
