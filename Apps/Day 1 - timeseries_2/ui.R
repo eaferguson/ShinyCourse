@@ -12,7 +12,7 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-regions_list <- c("All", sort(unique(raw_data$region)))
+regions_list <- c("All Regions", sort(unique(raw_data$region)))
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -36,7 +36,7 @@ shinyUI(fluidPage(
       # Add a checkbox widget
       checkboxGroupInput("select_sex", label = h3("Select a sex"),
                          choices = list("Male" = "M", "Female" = "F"),
-                         selected = 1)
+                         selected = c("M", "F"))
 
     ),
 

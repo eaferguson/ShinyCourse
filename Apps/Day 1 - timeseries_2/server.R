@@ -13,60 +13,81 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Create a column to give
 # Collect a list of regions for the dropdown menu
-regions_list <- c("All", sort(unique(raw_data$region)))
+regions_list <- c("All Regions", sort(unique(raw_data$region)))
 
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+
+# Collect list of years
+yrs <- sort(unique(substr(raw_data$date, 1, 4)))
+plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
+
+# Summarise for 'all' data - this will always be plotted
+overall_summary <- raw_data %>%
+  group_by(month) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All Regions",
+         sex="Both sexes")
+
+# Summarise for 'all' sexes, divided by region data
+region_allsexes_summary <- raw_data %>%
+  group_by(month, region) %>%
+  summarise(n = length(month)) %>%
+  mutate(sex="Both sexes")
+
+# Summarise for 'all' region, divided by sex data
+sex_allregions_summary <- raw_data %>%
+  group_by(month, sex) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All Regions")
+
+# Summarise region and sex data
+region_sexes_summary <- raw_data %>%
+  group_by(month, region, sex) %>%
+  summarise(n = length(month))
+
+# Join summary data together
+summary_data <- bind_rows(overall_summary, region_allsexes_summary, sex_allregions_summary, region_sexes_summary)
+
+#------------------------------------------------------------------------------#
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-  # Create a colour palette
-  col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
-
-  # Collect list of years
-  yrs <- sort(unique(substr(raw_data$date, 1, 4)))
-  plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
-
-  # Summarise for 'all' data
-  month_summary <- raw_data %>%
-    group_by(month) %>%
-    summarise(n = length(month)) %>%
-    mutate(region="All Regions",
-           sex="Both sexes")
-
-  # Summarise for 'all' sexes, divided by region data
-  region_summary <- raw_data %>%
-    group_by(month, region) %>%
-    summarise(n = length(month)) %>%
-    mutate(sex="Both sexes")
-
-  # Summarise for 'all' region, divided by sex data
-  sex_summary <- raw_data %>%
-    group_by(month, sex) %>%
-    summarise(n = length(month)) %>%
-    mutate(region="All Regions")
-
-  # Join summary data together
-  summary_data <- bind_rows(month_summary, region_summary, sex_summary)
-
-  # Subset for the chosen region
+  # Subset for the chosen region and sexes
   data_subset <- reactive({
-    data_sub = raw_data %>%
-      filter(region==input$select_region & sex==input$select_sex) %>%
+
+    # Subset for sex
+    if(length(input$select_sex)==1){
+      sex_subset = summary_data %>%
+        filter(sex==input$select_sex | sex=="Both sexes")
+    } else if(length(input$select_sex)==2){
+      sex_subset = summary_data
+    } else {
+      sex_subset = sex_subset = summary_data %>%
+        filter(sex=="Both sexes")
+    }
+
+    # Subset for region
+    region_sub = sex_subset %>%
+      filter(region==input$select_region)
+
+    # Summarise data using subsets created above
+    data_sub = region_sub %>%
       group_by(month, region, sex) %>%
-      summarise(n = length(month)) %>%
-      mutate(region=input$select_region,
-             sex=input$select_sex)
+      summarise(n = sum(n))
     as.data.frame(data_sub)
   })
 
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-      geom_line(data=data_subset(), aes(x=month, y=n), color=col_palette[1], size=1.5) +
+      geom_line(data=overall_summary, aes(x=month, y=n), color=col_palette[1], size=1.5) +
+      geom_line(data=data_subset(), aes(x=month, y=n, color=sex), size=1.5) +
+      scale_color_manual(name="Sex", values=c("Both sexes"=col_palette[2], "M"=col_palette[3], "F"=col_palette[4])) +
       ggtitle(paste0(input$select_region, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
-      scale_x_continuous(breaks=plot_breaks, labels=yrs,
-                         limits=c(min(month_summary$month), max(month_summary$month))) +
-      scale_y_continuous(limits=c(min(month_summary$month), max(month_summary$month))) +
+      scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
+      scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
       theme_classic() +
       theme(axis.text = element_text(size=14),
             axis.title = element_text(size=18),
