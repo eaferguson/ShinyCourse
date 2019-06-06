@@ -3,6 +3,7 @@ library(ggplot2)
 library(lubridate)
 library(leaflet)
 library(rgdal)
+
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
 region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
 
@@ -112,9 +113,22 @@ m %>% addLegend(m, position = "bottomright", title = "Date",
                 pal = myPal, values = leaflet_data$date_decimal,
                 labFormat = labelFormat(big.mark = ""))
 
+# Adding shape files to leaflet
+leaflet() %>% addTiles() %>%
+  addPolygons(data = region_shp, color="grey", weight=1, fillOpacity=0.3,
+              label = region_shp$Region_Nam) %>%
+  addPolylines(data = region_shp, color="black", weight=1)
+ 
 
-# Plot
-leaflet() %>%
-  addPolygons(data=region_shp, weight=1, color="black", fillColor = "white", fillOpacity=1) %>%
-  addCircleMarkers(data=leaflet_data, lng=~x, lat=~y, color=~leaflet_pal(species_type),
-                   radius=3, opacity = 1, fillOpacity=1, label=~species)
+# TASK - generate leaflet map with shape file for region and data points plotted
+# coloured by species along with legend
+
+leaflet() %>% addTiles() %>%
+  addPolygons(data = region_shp, color="grey", weight=1, fillOpacity=0.3,
+              label = region_shp$Region_Nam) %>%
+  addPolylines(data = region_shp, color="black", weight=1) %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y,
+             color = pal(leaflet_data$species_type),
+             opacity = 1, fillOpacity = 1) %>%
+  addLegend(m, position = "bottomright", title = "Species type",
+                pal = pal, values = leaflet_data$species_type)
