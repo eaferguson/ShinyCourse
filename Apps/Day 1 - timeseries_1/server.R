@@ -11,10 +11,6 @@ library(ggplot2)
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
-# Create a column to give
-# Collect a list of regions for the dropdown menu
-regions_list <- c("All Regions", sort(unique(raw_data$region)))
-
 # Create a colour palette
 col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 
@@ -26,33 +22,33 @@ plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
 overall_summary <- raw_data %>%
   group_by(month) %>%
   summarise(n = length(month)) %>%
-  mutate(region="All Regions")
+  mutate(species="All Species")
 
 # Summarise data by region
-region_summary <- raw_data %>%
-  group_by(month, region) %>%
+species_summary <- raw_data %>%
+  group_by(month, species) %>%
   summarise(n = length(month))
 
 # Join summary data together
-summary_data <- bind_rows(overall_summary, region_summary)
+summary_data <- bind_rows(overall_summary, species_summary)
 
 #------------------------------------------------------------------------------#
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
   # Subset for the chosen region
-  region_subset <- reactive({
-      region_sub = summary_data %>%
-        filter(region==input$select_region | region=="All Regions")
-      as.data.frame(region_sub)
+  data_subset <- reactive({
+      data_sub = summary_data %>%
+        filter(species==input$select_species | species=="All Species")
+      as.data.frame(data_sub)
     })
 
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-      geom_line(data=region_subset(), aes(x=month, y=n, color=region), size=1.5) +
-      scale_color_manual(name="Region", values=col_palette) +
-      ggtitle(paste0(input$select_region, "\n")) +
+      geom_line(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
+      scale_color_manual(name="Species", values=col_palette) +
+      ggtitle(paste0(input$select_species, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs,
                          limits=c(min(overall_summary$month), max(overall_summary$month))) +
