@@ -1,0 +1,62 @@
+# ---------------------------------------------------------------------------- #
+# This is the server logic of a Shiny web application. You can run the
+# application by clicking 'Run App' above.
+# ---------------------------------------------------------------------------- #
+
+# Load in libraries
+library(shiny)
+library(dplyr)
+library(ggplot2)
+
+# Load in the raw data
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+
+# Collect list of years
+yrs <- sort(unique(substr(raw_data$date, 1, 4)))
+plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
+
+# Summarise for 'all' data
+overall_summary <- raw_data %>%
+  group_by(month) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All Regions")
+
+# Summarise data by region
+region_summary <- raw_data %>%
+  group_by(month, region) %>%
+  summarise(n = length(month))
+
+# Join summary data together
+summary_data <- bind_rows(overall_summary, region_summary)
+
+#------------------------------------------------------------------------------#
+# Define server logic required to draw a histogram
+shinyServer(function(input, output) {
+
+  # Subset for the chosen region
+  data_subset <- reactive({
+      data_sub = summary_data %>%
+        filter(region==input$select_region | region=="All Regions")
+      as.data.frame(data_sub)
+    })
+
+  # Produce plot
+  output$explPlot <- renderPlot({
+   ggplot() +
+      geom_line(data=data_subset(), aes(x=month, y=n, color=region), size=1) +
+      scale_color_manual(name="Region", values=col_palette) +
+      ggtitle(paste0(input$select_region, "\n")) +
+      labs(x="\nMonth", y="Number of records\n") +
+      scale_x_continuous(breaks=plot_breaks, labels=yrs,
+                         limits=c(min(overall_summary$month), max(overall_summary$month))) +
+      scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
+      theme_classic() +
+      theme(axis.text = element_text(size=14),
+            axis.title = element_text(size=18),
+            plot.title = element_text(size=20, color=col_palette[1]))
+  })
+
+})
