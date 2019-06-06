@@ -1,10 +1,11 @@
 
 rm(list=ls(all=TRUE))
-setwd("D:/Dropbox/ShinyCourse/Day 1")
+# setwd("D:/Dropbox/ShinyCourse")
 
 library(rgdal)
 library(lubridate)
 library(rgeos)
+library(raster)
 
 set.seed(4)
 
@@ -13,7 +14,7 @@ set.seed(4)
 #--------------------------
 
 ## Tanzania regions shapefile
-regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
+regions <- readOGR("Day 1/data/TZ_Region_2012","TZ_Region_2012")
 # regions <- spTransform(regions,CRS("+proj=longlat"))
 # gIsValid(regions)
 # regions <- gBuffer(regions,width=0,byid=T)
@@ -22,14 +23,14 @@ regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
 plot(regions)
 
 ## Protected Areas
-PAs <- readOGR("data/TZprotected_areas","TZprotected_areas")
+PAs <- readOGR("Day 1/data/TZprotected_areas","TZprotected_areas")
 # PAs <- spTransform(PAs,CRS("+proj=longlat"))
-# writeOGR(PAs, dsn="data/TZprotected_areas","TZprotected_areas", driver="ESRI Shapefile",overwrite_layer=T)
+# writeOGR(PAs, dsn="Day 1/data/TZprotected_areas","TZprotected_areas", driver="ESRI Shapefile",overwrite_layer=T)
 plot(PAs,col="khaki",add=T,border=F)
 plot(regions,add=T)
 
 ## Human density
-density <- raster("data/HumanPopulation.grd")
+density <- raster("Day 1/data/HumanPopulation.grd")
 
 
 
@@ -80,7 +81,7 @@ table(data$species)
 
 ## Draw age
 maxAgeSpecies <- c(8,8,8,80,15)
-data$age <- runif(nrow(data),0,maxAgeSpecies[match(data$species,species)])
+data$age <- as.integer(round(runif(nrow(data),0,maxAgeSpecies[match(data$species,species)])))
 
 
 
@@ -147,7 +148,9 @@ data$region <- over(SpatialPoints(data[,c("x","y")],regions@proj4string),regions
 ## Save data
 #---------------------------
 
-write.csv(data,file="data/raw_data.csv",row.names = F)
+write.csv(data,file="Day 1/data/raw_data.csv",row.names = F)
+write.csv(data,file="Day 2/data/raw_data.csv",row.names = F)
+write.csv(data,file="Day 3/data/raw_data.csv",row.names = F)
 
 
 
