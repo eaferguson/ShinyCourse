@@ -56,18 +56,18 @@ shinyServer(function(input, output) {
   # Subset for the chosen region and sexes
   data_subset <- reactive({
 
+    # Subset for region
+    data_sub = summary_data %>%
+      filter(region==input$select_region | region=="All data")
+
     # Subset for sex
     if(length(input$select_species)>0){
-      data_sub = summary_data %>%
+      data_sub = data_sub %>%
         filter(species %in% input$select_species | species=="All species" | species=="All data")
     } else {
-      data_sub = summary_data %>%
+      data_sub = data_sub %>%
         filter(species=="All species" | species=="All data")
     }
-
-    # Subset for region
-    data_sub = data_sub %>%
-      filter(region==input$select_region | region=="All data")
 
     # Summarise data using subsets created above
     data_sub = data_sub %>%
