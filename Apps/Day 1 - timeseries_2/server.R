@@ -57,11 +57,9 @@ shinyServer(function(input, output) {
   data_subset <- reactive({
 
     # Subset for sex
-    if(length(input$select_sex)==1){
+    if(length(input$select_sex)>0){
       sex_subset = summary_data %>%
-        filter(sex==input$select_sex | sex=="Both sexes" | sex=="All data")
-    } else if(length(input$select_sex)==2){
-      sex_subset = summary_data
+        filter(sex %in% input$select_sex | sex=="Both sexes" | sex=="All data")
     } else {
       sex_subset = summary_data %>%
         filter(sex=="Both sexes" | sex=="All data")
@@ -82,7 +80,7 @@ shinyServer(function(input, output) {
   output$explPlot <- renderPlot({
    ggplot() +
       geom_line(data=data_subset(), aes(x=month, y=n, color=sex), size=1) +
-      scale_color_manual(name="Sex", values=c("All data"=col_palette[1], "Both sexes"=col_palette[2], "M"=col_palette[3], "F"=col_palette[4])) +
+      scale_color_manual(name="Sex", values=col_palette) +
       ggtitle(paste0(input$select_region, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
