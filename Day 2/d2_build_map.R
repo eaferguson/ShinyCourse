@@ -152,12 +152,12 @@ pal <- colorNumeric(c("#0C2C84", "#41B6C4", "#FFFFCC"),
                     c(-1.5, 11), na.color = "transparent")
 
 
-m <- leaflet() %>%
+leaflet() %>%
   addRasterImage(log(density), colors = pal, opacity = 0.8)
-m
 
 # add some Provider Tiles and a legend (CartoDB.Positron has quite a neutral colour scheme)
-m %>% addProviderTiles("CartoDB.Positron") %>%
+m <- leaflet() %>% addProviderTiles("CartoDB.Positron") %>%
+  addRasterImage(log(density), colors = pal, opacity = 0.8) %>% 
   addLegend(pal = pal, values = c(-1.5, 11),
             title = "Human<br>population<br>density")
 m
