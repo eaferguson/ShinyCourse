@@ -8,15 +8,25 @@ library(ggplot2)
 
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
+# Create a colour palette
+#col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+col_palette <- brewer.pal(name="Dark2", n=8)
+
+#------------------------------------------------------------------------------#
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-       geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill="#178B8B") +
-      labs(x=input$xaxis) +
-       theme_classic()
+      geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
+      labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+      theme_classic() +
+      theme(axis.text = element_text(size=14),
+            axis.title = element_text(size=18),
+            plot.title = element_text(size=20),
+            legend.title = element_text(size=18),
+            legend.text = element_text(size=14))
   })
 
 })
