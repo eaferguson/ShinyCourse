@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-#                             SIDEBAR PANEL TEMPLATE                           #
+#                             TOP-TABS LAYOUT TEMPLATE                         #
 #                                                                              #
 # This is the user-interface definition of a Shiny web application. You can    #
 # run the application by clicking 'Run App' above.                             #
@@ -10,16 +10,15 @@ library(shiny)
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
-  # Application title
-  titlePanel("Panel Title"),
+  navbarPage(title="Page title",
 
-  sidebarLayout(
+    # Add a tab panel
+    tabPanel("tab 1 name",
+             "tab 1 contents"),
 
-    # Add sidebar Panel
-    sidebarPanel("Sidebar panel contents"),
-
-    # Show a plot of the generated distribution
-    mainPanel("Main panel contents")
+    # Add a tab panel
+    tabPanel("tab 2 name",
+             "tab 2 contents")
   )
 
 ))
