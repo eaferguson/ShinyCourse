@@ -96,12 +96,21 @@ m %>% addLegend(m, position = "bottomright", title = "Date",
 
 # Popups - adding information on data points to map
 # use 'popup' argument in function addCircles()
+# "<br>" creates a new line in what is displayed
+popupInfo <- paste("Date: ", leaflet_data$date, "<br>",
+                   "Species: ", leaflet_data$species, "<br>",
+                   "Age: ", leaflet_data$age, "<br>",
+                   sep = " ")
+
 m <- leaflet() %>% addTiles()
 m <- m %>% addCircles(data = leaflet_data, lng = ~x, lat = ~y,
                       color = myPal(leaflet_data$date_decimal),
                       opacity = 1, fillOpacity = 1,
-                      popup = c("Hello"))
-
+                      popup = popupInfo)
+m
+m %>% addLegend(m, position = "bottomright", title = "Date",
+                pal = myPal, values = leaflet_data$date_decimal,
+                labFormat = labelFormat(big.mark = ""))
 
 
 # Plot
