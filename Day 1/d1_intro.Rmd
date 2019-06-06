@@ -85,11 +85,53 @@ raw_data <- read.csv("data/raw_data.csv")
 
 ```
 
-<h4> Viewing your data </h4>
+<h4> We have several tools to get to know the data </h4>
 
 <ul>
 <li> Highlight use of View(), summary(), head(), tail() </li>
+<li> ``View()``: allows us to view the dataframe as a spreadsheet. </li>
+<li> ``names()``: give us the names of the columns in our data frame </li>
+<li> ``dim()``: tells us the dimensions of our dataframes.  </li>
+<li> ``summary()``: gives us counts for Factors (categorical variables) or summary statistics (min, median, mean, max) for integers or continuous variables. </li>
+<li> ``head()``: gives us the first 6 elements of the data </li>
+<li> ``tail()``: gives us the last 6 elements of the data </li>
+<li> ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer)) </li>
+<li> ``unique()``: tells us the unique elements of a variable.  </li>
+<li> ``?`` and ``??`` followed by a function names tells us about the function and what arguments it requires. </li>
 </ul>
+
+<p class="question">Try out the following commands to get to know the data?:</p>
+``` {r, eval=FALSE}
+# How many entries does the data frame have?
+View(raw_data)
+
+# What are the names of the first 3 columns?
+names(raw_data)
+
+# What are the dimensions of our data?
+dim(raw_data)
+
+# Which species have more cases? What is the mean age of the organisms infected?
+summary(raw_data)
+
+# In which region did the 1st case occur?
+
+head(raw_data)
+
+# In which region did the last case occur?
+tail(raw_data)
+
+# Which variables are numbers (num)?
+str(raw_data)
+
+#What types of species do we have in the data?
+unique(raw_data$species)
+
+# What is the first argument for the function names?
+?names()
+
+```
+
 
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.2. Data subsetting, grouping and summarising -->
@@ -111,8 +153,8 @@ dplyr functions can use the `` %>% `` (pipe) operator to chain together objects/
 
 <br>
 
-<h4> Subsetting </h4>
-Subsetting is commonly used in R to select data that you would like to use. The `` select `` function can be used to subset based on column name.  
+<h4> 1.2.1 Subsetting </h4>
+Subsetting is commonly used in R to select data that you would like to use. The `` select `` function can be used to select columns.  
 
 <p class="question">Compare the results of using the function normally vs. with the pipe operator:</p>
 ```{r, eval=FALSE}
@@ -122,15 +164,27 @@ raw_data %>%
   select(Age, Region)
 ```
 
-The `` filter `` function can be used to subset based on variables in your data.
+The `` filter `` function can be used to select rows based on their values.
+
+To select the observations you want it is useful to know some comparison operators
+
+  - ``>`` greater than
+  - ``>=`` greater than or equal to
+  - ``!=`` not equal
+  - ``==`` equal
+  - ``&`` and
+  - ``|`` or
+  - ``!`` not
+  - ``%in% c(....)`` one in a list of elements
+
 
 <p class="question">What do each of these lines of code filter the data for?</p>
 ```{r, eval=FALSE}
 raw_data %>% 
-  filter(Region == "Mara")
+  filter(region %in% c("Mara", "Pwani", "Dar-es-salaam"))
 
 raw_data %>% 
-  filter(Age >= 30)
+  filter(age >= 30)
 ```
 
 These outputs can be saved as an object, exactly as you normally would.  
@@ -139,7 +193,7 @@ These outputs can be saved as an object, exactly as you normally would.
 ```{r, eval=FALSE}
 # Save output as an object
 subsetted_data <- raw_data %>% 
-  filter(Region == "Mara")
+  filter(region %in% c("Mara", "Pwani", "Dar-es-salaam"))
 
 # Print table
 subsetted_data
@@ -147,7 +201,7 @@ subsetted_data
 
 <br>
 
-<h4> Summarising </h4>
+<h4> 1.2.2 Summarising </h4>
 Sometimes, you may want to work with summaries of your data. The `` summarise `` function can be used to calculate summaries of variables in your data.  
 
 <p class="question">What do each of the following filters summarise?</p>
@@ -165,16 +219,16 @@ As mentioned earlier, dplyr functions can be stacked using the `` %>% `` (pipe) 
 ```{r, eval=FALSE}
 raw_data %>% 
   group_by(Sex) %>% 
-  summarise(n_records = length(Sex))
+  summarise(n_records = length(sex))
 
 raw_data %>% 
   group_by(Region, Sex) %>% 
-  summarise(total_age = sum(Age))
+  summarise(total_age = sum(age))
 ```
 
 <br>
 
-<h4> Summary </h4>
+<h4> 1.2.3 Summary </h4>
  <p class="question"> Fill in the blanks for the following lines in your R script </p>
 ```{r, eval=FALSE}
 # Subset for only records with a dog 

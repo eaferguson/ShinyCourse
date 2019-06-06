@@ -5,6 +5,20 @@ date: "**Tanzania**, August, 2019"
 output: ioslides_presentation
 ---
 
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+library(rgdal)
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
+```
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
@@ -65,13 +79,17 @@ knitr::include_graphics("figures/headline.png")
 First install the packages **dplyr** and read in the data frame
 
 Step 1: Set the working directory
-Step 2: Install and load packages
-``install.packages("dplyr")``
 
-``library("dplyr")``
+Step 2: Install and load packages
+
+```{r, eval = FALSE}
+install.packages("dplyr")
+library("dplyr")
+```
+
 
 Step 3: Read in the data
-```{r, echo = T}
+```{r, eval = F}
 raw_data <- read.csv("data/raw_data.csv")
 ```
 
@@ -91,8 +109,8 @@ We have several tools to get to know our data
 - ``head()``: gives us the first 6 elements of the data
 - ``tail()``: gives us the last 6 elements of the data
 - ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer))
-
-Want to find out more about what a function does? Try ``?str()`` or ``??str()``
+- ``unique()``: tells us the unique elements of a variable. 
+- ``?`` and ``??`` followed by a function names tells us about the function and what arguments it requires.
 
 ## Your Turn
 
@@ -103,8 +121,10 @@ Want to find out more about what a function does? Try ``?str()`` or ``??str()``
 - ``head(raw_data)``: In which region did the 1st case occur?
 - ``tail(raw_data)``: In which region did the last case occur?
 - ``str(raw_data)``: Which variables are numbers (num)?
+- ``unique(raw_data$species)``: What are the unique elements of a variable?
+- ``?names()``: What is the first argument for the function names?
 
-## ``View()``
+## ``View()``, ``names()``, ``dim()``
 
 How many entries does the data frame have?
 
@@ -114,9 +134,6 @@ View(raw_data)
 
 ```
 
-
-## ``names()``
-
 What are the names of the first 3 columns?
 
 ```{r, echo = TRUE}
@@ -124,9 +141,6 @@ What are the names of the first 3 columns?
 names(raw_data)
 
 ```
-
-
-## ``dim()``
 
 What are the dimensions of our data?
 
@@ -138,7 +152,7 @@ dim(raw_data)
 
 ## ``summary()`` 
 
-Which species had more cases? What is the mean age of everything infected?
+Which species has more cases? What is the mean age of those infected?
 
 ```{r, echo = TRUE}
 
@@ -147,44 +161,59 @@ summary(raw_data)
 ```
 
 
-## ``head()`` 
+## ``head()``, ``tail()``
 
 In which region did the 1st case occur?
 
 ```{r, echo = TRUE}
 
-head(raw_data)
+head(raw_data, 1)
 
 ```
-
-
-## ``tail()`` 
 
 In which region did the last case occur?
 
-```{r}
+```{r, echo = TRUE}
 
-tail(raw_data)
+tail(raw_data, 1)
 
 ```
 
 
-## ``str()`` 
+## ``str()``
 
-Which variables are numbers (num)?
-
-```{r}
+Which variables are numbers (have num written next to them)?
+```{r, echo = T}
 
 str(raw_data)
 
 ```
 
 
+## ``unique()``, ``?names()`` 
+
+What types of species do we have in our dataset?
+```{r, echo = T}
+
+unique(raw_data$species)
+
+```
+
+What is the first argument for the function ``names()`` 
+
+```{r, out.width = "400px", out.height = "300px"}
+library(png)
+knitr::include_graphics("figures/names_info.png")
+ 
+```
+
+# Data subsetting and summarising
+
 ## Data subsetting and summarising
 
 To understand the outbreak we may want to look more closely at a particular **region**, **time**, or **variable**. 
 
-The ``dplyr`` package allows us to filter and select different elements using *'verbs'*:
+The ``dplyr`` package allows us to filter and select different elements using **verbs**:
 
  - ``select()`` picks variables based on their names.
  - ``filter()`` picks cases based on their values.
@@ -195,25 +224,297 @@ The ``dplyr`` package allows us to filter and select different elements using *'
 
 In ``dplyr`` you can use the piping function %>% where 
 
-``select(raw_data, species)``
+```{r, eval = F, echo = T}
+filter(raw_data, region == "Pwani")
+
+```
+
+Is the same as
+
+```{r, eval = F, echo = T}
+
+raw_data %>% 
+  filter(region == "Pwani")
+
+```
+
+Similar to regular R you can use the ``<-`` to store the object
 
 
-```{r}
+```{r, eval = F, echo = T}
+species_df <- raw_data %>%
+                      select(species, date, age)
+
+head(species_df, 2)
+
+``` 
+
+## Selecting columns using ``select()`` 
+
+``select()`` picks variables based on their names.
+
+```{r, eval = T, echo = T}
+species_df1 <- raw_data %>% 
+    select(species)
+
+head(species_df1, 1)
+
+species_df3 <- raw_data %>%
+    select(species, region, sex)
+
+head(species_df3, 1)
+
+```
+
+
+## Selecting rows using ``filter()`` 
+
+``filter()`` picks cases based on their values.
+
+To select the observations you want it is useful to know some comparison operators
+
+  - ``>`` greater than
+  - ``>=`` greater than or equal to
+  - ``!=`` not equal
+  - ``==`` equal
+  - ``&`` and
+  - ``|`` or
+  - ``!`` not
+  - ``%in% c(....)`` one in a list of elements
+
+## Selecting rows using ``filter()`` 
+
+Filter by value that is equal to
+
+```{r, eval = T, echo = T}
+pwani_df <- raw_data %>% 
+    filter(region == "Pwani")
+```
+
+Filter by value that is less than
+
+```{r, eval = T, echo = T}
+early_df <- raw_data %>%
+    filter(month < 40)
+```
+
+Filter by value that is not equal to  OR keep values in a list
+
+```{r, eval = T, echo = T}
+human_wild_animal_df <- raw_data %>%
+    filter(species != "cat" & species != "dog") 
+```
+
+
+```{r, eval = T, echo = T}
+human_wild_animal_df <- raw_data %>%
+    filter(species %in% c("jackal", "lion")) 
+```
+
+
+## Using **summarise()**
+
+``summarise()`` reduces multiple values down to a single summary.
+
+```{r, eval = T, echo = T}
+raw_data %>% 
+    summarise(mean_age = mean(age)) # mean() takes the average
+
+raw_data %>% 
+    summarise(total_cases = n()) # n() takes the number of elements
+
+
+```
+
+## Using **mutate()**
+
+**mutate()** adds new variables that are functions of existing variables
+
+```{r, eval = T, echo = T}
+raw_data_df <- raw_data %>% 
+    mutate(animal_type = ifelse(species == "human", "human", "animal")) 
+
+head(raw_data_df)
+```
+
+## Combining multiple operations
+
+Number of cases from domestic and wild animals in Pwani. 
+
+```{r, eval = T, echo = T}
+pwani_df <- raw_data %>%
+              filter(region == "Pwani")
+pwani_non_human <- pwani_df %>%
+                      filter(species != "human")
+pwani_non_human <- pwani_non_human %>%
+                      mutate("animal_type" = ifelse(species 
+                      %in% c("dog", "cat"), "domestic", "wild"))
+pwani_grouped<- pwani_non_human %>%
+      group_by(animal_type)
+
+pwani_grouped %>% summarise(n())
+```
+      
+
+
+## Combining multiple operations
+
+Or we can use the piping function ``%>%``
+
+```{r, eval = T, echo = T}
+raw_data %>% 
+  filter(region == "Pwani", species != "human") %>% 
+  mutate("animal_type" = ifelse(species %in% c("dog", "cat"), 
+          "domestic", "wild")) %>% 
+  group_by(animal_type) %>% 
+  summarise(n())
+```
+
+
+## Your Turn
+
+Complete section 1.2.1-1.2.3 of the handout. 
+
+## Your Turn - Results section 1.2.1
+
+What do each of these lines of code filter the data for?
+
+```{r, eval=FALSE, echo = T}
+raw_data %>% 
+  filter(region %in% c("Mara", "Pwani", "Dar-es-salaam"))
+
+raw_data %>% 
+  filter(age >= 30)
+```
+
+
+## Your Turn - Results section 1.2.2
+
+<p class="question">What do each of the following filters summarise?</p>
+```{r, eval=T, echo = T}
+raw_data %>% 
+  summarise(n_males = length(which(sex=="M")))
+
+raw_data %>% 
+  summarise(total_age = sum(age))
+```
+
+
+## Your Turn - Results section 1.2.3
+
+Fill in the blanks for the following lines in your R
+
+```{r, eval = F, echo = T}
+# Subset for only records with a dog 
 raw_data %>%
-  select(species)
+  filter(species == "dog") #filter
+```
+
+```{r, eval = F, echo = T}
+# Subset for humans, and summarise the mean age per region
+raw_data %>%
+  filter(species == "human") %>% #filter
+  group_by(region) %>% #region
+  summarise(mean_age = mean(age)) #summarise, mean()
+```
+
+
+# Making exploratory plots
+
+## Loading some new packages
+
+```{r, eval = F, echo = T}
+
+install.packages("ggplot2", "lubridate", "leaflet")
+
+library(ggplot2)
+library(lubridate)
+library(leaflet)
 
 ```
 
 
-## Subsetting and summarising using ``filter()`` 
+```{r, echo = FALSE}
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+```
+
+## Introducing ggplot
+
+The basic structure is:  
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;geom_bar(data=raw_data, aes(x=sex))
+
+## Introducing ggplot
+
+The basic structure is:
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(data=raw_data, aes(x=sex))
+
+ggplot has several plot types:
+ 
+ - <b style="color:red;">geom_bar</b>: barplot
+ - <b style="color:red;">geom_hist</b>: histogram
+ - <b style="color:red;">geom_point</b>: scatterplot/points
+ - <b style="color:red;">geom_line</b>: line plot
+
+## Introducing ggplot  
+
+The basic structure is:
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, aes(x=sex))
+
+The first thing you will supply to the plot function is your data
+
+If you are using only one type of data you can supply the data here instead:
+
+ggplot(<b style="color:blue;">data=raw_data</b>) + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(aes(x=sex))
+
+
+## Introducing ggplot  
+
+
+The basic structure is:
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, <b style="color:green;">aes(x=sex)</b>)
+
+The
+
+## Barplot
+
+```{r}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=sex)) + 
+  theme_classic()
+```
+
+## Your turn - build a barplot of species
+
+
+```{r, eval =  F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=______)) + 
+  theme_classic()
+```
+
+````
+
+## Your turn - barplot of species
+
 
 
 ```{r}
-filter(raw_data, month > 40)
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=species)) + 
+  theme_classic()
 ```
 
-## Subsetting and summarising using **summarise()** reduces multiple values down to a single summary.
- - **mutate()** adds new variables that are functions of existing variables
 
 
 ## R Markdown
