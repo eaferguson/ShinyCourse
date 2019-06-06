@@ -80,9 +80,9 @@ m %>% addLegend(m, position = "bottomright", title = "Density",
 # TASK: write code to colour points by date
 # requires >leaflet_data$date_decimal <- ggtree::Date2decimal(leaflet_data$date)
 
-# convert date to decimal format so that 
-leaflet_data$date_decimal <- ggtree::Date2decimal(leaflet_data$date)
-dateRange <- range(leaflet_data$date_decimal)
+# convert date to decimal format so that it works as continuous variable for leaflet
+leaflet_data$date_decimal <- decimal_date(ymd(leaflet_data$date))
+dateRange <- c(2014, 2015)
 myPal <- leaflet::colorNumeric(colour_pal, dateRange)
 
 m <- leaflet() %>% addTiles()
@@ -90,18 +90,18 @@ m <- m %>% addCircles(data = leaflet_data, lng = ~x, lat = ~y,
                       color = myPal(leaflet_data$date_decimal),
                       opacity = 1, fillOpacity = 1)
 m
-m %>% addLegend(m, position = "bottomright", title = "Density",
-                pal = myPal, values = leaflet_data$date_decimal)
+m %>% addLegend(m, position = "bottomright", title = "Date",
+                pal = myPal, values = leaflet_data$date_decimal,
+                labFormat = labelFormat(big.mark = "")) # this removes comma from 2,014
 
-
-# TASK: 
+# Popups - adding information on data points to map
+# use 'popup' argument in function addCircles()
 m <- leaflet() %>% addTiles()
 m <- m %>% addCircles(data = leaflet_data, lng = ~x, lat = ~y,
-                      color = myPal(leaflet_data$density),
-                      opacity = 1, fillOpacity = 1)
+                      color = myPal(leaflet_data$date_decimal),
+                      opacity = 1, fillOpacity = 1,
+                      popup = c("Hello"))
 
-m %>% addLegend(m, position = "bottomright", title = "Density",
-                pal = myPal, values = leaflet_data$density)
 
 
 # Plot
