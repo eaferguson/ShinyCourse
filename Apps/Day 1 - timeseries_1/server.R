@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-      geom_line(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
+      geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
       scale_color_manual(name="Species", values=col_palette) +
       ggtitle(paste0(input$select_species, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
