@@ -110,7 +110,7 @@ data[which(PAcase==1),c("x","y")] <- PAcoords@coords
 #---------------------------
 
 ## subtract protected areas from region shapefile
-region_PAs_diff <- regions-PAs 
+region_PAs_diff <- regions-PAs
 
 ## Sample random coordinates
 notPAwildlifeCoords <- spsample(region_PAs_diff,length(which(PAcase==0 & is.element(data$species,c("jackal","lion")))),type="random")
@@ -125,7 +125,7 @@ data[which(PAcase==0 & is.element(data$species,c("jackal","lion"))),c("x","y")] 
 rasterCoords <- SpatialPoints(coordinates(density), proj4string=region_PAs_diff@proj4string) # density raster coordinates
 densityNotPA <- density
 densityNotPA[which(is.na(over(rasterCoords,region_PAs_diff)$Loc_type))] <- NA  # find raster cells that are outside protected areas
-cells <- sample.int(length(which(!is.na(densityNotPA[]))),length(which(PAcase==0 & !is.element(data$species,c("jackal","lion")))),replace=T, prob=density[which(!is.na(densityNotPA[]))]) # draw a cell for each case with bias towards high density 
+cells <- sample.int(length(which(!is.na(densityNotPA[]))),length(which(PAcase==0 & !is.element(data$species,c("jackal","lion")))),replace=T, prob=density[which(!is.na(densityNotPA[]))]) # draw a cell for each case with bias towards high density
 
 ## Add coordinates for individuals not in PAs to data frame
 notPAnotWildlifeCoords <- rasterCoords[which(!is.na(densityNotPA[])),][cells,]
@@ -148,9 +148,8 @@ data$region <- over(SpatialPoints(data[,c("x","y")],regions@proj4string),regions
 ## Save data
 #---------------------------
 
-write.csv(data,file="Day 1/data/raw_data.csv",row.names = F)
-write.csv(data,file="Day 2/data/raw_data.csv",row.names = F)
-write.csv(data,file="Day 3/data/raw_data.csv",row.names = F)
-
-
+data_fns <- list.files(pattern="raw_data.csv", recursive=TRUE)
+for(i in data_fns){
+  write.csv(data, file=i,row.names = F)
+}
 
