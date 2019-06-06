@@ -120,8 +120,14 @@ leaflet() %>% addTiles() %>%
   addPolylines(data = region_shp, color="black", weight=1)
  
 
-# TASK - generate leaflet map with shape file for region and data points plotted
-# coloured by species along with legend
+# TASK - generate leaflet map with
+# - shape file for region 
+# - data points plotted coloured by species type
+# - popup to show age and date collected  
+# - include a colour legend
+popupInfo <- paste("Age: ", leaflet_data$age, "<br>",
+                   "Date: ", leaflet_data$date, "<br>",
+                   sep = " ")
 
 leaflet() %>% addTiles() %>%
   addPolygons(data = region_shp, color="grey", weight=1, fillOpacity=0.3,
@@ -129,6 +135,38 @@ leaflet() %>% addTiles() %>%
   addPolylines(data = region_shp, color="black", weight=1) %>%
   addCircles(data=leaflet_data, lng=~x, lat=~y,
              color = pal(leaflet_data$species_type),
-             opacity = 1, fillOpacity = 1) %>%
+             opacity = 1, fillOpacity = 1, popup = popupInfo) %>%
   addLegend(m, position = "bottomright", title = "Species type",
                 pal = pal, values = leaflet_data$species_type)
+
+
+#### Introducing raster data to leaflet ####
+# load raster of human population density
+density <- raster("../Day 1/data/HumanPopulation.grd")
+
+# plotting log of human density is more informative than raw value
+plot(density)
+plot(log(density))
+
+pal <- colorNumeric(c("#0C2C84", "#41B6C4", "#FFFFCC"),
+                    c(-1.5, 11), na.color = "transparent")
+
+
+m <- leaflet() %>%
+  addRasterImage(log(density), colors = pal, opacity = 0.8)
+m
+
+# add some Provider Tiles and a legend (CartoDB.Positron has quite a neutral colour scheme)
+m %>% addProviderTiles("CartoDB.Positron") %>%
+  addLegend(pal = pal, values = c(-1.5, 11),
+            title = "Human<br>population<br>density")
+m
+
+m %>% addCircles(data = raw_data[raw_data$species == "human",],
+                 lng=~x, lat=~y,
+                 color = "black", fillColor = "black", opacity = 0.6)
+
+m %>% addCircles(data = raw_data[raw_data$species == "lion",],
+                 lng=~x, lat=~y,
+                 color = "black", fillColor = "black", opacity = 0.6)
+
