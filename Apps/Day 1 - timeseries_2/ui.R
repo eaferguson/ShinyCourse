@@ -12,7 +12,7 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-regions_list <- c("All Regions", sort(unique(raw_data$region)))
+options_list <- c("All Regions", sort(unique(raw_data$region)))
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -36,7 +36,7 @@ shinyUI(fluidPage(
 
       # Add a dropdown menu widget
       selectInput("select_region", label = h3("Select a Region:"),
-                  choices = regions_list,
+                  choices = options_list,
                   selected = 1),
       br(),
 
@@ -49,7 +49,7 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("explPlot")
+      plotOutput("explPlot", height=700)
     )
   )
 

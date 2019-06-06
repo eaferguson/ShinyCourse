@@ -7,19 +7,19 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+library(RColorBrewer)
 
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
-# Create a column to give
-# Collect a list of regions for the dropdown menu
-regions_list <- c("All Regions", sort(unique(raw_data$region)))
-
 # Create a colour palette
-col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+#col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+col_palette <- brewer.pal(name="Dark2", n=8)
 
 # Collect list of years
 yrs <- sort(unique(substr(raw_data$date, 1, 4)))
+
+# Set plot breaks
 plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
 
 # Summarise for 'all' data - this will always be plotted
@@ -81,7 +81,7 @@ shinyServer(function(input, output) {
   # Produce plot
   output$explPlot <- renderPlot({
    ggplot() +
-      geom_line(data=data_subset(), aes(x=month, y=n, color=sex), size=1.5) +
+      geom_line(data=data_subset(), aes(x=month, y=n, color=sex), size=1) +
       scale_color_manual(name="Sex", values=c("All data"=col_palette[1], "Both sexes"=col_palette[2], "M"=col_palette[3], "F"=col_palette[4])) +
       ggtitle(paste0(input$select_region, "\n")) +
       labs(x="\nMonth", y="Number of records\n") +
@@ -90,7 +90,9 @@ shinyServer(function(input, output) {
       theme_classic() +
       theme(axis.text = element_text(size=14),
             axis.title = element_text(size=18),
-            plot.title = element_text(size=20, color=col_palette[1]))
+            plot.title = element_text(size=20),
+            legend.title = element_text(size=18),
+            legend.text = element_text(size=14))
   })
 
 })
