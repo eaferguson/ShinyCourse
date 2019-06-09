@@ -1,25 +1,28 @@
 # ---------------------------------------------------------------------------- #
-#                             SIDEBAR PANEL TEMPLATE                           #
+#                            DASHBOARD LAYOUT TEMPLATE                         #
 #                                                                              #
 # This is the user-interface definition of a Shiny web application. You can    #
 # run the application by clicking 'Run App' above.                             #
 # ---------------------------------------------------------------------------- #
 
 library(shiny)
+library(shinydashboard)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shinyUI(dashboardPage(
 
-  # Application title
-  titlePanel("Panel Title"),
+  dashboardHeader(
+    title="page title"
+    ),
 
-  sidebarLayout(
+  dashboardSidebar(
+    "sidebar content"
+  ),
 
-    # Add sidebar Panel
-    sidebarPanel("Sidebar panel contents"),
-
-    # Show a plot of the generated distribution
-    mainPanel("Main panel contents")
+  dashboardBody(
+    fluidRow(
+      "body content"
+    )
   )
 
 ))
