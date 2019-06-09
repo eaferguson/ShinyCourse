@@ -92,12 +92,12 @@ raw_data <- read.csv("data/raw_data.csv")
 <li> ``View()``: allows us to view the dataframe as a spreadsheet. </li>
 <li> ``names()``: give us the names of the columns in our data frame </li>
 <li> ``dim()``: tells us the dimensions of our dataframes.  </li>
-<li> ``summary()``: gives us counts for Factors (categorical variables) or summary statistics (min, median, mean, max) for integers or continuous variables. </li>
+<li> ``summary()``: gives us summary statistics (counts, min, median, mean, max). </li>
 <li> ``head()``: gives us the first 6 elements of the data </li>
 <li> ``tail()``: gives us the last 6 elements of the data </li>
 <li> ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer)) </li>
 <li> ``unique()``: tells us the unique elements of a variable.  </li>
-<li> ``?`` and ``??`` followed by a function names tells us about the function and what arguments it requires. </li>
+<li> ``?`` and ``??`` opens the helpfile for a function. </li>
 </ul>
 
 <p class="question">Try out the following commands to get to know the data?:</p>
@@ -256,7 +256,7 @@ raw_data %>%
 
 
 <ul>
-<li>Introduce alternative plot methods baseR/ggplot2/leaflet</li>
+<li>Introduce a few basic plots</li>
 </ul>
 <br>
 
