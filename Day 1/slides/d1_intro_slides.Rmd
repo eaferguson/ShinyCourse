@@ -54,42 +54,84 @@ $(document).ready(function() {
 
 ## Background
 
-- Why RShiny
-- Data Visualisation
+- **What is RShiny?**
+    - "Shiny is an R package that makes it easy to build interactive web applications (apps) straight from R."
+
+- **Why build interactive graphics?**
+    - To explore and discover data
+    - Communicate your results to colleagues, stakeholders, managers
+    - Allow others to explore their own hypotheses
+
 
 ## Course Overview
 
-- Day 1: Data subsetting and summarising
+- **Day 1:**
+    - Getting to know your data
+    - Data subsetting and summarising
     - Build exploratory plots
+    - Build an interactive exploratory plot in RShiny
 
-## Breaking News!!
+- **Day 2:**
+    - Introduction to leaflet
+    - Building a leaflet map in R
+    - Build an interactive map in RShiny
+
+- **Day 3:**
+    - Review
+    - Build your own apps!
+
+## Daily Schedule
+
+- **Morning Session**
+  - Part 1
+  - Break: tea and coffee
+  - Part 2
+  
+Lunch
+
+- **Afternoon Session**
+  - Part 3
+  - Afternoon tea
+  - Part 4
+
+## Getting Help
+
+```{r, out.width = "500px", out.height = "500px"}
+library(png)
+knitr::include_graphics("figures/sticky notes.jpg")
+ 
+```
+
+## Deadly virus spreads through Tanzania!
 
 
-```{r, out.width = "450px", out.height = "400px"}
+```{r, out.width = "760px", out.height = "380px"}
 library(png)
 knitr::include_graphics("figures/headline.png")
  
 ```
 
-- A deadly zombie virus is spreading through Tanzania!
-- **Your mission**: visualise the disease advance and save the wildlife and citizens of Tanzania.
+- **Your mission**: visualise the disease advance and save the wildlife and citizens of Tanzania!!
 
 ## Getting to know the data
 
-First install the packages **dplyr** and read in the data frame
-
 Step 1: Set the working directory
+
+```{r, echo = T}
+# Set your working directory by clicking on the top menu:
+# Session > Set Working Directory > To Source File Location
+```
 
 Step 2: Install and load packages
 
-```{r, eval = FALSE}
+```{r, echo = T, eval = FALSE}
 install.packages("dplyr")
 library("dplyr")
 ```
 
 
 Step 3: Read in the data
-```{r, eval = F}
+```{r, echo = T, eval = F}
 raw_data <- read.csv("data/raw_data.csv")
 ```
 
@@ -105,12 +147,12 @@ We have several tools to get to know our data
 - ``View()``: allows us to view the dataframe as a spreadsheet.
 - ``names()``: give us the names of the columns in our data frame
 - ``dim()``: tells us the dimensions of our dataframes. 
-- ``summary()``: gives us counts for Factors (categorical variables) or summary statistics (min, median, mean, max) for integers or continuous variables.
+- ``summary()``: give us summary statistics (counts, min, median, mean, max).
 - ``head()``: gives us the first 6 elements of the data
 - ``tail()``: gives us the last 6 elements of the data
 - ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer))
 - ``unique()``: tells us the unique elements of a variable. 
-- ``?`` and ``??`` followed by a function names tells us about the function and what arguments it requires.
+- ``?`` and ``??`` accesses the help file for a function.
 
 ## Your Turn
 
@@ -240,12 +282,9 @@ raw_data %>%
 
 Similar to regular R you can use the ``<-`` to store the object
 
-
 ```{r, eval = F, echo = T}
 species_df <- raw_data %>%
                       select(species, date, age)
-
-head(species_df, 2)
 
 ``` 
 
@@ -273,14 +312,14 @@ head(species_df3, 1)
 
 To select the observations you want it is useful to know some comparison operators
 
-  - ``>`` greater than
-  - ``>=`` greater than or equal to
-  - ``!=`` not equal
-  - ``==`` equal
-  - ``&`` and
-  - ``|`` or
-  - ``!`` not
-  - ``%in% c(....)`` one in a list of elements
+  - ``>`` **greater than**
+  - ``>=`` **greater than or equal to**
+  - ``!=`` **not equal**
+  - ``==`` **equal**
+  - ``&`` **and**
+  - ``|`` **or**
+  - ``!`` **not**
+  - ``%in% c(....)`` **one in** a list of elements
 
 ## Selecting rows using ``filter()`` 
 
@@ -442,78 +481,126 @@ library(leaflet)
 
 ## Introducing ggplot
 
-The basic structure is:  
+The basic structure:  
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;geom_bar(data=raw_data, aes(x=sex))
 
-## Introducing ggplot
+## Introducing ggplot - plots
 
-The basic structure is:
+  - First we need to specify a plot
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(data=raw_data, aes(x=sex))
 
-ggplot has several plot types:
- 
- - <b style="color:red;">geom_bar</b>: barplot
- - <b style="color:red;">geom_hist</b>: histogram
- - <b style="color:red;">geom_point</b>: scatterplot/points
- - <b style="color:red;">geom_line</b>: line plot
 
-## Introducing ggplot  
 
-The basic structure is:
+  - ggplot has several plot types:
+    - <b style="color:red;">geom_bar</b>: **barplot**
+    - <b style="color:red;">geom_hist</b>: **histogram**
+    - <b style="color:red;">geom_point</b>: **scatterplot/points**
+    - <b style="color:red;">geom_line</b>: **line plot**
+
+## Introducing ggplot - data
+
+  - Second we need to supply our data
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, aes(x=sex))
 
-The first thing you will supply to the plot function is your data
 
-If you are using only one type of data you can supply the data here instead:
+
+
+  - The data can also be specified here:
 
 ggplot(<b style="color:blue;">data=raw_data</b>) + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(aes(x=sex))
 
 
-## Introducing ggplot  
+## Introducing ggplot - aesthetics
 
 
-The basic structure is:
+  - Third, we specify the variables we want to plot using aesthetics, or aes().
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, <b style="color:green;">aes(x=sex)</b>)
 
-The
+  
+  - Different plots take different arguments in aes()
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_point</b> takes <b style="color:green;">aes(x=sex, y = age)</b>
 
 ## Barplot
 
-```{r}
+```{r, echo = T, out.width = "100%"}
 ggplot() + 
-  geom_bar(data=raw_data, aes(x=sex)) + 
+  geom_bar(data=raw_data, aes(x=sex))
+```
+
+## Introducing ggplot - aesthetics
+
+
+```{r, echo = T}
+ggplot() + # Change the colour in aesthetics
+  geom_bar(data=raw_data, aes(x=sex, fill = "red"))  
+```
+
+## Introducing ggplot - aesthetics
+
+Change the colour in aesthetics by variable
+
+```{r, echo = T, out.width = "85%"}
+ggplot() +
+  geom_bar(data=raw_data, aes(x=sex, fill = sex))
+``` 
+
+## Introducing ggplot - additional features
+
+Adding **labels**, **titles**, and **themes**
+
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=sex, fill=sex))+ 
+  xlab("Sex") + # Label for the X axis
+  ylab("Cases") + # Label for the Y axis
+  ggtitle("Disease cases by Sex") + #Title
+  theme_classic() # Plot theme for background etc.
+``` 
+
+## Introducing ggplot - additional features
+
+Adding **labels**, **titles**, and **themes**
+
+```{r, eval = T, echo = F}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=sex, fill=sex))+ 
+  xlab("Sex") + # Label for the X axis
+  ylab("Cases") + # Label for the Y axis
+  ggtitle("Disease cases by sex") + #Title
+  theme_classic() # Plot theme for background etc.
+``` 
+
+
+## Your turn - create a barplot of species
+
+Create a barplot of species and colour by species. 
+
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
   theme_classic()
 ```
 
-## Your turn - build a barplot of species
+## Your turn - create a barplot of species
 
-
-```{r, eval =  F, echo = T}
+```{r, eval = T, echo = T}
 ggplot() + 
-  geom_bar(data=raw_data, aes(x=______)) + 
+  geom_bar(data=raw_data, aes(x=species, fill = species)) + 
   theme_classic()
 ```
 
-````
 
-## Your turn - barplot of species
-
-
-
-```{r}
-ggplot() + 
-  geom_bar(data=raw_data, aes(x=species)) + 
-  theme_classic()
-```
 
 
 
