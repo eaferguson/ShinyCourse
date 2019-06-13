@@ -19,7 +19,7 @@ col_palette <- brewer.pal(name="Dark2", n=8)
 shinyServer(function(input, output) {
 
   # Produce plot
-  output$explPlot <- renderPlot({
+  output$barPlot <- renderPlot({
    ggplot() +
       geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
       labs(x=paste0("\n", input$xaxis), y="Number of records\n") +

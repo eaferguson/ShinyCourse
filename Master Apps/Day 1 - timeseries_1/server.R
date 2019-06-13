@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
     })
 
   # Produce plot
-  output$explPlot <- renderPlot({
+  output$tsPlot <- renderPlot({
    ggplot() +
       geom_path(data=data_subset(), aes(x=month, y=n, color=region), size=1) +
       scale_color_manual(name="Region", values=col_palette) +

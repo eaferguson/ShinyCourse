@@ -42,7 +42,7 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("explPlot", height=700)
+      plotOutput("barPlot", height=700)
     )
   )
 
