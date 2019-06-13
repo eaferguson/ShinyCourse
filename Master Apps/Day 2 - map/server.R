@@ -26,6 +26,12 @@ regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
 shinyServer(function(input, output) {
   
   
+  ## Subset data based on date slider input and species picker input
+  leaflet_data_sub<- reactive({
+    leaflet_data[which(leaflet_data$date>input$date[1] & leaflet_data$date<input$date[2] & 
+                         is.element(leaflet_data$species,input$species)),]
+  })
+  
   # Get point colours based on chosen variable
   pal <- reactive({
     colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
@@ -42,8 +48,8 @@ shinyServer(function(input, output) {
     colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
     leaflet() %>%
       addPolygons(data=regions,color="black",fillColor = "white", weight=1, fillOpacity=0.6) %>%
-      addCircles(data=leaflet_data,lng=~leaflet_data$x,lat=~leaflet_data$y,
-                 color = pal()(leaflet_data[,colourby]),
+      addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_data_sub()$y,
+                 color = pal()(leaflet_data_sub()[,colourby]),
                  opacity=1, fillOpacity=1) %>%
       addProviderTiles("Stamen.Terrain") %>%
       addLegend(position = "bottomright", title = input$colourby,
