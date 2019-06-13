@@ -90,7 +90,7 @@ shinyServer(function(input, output) {
   })
 
   # Produce plot
-  output$explPlot <- renderPlot({
+  output$tsPlot <- renderPlot({
       ggplot() +
         geom_path(data=data_subset$data, aes(x=month, y=n, color=species), size=1) +
         scale_color_manual(name="Species", values=col_palette) +
