@@ -21,18 +21,20 @@ shinyUI(fluidPage(
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Add content to the Sidebar
   sidebarLayout(
     sidebarPanel(
-      selectInput("xaxis", label = h3("Select the x-axis variable:"),
-                  choices = list("Sex" = "sex", "Species" = "species"),
-                  selected = 1)
+      selectInput(inputID="xaxis", # input id name
+                  label = h3("Select the x-axis variable:"), # input title
+                  choices = list("Sex" = "sex", "Species" = "species"), # choices that appear in the dropdown menu matched to the variable in the data
+                  selected = 1) # number stating which of the choices starts as being selected
 
     ),
 
-    # Show a plot of the generated distribution
+    # Add content to the main panel
     mainPanel(
-      plotOutput("barPlot", height=700)
+      plotOutput("barPlot", # output id name
+                 height=700) # height in pixels of the plot
     )
   )
 
