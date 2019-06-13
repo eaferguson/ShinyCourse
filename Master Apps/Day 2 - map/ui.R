@@ -9,22 +9,33 @@ library(shinyWidgets)
 
 
 shinyUI(fluidPage(
+  
+  sidebarLayout(
+    
+    sidebarPanel(
+      sliderInput(inputId = "date", label = "Date:", 
+                  min = min(leaflet_data$date),max =max(leaflet_data$date),
+                  value=c(min(leaflet_data$date),max(leaflet_data$date)),
+                  timeFormat="%b %Y"),
+      
+      selectInput(inputId="colourby", label="Colour Cases By:",
+                  choices = c("species","date","sex","age"),
+                  selected="species"),
+      
+      pickerInput(inputId = "species", label = "Species:",
+                  as.character(sort(unique(leaflet_data$species))), selected=as.character(unique(leaflet_data$species)),
+                  options = list(`actions-box` = TRUE),multiple = T)
+      
+    ),
+    
+    mainPanel(
+      
+      leafletOutput("mymap",width=1000,height=700)
+      
+    )
+    
+    
+  )
+  
 
-  leafletOutput("mymap",width=800,height=600),
-  
-  sliderInput(inputId = "date", label = "Date:", 
-              min = min(leaflet_data$date),max =max(leaflet_data$date),
-              value=c(min(leaflet_data$date),max(leaflet_data$date)),
-              timeFormat="%b %Y"),
-  # textOutput("SliderText"),
-  
-  selectInput(inputId="colourby", label="Colour Cases By:",
-              choices = c("species","date","sex","age"),
-              selected="species"),
-  
-  pickerInput(inputId = "species", label = "Species:",
-              as.character(unique(leaflet_data$species)), selected=as.character(unique(leaflet_data$species)),
-              options = list(`actions-box` = TRUE),multiple = T)
-  
-  
 ))
