@@ -1,8 +1,10 @@
 ---
 title: "Data Visualisation using RShiny"
-author: "Rachel Steenson, Elaine Ferguson, and Laurie Baker"
+author: "Rachel Steenson, Elaine Ferguson, Will Harvey, and Laurie Baker"
 date: "**Tanzania**, August, 2019"
-output: ioslides_presentation
+output: 
+  ioslides_presentation:
+    incremental: true
 ---
 
 ```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -54,45 +56,45 @@ $(document).ready(function() {
 
 ## Background
 
-- **What is RShiny?**
-    - "Shiny is an R package that makes it easy to build interactive web applications (apps) straight from R."
+### **What is RShiny?**
 
-- **Why build interactive graphics?**
-    - To explore and discover data
-    - Communicate your results to colleagues, stakeholders, managers
-    - Allow others to explore their own hypotheses
+> - "Shiny is an R package that makes it easy to build interactive web applications (apps) straight from R."
 
+### **Why build interactive graphics?**
+
+> - To explore and discover data
+> - Communicate your results to colleagues, stakeholders, managers
+> - Allow others to explore their own hypotheses
 
 ## Course Overview
 
-- **Day 1:**
-    - Getting to know your data
-    - Data subsetting and summarising
-    - Build exploratory plots
-    - Build an interactive exploratory plot in RShiny
+### **Day 1:**
+> - Getting to know your data
+> - Data subsetting, summarising and exploratory plots
+> - Build an interactive exploratory plot in RShiny
 
-- **Day 2:**
-    - Introduction to leaflet
-    - Building a leaflet map in R
-    - Build an interactive map in RShiny
+### **Day 2:**
+> - Introduction to leaflet
+> - Building a leaflet map in R
+> - Build an interactive map in RShiny
 
-- **Day 3:**
-    - Review
-    - Build your own apps!
+### **Day 3:**
+> - Review
+> - Build your own apps!
 
 ## Daily Schedule
 
-- **Morning Session**
-  - Part 1
-  - Break: tea and coffee
-  - Part 2
+### **Morning Session**
+> - Part 1
+> - Break: tea and coffee
+> - Part 2
   
-Lunch
+### **Lunch**
 
-- **Afternoon Session**
-  - Part 3
-  - Afternoon tea
-  - Part 4
+### **Afternoon Session**
+> - Part 3
+> - Afternoon tea
+> - Part 4
 
 ## Getting Help
 
@@ -111,7 +113,7 @@ knitr::include_graphics("figures/headline.png")
  
 ```
 
-- **Your mission**: visualise the disease advance and save the wildlife and citizens of Tanzania!!
+> - **Your mission**: visualise the disease advance and save the wildlife and citizens of Tanzania!!
 
 ## Getting to know the data
 
@@ -156,15 +158,15 @@ We have several tools to get to know our data
 
 ## Your Turn
 
-- ``View(raw_data)``: how many entries does the data frame have?
-- ``names(raw_data)``: what are the names of the first 3 columns?
-- ``dim(raw_data)``: what are the dimensions of our data?
-- ``summary(raw_data)``: which species had more cases? What is the mean age of everything infected?
-- ``head(raw_data)``: In which region did the 1st case occur?
-- ``tail(raw_data)``: In which region did the last case occur?
-- ``str(raw_data)``: Which variables are numbers (num)?
-- ``unique(raw_data$species)``: What are the unique elements of a variable?
-- ``?names()``: What is the first argument for the function names?
+> - ``View(raw_data)``: how many entries does the data frame have?
+> - ``names(raw_data)``: what are the names of the first 3 columns?
+> - ``dim(raw_data)``: what are the dimensions of our data?
+> - ``summary(raw_data)``: which species had more cases? What is the mean age of everything infected?
+> - ``head(raw_data)``: In which region did the 1st case occur?
+> - ``tail(raw_data)``: In which region did the last case occur?
+> - ``str(raw_data)``: Which variables are numbers (num)?
+> - ``unique(raw_data$species)``: What are the unique elements of a variable?
+> - ``?names()``: What is the first argument for the function names?
 
 ## ``View()``, ``names()``, ``dim()``
 
@@ -488,7 +490,7 @@ ggplot() + <br>
 
 ## Introducing ggplot - plots
 
-  - First we need to specify a plot
+First we need to specify a plot
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(data=raw_data, aes(x=sex))
@@ -503,7 +505,7 @@ ggplot() + <br>
 
 ## Introducing ggplot - data
 
-  - Second we need to supply our data
+Second we need to supply our data
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, aes(x=sex))
@@ -511,7 +513,7 @@ ggplot() + <br>
 
 
 
-  - The data can also be specified here:
+The data can also be specified here:
 
 ggplot(<b style="color:blue;">data=raw_data</b>) + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(aes(x=sex))
@@ -520,13 +522,13 @@ ggplot(<b style="color:blue;">data=raw_data</b>) + <br>
 ## Introducing ggplot - aesthetics
 
 
-  - Third, we specify the variables we want to plot using aesthetics, or aes().
+Third, we specify the variables we want to plot using aesthetics, or aes().
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, <b style="color:green;">aes(x=sex)</b>)
 
   
-  - Different plots take different arguments in aes()
+Different plots take different arguments in aes()
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_point</b> takes <b style="color:green;">aes(x=sex, y = age)</b>
@@ -540,9 +542,10 @@ ggplot() +
 
 ## Introducing ggplot - aesthetics
 
+Change the colour in aesthetics
 
-```{r, echo = T}
-ggplot() + # Change the colour in aesthetics
+```{r, echo = T, out.width = "80%"}
+ggplot() +  
   geom_bar(data=raw_data, aes(x=sex, fill = "red"))  
 ```
 
@@ -550,7 +553,7 @@ ggplot() + # Change the colour in aesthetics
 
 Change the colour in aesthetics by variable
 
-```{r, echo = T, out.width = "85%"}
+```{r, echo = T, out.width = "80%"}
 ggplot() +
   geom_bar(data=raw_data, aes(x=sex, fill = sex))
 ``` 
@@ -559,7 +562,7 @@ ggplot() +
 
 Adding **labels**, **titles**, and **themes**
 
-```{r, eval = F, echo = T}
+```{r, eval = F, echo = T, out.width = "80%"}
 ggplot() + 
   geom_bar(data=raw_data, aes(x=sex, fill=sex))+ 
   xlab("Sex") + # Label for the X axis
