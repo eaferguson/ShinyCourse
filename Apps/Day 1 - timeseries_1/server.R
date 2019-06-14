@@ -8,6 +8,7 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+library(lubridate)
 
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
@@ -17,7 +18,9 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 col_palette <- brewer.pal(name="Dark2", n=8)
 
 # Collect list of years
-yrs <- sort(unique(substr(raw_data$date, 1, 4)))
+raw_data$date <- as.Date(raw_data$date) # Change the structure of 'date' to a date
+yrs <- c(unique(year(raw_data$date)), 2015) #Extract year and take only the unique years
+
 plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
 
 # Summarise for 'all' data
@@ -51,7 +54,7 @@ shinyServer(function(input, output) {
       geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
       scale_color_manual(name="Species", values=col_palette) +
       ggtitle(paste0(input$select_species, "\n")) +
-      labs(x="\nMonth", y="Number of records\n") +
+      labs(x="\nDate (Month)", y="Number of records\n") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs,
                          limits=c(min(overall_summary$month), max(overall_summary$month))) +
       scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +

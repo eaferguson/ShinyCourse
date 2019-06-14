@@ -9,6 +9,7 @@ library(shiny)
 library(dplyr)
 library(ggplot2)
 library(RColorBrewer)
+library(lubridate)
 
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
@@ -18,7 +19,8 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 col_palette <- brewer.pal(name="Dark2", n=8)
 
 # Collect list of years
-yrs <- sort(unique(substr(raw_data$date, 1, 4)))
+raw_data$date <- as.Date(raw_data$date) # Change the structure of 'date' to a date
+yrs <- c(unique(year(raw_data$date)), 2015) #Extract year and take only the unique years
 
 # Set plot breaks
 plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
@@ -83,7 +85,7 @@ shinyServer(function(input, output) {
       geom_path(data=data_subset(), aes(x=month, y=n, color=sex), size=1) +
       scale_color_manual(name="Sex", values=col_palette) +
       ggtitle(paste0(input$select_region, "\n")) +
-      labs(x="\nMonth", y="Number of records\n") +
+      labs(x="Date (Month)", y="Number of records") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
       scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
       theme_classic() +
