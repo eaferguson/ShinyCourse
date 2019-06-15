@@ -1,8 +1,7 @@
 # ---------------------------------------------------------------------------- #
-#                            DASHBOARD LAYOUT TEMPLATE                         #
-#                                                                              #
-# This is the user-interface definition of a Shiny web application. You can    #
-# run the application by clicking 'Run App' above.                             #
+# Day 3 - Day 3 - Dashboard (opt)
+# This is the user-interface definition of a Shiny web application. You can
+# run the application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries

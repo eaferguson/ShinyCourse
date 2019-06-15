@@ -1,11 +1,8 @@
 # ---------------------------------------------------------------------------- #
+# Day 3 - Day 3 - Dashboard (opt)
 # This is the server logic of a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
-
-################################################################################
-# SECTION 1: LOAD LIBRARIES AND DATA, THEN PROCESS DATA READY FOR THE APP      #
-################################################################################
 
 # Load in libraries
 library(shiny)
@@ -62,9 +59,8 @@ start_df <- summary_data %>%
 # Define server logic
 shinyServer(function(input, output) {
 
-  ##############################################################################
-  # SECTION 2: ADD SERVER CODE FROM THE SIMPLE BARPLOT APP                     #
-  ##############################################################################
+  #----------------------------------------------------------------------------#
+  # ADD SERVER CODE FROM THE SIMPLE BARPLOT APP
 
   # Produce plot
   output$barPlot <- renderPlot({
@@ -84,9 +80,8 @@ shinyServer(function(input, output) {
     paste0("You have chosen to show '", input$xaxis, "' on the x-axis.")
   })
 
-  ##############################################################################
-  # SECTION 3: ADD SERVER CODE FROM THE TIME SERIES PLOT APP                   #
-  ##############################################################################
+  #----------------------------------------------------------------------------#
+  # ADD SERVER CODE FROM THE TIME SERIES PLOT APP
 
   # Setup reactiveValues object that can be updated reactively
   data_subset <- reactiveValues(data = start_df)
