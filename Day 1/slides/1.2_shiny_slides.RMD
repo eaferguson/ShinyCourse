@@ -1,7 +1,7 @@
 ---
 title: "Data Visualisation using RShiny"
 author: "Laurie Baker, Elaine Ferguson, Will Harvey and Rachel Steenson"
-date: "**Tanzania**, August, 2019"
+date: "**Tanzania**, August 2019"
 output: ioslides_presentation
 runtime: shiny
 ---
@@ -234,7 +234,7 @@ Complete section 1.4c of the handout.
   
 - The ``reactive()`` function is used to carry out data processing in response to a user input, with the output saved as an object.  
 
-- Any objects created in the function should but done with an ``=`` rather than the normal ``<-``.  
+- Any objects created in the function should be done with an ``=`` rather than the normal ``<-``.  
   
 - The last line of the function should be the object you would like to be saved overall (e.g. a data subset).  
 
@@ -291,10 +291,25 @@ Complete section 1.4f of the handout.
 <!----------------------------------------------------------------------------->
 ## The ``reactiveValues()`` function
   
+ - ``reactiveValues`` produce an object that acts like a list: you can store multiple values or objects to <em>slots</em>, that are referenced with the ``$`` symbol.  
+ - The created ``reactiveValues`` object can be created with values, or values can be added after creation.  
+ 
+```{r, eval=FALSE, echo=TRUE}
+# Create reactiveValues object with 2 slots (x and y)
+rv <- reactiveValues(x = 34, y <- "This is a shiny Workshop!")
+
+# Add a dataframe to the reactiveValues object in a new slot
+rv$z <- data.frame(n = c(1, 2, 3), t = c("a", "b", "c"))
+```
+  
+ - These stored values are updated by reactive functions.  
+ - This is helpful to display a default dataset that the user can update, particularly if you want a process to be triggered by a specific user event...
 
 <!----------------------------------------------------------------------------->
 ## The ``observeEvent()`` function
   
+ - ``observeEvent`` watches for a specific user input, then runs the following code  
+ - The input can be any of the widgets in your app, but this function is particularly helpful with an ``actionButton()``
 
 <!----------------------------------------------------------------------------->
 ## Your turn  
@@ -304,8 +319,8 @@ Complete section 1.4g of the handout.
 <div style="color: #FF6666;"> Notes:  
   
  - Have a look at the 4th time series plot.  
- - What reactive elements have changed?  
- - Can you think of any scenarios where it would be better to use a "Go" button to trigger a reactive event?  
+ - What reactive elements have changed in the server code and the ui code?  
+ - Can you think of any scenarios where it would be helpful to use a "Go" button to trigger a reactive event?  
  - apps/Day 1 - timeseries_4
 </div>
 
