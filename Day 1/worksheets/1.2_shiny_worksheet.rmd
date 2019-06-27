@@ -1,0 +1,181 @@
+---
+title: "Shiny Workshop: Day 1"
+Date: "Worksheet 1.4"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+
+---
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.blue {color: #4E23B8;}
+hr {border: 2px solid black;}
+a:link {color: white; text-decoration: none;}
+a:visited {color: white; text-decoration: none;}
+a:hover {color: #c9bde9; text-decoration: none;}
+a:active {color: white; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Contents section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+<ul>
+<li><a href="#1.4a">1.4a Create a shiny app</a></li>
+<li><a href="#1.4.note">App Guide</a></li>
+<li><a href="#1.4b">1.4b Add to a radio button widget</a></li>
+<li><a href="#1.4c">1.4c Add a new text output</a></li>
+<li><a href="#1.4d">1.4d Make a simple change to the data used by a widget</a></li>
+<li><a href="#1.4e">1.4e Make a more complicated change to the data used by a widget </a></li>
+<li><a href="#1.4f">1.4f Change a widget</a></li>
+<li><a href="#1.4g">1.4g Explore a "Go" button</a></li>
+</ul>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4a. Create a shiny app -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4a">1.4a &nbsp; Create a shiny app</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+First off, we'll create an app in a single R script. Don't worry - R has a demo app that we can use!  
+<ol>
+<li> Open up R Studio </li>
+<li> On the top menu, click on:  </li>
+&nbsp;&nbsp; File > New File > Shiny Web App  
+<li> Type in a name for your app, click on <b>Single File (app.R)</b>, check you are happy with the directory, then click Create! </li> 
+<li> Click on the <img src="figures/run.png" style="display: inline-block; margin: 0" /> button to run the code and load the app </li>
+</ol> 
+<br>
+Now, let's create an app using multiple R scripts.
+<ol>
+<li> On the top menu, click on:  </li>
+&nbsp;&nbsp; File > New File > Shiny Web App  
+<li> Type in a name for your app, click on <b>Multiple File (ui.R/server.R)</b>, check you are happy with the directory, then click Create! </li> 
+<li> Run the app as before </li>
+</ol>
+<br>
+These 2 apps are identical but the R scripts are slightly different.  
+In the single file app, the script finishes with ``shinyApp(ui = ui, server = server)``  
+This line is completed automatically if you use multiple files!  
+  
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4a. Create a shiny app -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4.note">App Guide</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Most of the activities in this section will use a pre-built app from the Apps folder, which you can edit and play around with. <br>
+These are all set up in a similar way: <br><br>
+
+<b> server.R scripts </b>
+<ul>
+<li> The server scripts will start by loading in any required package libraries, data and creating a colour palette to use. </li>
+<li> Some scripts may also do some data processing. </li>
+<li> The server section is opened with ``shinyServer(function(input, output) {`` and contains all reactive code used for the app. </li>
+</ul>
+<br>
+<b> ui.R scripts </b>  
+<ul>
+<li> The ui scripts will start by loading in package libraries, data and occasionally a little bit of data processing. </li>
+<li> The ui section is opened with ``shinyUI(fluidPage(``.  </li>
+<li> The ui uses special functions to format the text, such as ``br()`` which gives a line break or ``h4()`` which sets the font size. </li>
+<li> There will then be some code to setup the layout with a side panel and a main panel: we use the side panel to show the widgets, and the main panel for the outputs. </li>
+</ul>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4b. Add to a radio button widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4b">1.4b &nbsp; Add to a radio button widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/barplot_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.   
+<br>
+We've built a simple app that uses our dataset to show a barplot.  
+There is only 1 widget - ``selectInput()`` - to show a Dropdown menu that selects a variable to show on the x-axis.  
+<br>
+
+
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4c. Add a new text output -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4c">1.4c &nbsp; Add a new text output</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4d. Make a simple change to the data used by a widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4d">1.4d &nbsp; Make a simple change to the data used by a widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4e. Make a more complicated change to the data used by a widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4e">1.4e &nbsp; Make a more complicated change to the data used by a widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4f. Change a widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4f">1.4f &nbsp; Change a widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4ag Explore a "Go" button -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4g">1.4g &nbsp; Explore a "Go" button</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->

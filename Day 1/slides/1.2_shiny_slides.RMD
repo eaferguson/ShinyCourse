@@ -2,7 +2,9 @@
 title: "Data Visualisation using RShiny"
 author: "Laurie Baker, Elaine Ferguson, Will Harvey and Rachel Steenson"
 date: "**Tanzania**, August 2019"
-output: ioslides_presentation
+output: 
+  ioslides_presentation:
+    widescreen: true
 runtime: shiny
 ---
 
@@ -78,9 +80,9 @@ $(document).ready(function() {
 <!----------------------------------------------------------------------------->
 ## Build an interactive plot in RShiny  
   
-A shiny app is built from multiple sections:  
+A shiny app is normally built with 2 sections:  
 
-- The <b>ui</b> contains code for the part of the app that the user sees.  
+- The <b>ui</b> (user interface) contains code for the part of the app that the user sees.  
 - The <b>server</b> contains code for the processing behind the user interface.
   
 These can be contained in 1 R script, or multiple R scripts saved in the same folder. 
@@ -93,15 +95,15 @@ Complete section 1.4a of the handout.
 <!----------------------------------------------------------------------------->
 ## Your turn - Results section 1.4a  
   
-They are very similar, but it can be easier to seperate your code and sections using the 'multiple file' layout.  
+The 2 methods are very similar, but it can be easier to seperate your code and sections using the 'multiple file' layout.  
   
 All our examples and practice sections will use seperate <b>server.R</b> and <b>ui.R</b> files.
 
 <!----------------------------------------------------------------------------->
 ## Inputs  
   
-To make the app interactive, you need an input that the user can change.  
-Shiny includes a selection of functions for this called <b>widgets</b>:  
+ - To make the app interactive, you need an input that the user can change  
+ - Shiny includes a selection of functions for this called <b>widgets</b>:  
   
 ``` {r, echo=FALSE}
 widgets <- data.frame(Name=c("``actionButton()``", "``checkboxInput()``", "``checkboxGroupInput()``",
@@ -119,44 +121,43 @@ kable_styling(kable(widgets), font_size=16)
 <!----------------------------------------------------------------------------->
 ## Outputs  
   
-An output is required to show the user the effects of their input.  
-Shiny includes a selection of ``render*()`` and ``*Output()`` functions for this:  
+ - An output is required to show the user the effects of their input  
+ - ``render()`` functions are used in the <b>server</b>, saved to an object as ``output$___``  
+ - ``output()`` functions are used in the <b>ui</b>
   
 ``` {r, echo=FALSE}
-outputs <- data.frame("render*()"=c("``renderImage()``", "``renderPlot()``", "``renderPrint()``",
+outputs <- data.frame("render"=c("``renderImage()``", "``renderPlot()``", "``renderPrint()``",
                                     "``renderTable()``", "``DT::renderDataTable()``", "``renderText()``", 
                                     "``rendeerUI()``"),
-                      "*Output()"=c("``imageOutput()``", "``plotOutput()``", "``verbatimTextOutput()``",
+                      "output"=c("``imageOutput()``", "``plotOutput()``", "``verbatimTextOutput()``",
                                     "``tableOutput()``", "``dataTableOutput()``", 
                                     "``textOutput()``", "``uiOutput()`` or ``htmlOutput()``"))
 kable_styling(kable(outputs), font_size=16)
 ```
 
 <!----------------------------------------------------------------------------->
-## Using inputs and outputs together  
+## Using inputs and outputs together: <em>code</em>  
   
-``Input()`` and ``Output()`` functions are used in the <b>ui</b>.  
-``render()`` functions are used in the <b>server</b>.
-
 <b>ui</b>
 ```{r, echo=TRUE, eval=FALSE}
-radioButtons(inputId="radio", 
-             label="Choose a number:",
-             choices=list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3), 
-             selected=1), 
+# Input
+radioButtons(inputId = "radio", label = "Choose a number:", selected = 1, 
+             choices = list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3)) 
 
+# Output
 verbatimTextOutput("chosen_number")
 ```
 
 <b>server</b>
 ```{r, echo=TRUE, eval=FALSE}
+# Render
 output$chosen_number <- renderPrint({
   input$radio 
   })
 ```
 
 <!----------------------------------------------------------------------------->
-## Using inputs and outputs together  
+## Using inputs and outputs together: <em>example</em>
 
 <br>
 
@@ -171,10 +172,8 @@ shinyApp(
     "))),
     
     HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
-    radioButtons(inputId="radio", 
-                 label="Choose a number:",
-                 choices=list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3), 
-                 selected=1), 
+    radioButtons(inputId="radio", label="Choose a number:", selected=1, 
+             choices=list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3)), 
     
     br(),
     
@@ -195,7 +194,7 @@ shinyApp(
 <!----------------------------------------------------------------------------->
 ## Your turn  
   
-Complete section 1.4b of the handout.  
+Read the <em>App Guide</em> of the handout, then complete section 1.4b.  
   
 <div style="color: #FF6666;"> Notes for linking:  
   
@@ -232,17 +231,86 @@ Complete section 1.4c of the handout.
 <!----------------------------------------------------------------------------->
 ## The ``reactive()`` function
   
-- The ``reactive()`` function is used to carry out data processing in response to a user input, with the output saved as an object.  
+- The ``reactive()`` function is used to carry out data processing in response to a user input, with the output saved as an object  
 
-- Any objects created in the function should be done with an ``=`` rather than the normal ``<-``.  
+- Objects created in the function should be done with an ``=``, NOT ``<-``  
   
-- The last line of the function should be the object you would like to be saved overall (e.g. a data subset).  
+- The last line of the function should be the object you would like to be saved overall (e.g. a data subset)  
 
-- The final object must be referenced within a ``render()`` function followed by a set of brackets in order to work.  
+- The final object must be referenced within a ``render()`` function followed by a set of brackets in order to be used  
   
-```{r, fig.align='center', out.height="120px", out.width="100%"}
-knitr::include_graphics("figures/reactive_function.jpg")
- 
+<!----------------------------------------------------------------------------->
+## The ``reactive()`` function: <em>code</em> {.smaller}
+
+<b>ui</b>
+```{r, echo=TRUE, eval=FALSE}
+radioButtons(inputId = "radio", label = "Choose a number:", selected = 1, 
+             choices = list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3)), 
+
+verbatimTextOutput("chosen_letter")
+```
+
+<b>server</b>
+```{r, echo=TRUE, eval=FALSE}
+n_to_l <- reactive({
+  if(input$radio == 1){
+    n_letter = "a"
+  } else if(input$radio == 2){
+    n_letter = "b"
+  } else if(input$radio == 3){
+    n_letter = "c"
+  }
+  n_letter
+})
+
+output$chosen_letter <- renderPrint({
+  n_to_l()
+})
+```
+
+<!----------------------------------------------------------------------------->
+## The ``reactive()`` function: <em>app</em>
+
+```{r, echo=FALSE}
+shinyApp(
+
+  ui = fluidPage(
+    tags$head(
+    tags$style(HTML("
+      #txt {font-size: 26px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+    "))),
+    
+    HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
+    radioButtons(inputId = "radio", label = "Choose a number:",
+                 choices = list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3), 
+                 selected = 1), 
+    
+    br(),
+    
+    HTML("<div id='txt'>Input: <b>textOutput()</b></div>"),
+    verbatimTextOutput("chosen_letter")
+  ),
+  
+  server = function(input, output) {
+    n_to_l <- reactive({
+      if(input$radio == 1){
+        n_letter = "a"
+      } else if(input$radio == 2){
+        n_letter = "b"
+      } else if(input$radio == 3){
+        n_letter = "c"
+      }
+      n_letter
+    })
+    
+    output$chosen_letter <- renderPrint({
+      n_to_l()
+    })
+  },
+
+  options = list(height = 500)
+)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -292,8 +360,7 @@ Complete section 1.4f of the handout.
 ## The ``reactiveValues()`` function
   
  - ``reactiveValues`` produce an object that acts like a list: you can store multiple values or objects to <em>slots</em>, that are referenced with the ``$`` symbol.  
- - The created ``reactiveValues`` object can be created with values, or values can be added after creation.  
- 
+ - The created ``reactiveValues`` object can be created with values, or values can be added after creation:  
 ```{r, eval=FALSE, echo=TRUE}
 # Create reactiveValues object with 2 slots (x and y)
 rv <- reactiveValues(x = 34, y <- "This is a shiny Workshop!")
@@ -308,8 +375,69 @@ rv$z <- data.frame(n = c(1, 2, 3), t = c("a", "b", "c"))
 <!----------------------------------------------------------------------------->
 ## The ``observeEvent()`` function
   
- - ``observeEvent`` watches for a specific user input, then runs the following code  
- - The input can be any of the widgets in your app, but this function is particularly helpful with an ``actionButton()``
+ - ``observeEvent`` watches for a specific user input, then runs a section of code  
+ - The input can be any of the widgets in your app, but works well with ``actionButton()``
+
+<!----------------------------------------------------------------------------->
+##  ``reactiveValues()`` & ``observeEvent()`` functions: <em>code</em>
+
+<b>ui</b>
+```{r, echo=TRUE, eval=FALSE}
+actionButton(inputId="go_button", label="Click to generate a random number:")
+
+verbatimTextOutput("random_number")
+```
+
+<b>server</b>
+```{r, echo=TRUE, eval=FALSE}
+rn <- reactiveValues(n = NA)
+
+observeEvent(input$go_button, {
+  rn$n = sample(x = 1:100, size = 1)
+})
+
+output$random_number <- renderPrint({
+  print(rn$n) 
+  })
+```
+
+<!----------------------------------------------------------------------------->
+## ``reactiveValues()`` & ``observeEvent()`` functions: <em>app</em>
+
+```{r, echo=FALSE}
+shinyApp(
+  
+  ui = fluidPage(
+    tags$head(
+      tags$style(HTML("
+      #txt {font-size: 26px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+    "))),
+    
+    HTML("<div id='txt'>Input: <b>actionButton()</b></div>"),
+    actionButton(inputId="go_button", label="Click to generate a random number:"), 
+    
+    br(), br(),
+    
+    HTML("<div id='txt'>Input: <b>textOutput()</b></div>"),
+    verbatimTextOutput("random_number")
+  ),
+  
+  server = function(input, output) {
+    rn <- reactiveValues(n=NA)
+    
+    observeEvent(input$go_button, {
+      rn$n = sample(x=1:100, size=1)
+    })
+    
+    output$random_number <- renderPrint({
+      print(rn$n) 
+    })
+  },
+  
+  options = list(height = 500)
+)
+```
 
 <!----------------------------------------------------------------------------->
 ## Your turn  
