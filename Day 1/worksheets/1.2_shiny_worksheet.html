@@ -250,8 +250,7 @@ Click to view a specific section of the document.<br />
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
-First off, we’ll create an app in a single R script. Don’t worry - R has a demo app that we can use!<br />
-
+<b class="blue">Goal: Create an app in a single R script</b>
 <ol>
 <li>
 Open up R Studio
@@ -262,13 +261,13 @@ On the top menu, click on:
    File &gt; New File &gt; Shiny Web App<br />
 
 <li>
-Type in a name for your app, click on <b>Single File (app.R)</b>, check you are happy with the directory, then click Create!
+Type in a name for your app, click on <em>Single File (app.R)</em>, check you are happy with the directory, then click Create!
 </li>
 <li>
 Click on the <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGUAAAAYCAIAAABsoqSHAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAJ3SURBVFhH7Za/axsxFIAz1U6bUKdTB0PIULIUWrJ0KLTQNiXnXEJo6/pi91fc87ndQqFLoHQIZMiQpYkhCc7ULZMn06VDJ0MMR/4Gw3n0n6A+SehOp+hsKZjcEImP4/Gk050+nnQ3sfrui0ERhJDxpUrB+Wx8qbJSqT+xXhlfqthl78Gjp8aXKsvr7tz8fbmvwkfPfl8XktccOLzu5mflvhZrtdxBaWnDKIsolKrTt2cSfU38fn3nl7NU9YSua4tVqmazk8N8ATP7jqVRZc0OzMdapyH0arPXRajbFJJpAb4ymSysa5gvIHfgCL3JgK/+6RaJGz5C/l6sV5Otdi/wOwGbMG2wr5H1pamM8xWLL8Nmq99rbdOr0JUKGr6IslLh08izLF5fQXtTSEYxCVpQg7jJjGyf0srCVUbnAchdjXYvdpc0qc2fv//O/HMKxEIvoOcLyO+WhWEXgFdnLTp3Qkd8TEbSMdKdG2li4nBM7qJ5GMBPJSa1+fr9ZxD0B4MBXCEWegE9X5mTosK3kunA7x0qCB3xsTQZwW9DiJn92Ej4GpBPijR5Gb792AFfcBXyFA1fN06K9geVr2T06tyCpWqkyRDICI3a50dC3V30FSbHj6qvm0dvF13FvzCpBW4NeOvRpHQkIzr7KLwadkJFJSxNjh8lX1OHxedeTehNJrZyvI/osrEm0ro+GzDMF+wp4dhmWxKP7HT7dDJWR9Lk+CH/9zl4RKKvW8cgyxW6UkU0m5wcP8uOm5+7l+gr03zz0lWvrKshTV922Vt4/Ezuy9rwrNF/W1dPmr5WKvUXaxW5L4MUe71mfOlhfOmBfU3NPjQoghD6D67L8/rlDNFXAAAAAElFTkSuQmCC" style="display: inline-block; margin: 0" /> button to run the code and load the app
 </li>
 </ol>
-<br> Now, let’s create an app using multiple R scripts.
+<b class="blue">Goal: Create an app using multiple R scripts</b>
 <ol>
 <li>
 On the top menu, click on:
@@ -276,17 +275,17 @@ On the top menu, click on:
    File &gt; New File &gt; Shiny Web App<br />
 
 <li>
-Type in a name for your app, click on <b>Multiple File (ui.R/server.R)</b>, check you are happy with the directory, then click Create!
+Type in a name for your app, click on <em>Multiple File (ui.R/server.R)</em>, check you are happy with the directory, then click Create!
 </li>
 <li>
 Run the app as before
 </li>
 </ol>
-<p><br> These 2 apps are identical but the R scripts are slightly different.<br />
+<p><b class="blue">Summary</b> <br> These 2 apps are identical but the R scripts are slightly different.<br />
 In the single file app, the script finishes with <code>shinyApp(ui = ui, server = server)</code><br />
 This line is completed automatically if you use multiple files!</p>
 <!--- ---------------------------------------------------------------------- -->
-<!--- 1.4a. Create a shiny app -->
+<!--- 1.4. App Guide -->
 <div class="row">
 <!--- Setup grid for layout -->
 <div class="col-md-12">
@@ -349,10 +348,16 @@ There will then be some code to setup the layout with a side panel and a main pa
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
-<p>Please navigate to the <b class="blue">Apps/barplot_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.<br />
-<br> We’ve built a simple app that uses our dataset to show a barplot.<br />
-There is only 1 widget - <code>selectInput()</code> - to show a Dropdown menu that selects a variable to show on the x-axis.<br />
-<br></p>
+Please navigate to the <b class="blue">Apps/barplot_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio. <br><br> This is a simple app that uses our dataset to show a barplot. <br> There is only 1 widget - <code>selectInput()</code> - to show a Dropdown menu that selects a variable to show on the x-axis. <br><br> Please take a moment to have a look at the server and ui scripts, then run the app. <br><br> <b class="blue">Goal: Add age as an option to view on the x-axis</b>
+<ul>
+<li>
+Remember to explore the dataset to find the correct column name
+</li>
+<li>
+You only need to change the ui file
+</li>
+</ul>
+<p><br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4c. Add a new text output -->
 <div class="row">
@@ -370,6 +375,16 @@ There is only 1 widget - <code>selectInput()</code> - to show a Dropdown menu th
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
+Please navigate to the <b class="blue">Apps/barplot_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio. <br><br> This is the same simple barplot app as before, but with a new <code>verbatimtextOutput()</code> below. <br> <em>Verbatim</em> simply mean as is - it prints the output to look like <code>code</code>. <br><br> Please take a moment to have a look at the server and ui scripts, then run the app. <br><br> <b class="blue">Goal: Add another text output </b>
+<ul>
+<li>
+You could show a summary of your data e.g. <code>head()</code>, <code>summary()</code>
+</li>
+<li>
+You will need to change both files
+</li>
+</ul>
+<p><br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4d. Make a simple change to the data used by a widget -->
 <div class="row">

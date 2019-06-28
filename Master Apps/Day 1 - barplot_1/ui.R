@@ -25,8 +25,10 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
+
+      # Add a dropdown menu
       selectInput("xaxis", label = h3("Select the x-axis variable:"),
-                  choices = list("Gender" = "sex", "Species" = "species", "Age" = "age"),
+                  choices = list("Sex" = "sex", "Species" = "species", "Age" = "age"),
                   selected = 1)
 
     ),
