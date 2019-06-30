@@ -95,19 +95,21 @@ A shiny app is normally built with 2 sections:
 - The <b>ui</b> (user interface) contains code for the part of the app that the user sees.  
 - The <b>server</b> contains code for the processing behind the user interface.
 
-These can be contained in 1 R script, or multiple R scripts saved in the same folder. 
+These can be contained in one R script, or multiple R scripts saved in the same folder. 
+
+  - The 2 methods are very similar
+  - Can be easier to separate your code and sections using the 'multiple file' layout.  
+
+**All our examples and practice sections will use seperate <b>server.R</b> and <b>ui.R</b> files.
+
 
 <!----------------------------------------------------------------------------->
-## Your turn  
+## Your turn - complete section 1.4a
 
-Complete section 1.4a of the handout.
+  <center><img src="figures/ui_server_example.PNG" height="490px" /></center>
 
 <!----------------------------------------------------------------------------->
 ## Your turn - Results section 1.4a  
-
-The 2 methods are very similar, but it can be easier to seperate your code and sections using the 'multiple file' layout.  
-
-All our examples and practice sections will use seperate <b>server.R</b> and <b>ui.R</b> files.
 
 <!----------------------------------------------------------------------------->
 ## Inputs  
@@ -364,11 +366,11 @@ shinyApp(
 <!----------------------------------------------------------------------------->
 ## Making your code 'reactive'  
 
-- All code within the server must be contained within a 'reactive' element, otherwise the app will fail to run.  
+- All code within the server must be contained within a **reactive** element, otherwise the app will fail to run.  
 
 - The previous examples take the user input and either output it directly or carry out minor processing inside the ``render()`` functions.  
 
-- If we want to subset the data based on user input that can be available to multiple outputs, we need to use additional 'reactive' functions...
+- If we want to subset the data based on user input that can be available to *multiple outputs*, we need to use additional **reactive** functions...
 
 <!----------------------------------------------------------------------------->
 ## The ``reactive()`` function
