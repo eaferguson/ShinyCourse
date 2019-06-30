@@ -19,8 +19,8 @@ leaflet_data <- raw_data %>%
   mutate(year = substr(date, 1,4), date=ymd(date), date_decimal = decimal_date(date)) 
 
 # # Create a colour palette for points
-point_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
-# point_palette <- brewer.pal(11, "Spectral")
+palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+# palette <- brewer.pal(11, "Spectral")
 
 
 ## Load region shapefile
@@ -34,8 +34,9 @@ shinyServer(function(input, output) {
   
   ## Subset data based on date slider input and species picker input
   leaflet_data_sub<- reactive({
-    leaflet_data[which(leaflet_data$date>input$date[1] & leaflet_data$date<input$date[2] & 
-                         is.element(leaflet_data$species,input$species)),]
+    leaflet_data %>% 
+      filter(date>input$date[1] & date<input$date[2] & species %in% input$species)
+    
   })
   
   popupInfo <- reactive({
@@ -51,9 +52,9 @@ shinyServer(function(input, output) {
   pal <- reactive({
     colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
     if(is.character(leaflet_data[,colourby])){
-      colorFactor(point_palette, domain = sort(unique(leaflet_data[,colourby])))  
+      colorFactor(palette, domain = sort(unique(leaflet_data[,colourby])))  
     }else{
-      colorNumeric(point_palette, range(leaflet_data[,colourby]))
+      colorNumeric(palette, range(leaflet_data[,colourby]))
     }
   })
   
