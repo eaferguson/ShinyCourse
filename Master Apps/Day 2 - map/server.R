@@ -27,15 +27,6 @@ point_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
 
 
-## Load density raster
-density <- raster("data/HumanDensity/HumanPopulation.grd")
-
-
-## Colour palette for rasters
-raster_palette <- brewer.pal(9, "YlOrRd")
-
-
-
 
 # Define server logic 
 shinyServer(function(input, output) {
@@ -69,25 +60,18 @@ shinyServer(function(input, output) {
   
   ## Render map
   output$mymap <- renderLeaflet({
-    rasterRange <- range(log10(density[])[which(!is.infinite(log10(density[])))],na.rm=T)
     colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
     leaflet() %>%
-      # addPolygons(data=regions,color="black",fillColor = "white", 
-      #             label=regions$Region_Nam, weight=1, fillOpacity=0.9) %>%
+      addPolygons(data=regions,color="black",fillColor = "white",
+                  label=regions$Region_Nam, weight=1, fillOpacity=0.9) %>%
       addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_data_sub()$y,
                  color = pal()(leaflet_data_sub()[,colourby]),
                  opacity=1, fillOpacity=1, popup = popupInfo()) %>%
       addProviderTiles("Stamen.Terrain") %>%
-      addRasterImage(log10(density), 
-                     colors = colorNumeric(raster_palette, rasterRange, na.color = "transparent"), 
-                     opacity = 0.7) %>% 
       addLegend(position = "bottomright", title = input$colourby,
                 pal = pal(), values = leaflet_data[,colourby], opacity=1,
-                labFormat = labelFormat(big.mark = "")) %>%
-      addLegend(pal = colorNumeric(raster_palette, rasterRange, na.color = "transparent"), 
-                values = rasterRange, opacity=1,bins = -10:10,labels=as.character((-10:10)^10),
-                title = "Log10 human<br>population<br>density")
-    
+                labFormat = labelFormat(big.mark = "")) 
+
   })
   
 })
