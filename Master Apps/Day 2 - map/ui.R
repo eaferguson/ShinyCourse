@@ -7,6 +7,12 @@ library(shiny)
 library(leaflet)
 library(shinyWidgets)
 
+# Load in the raw data
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
+
+# Add year and mal date to data
+leaflet_data <- raw_data %>% mutate(date=ymd(date)) 
+
 
 shinyUI(fluidPage(
   
