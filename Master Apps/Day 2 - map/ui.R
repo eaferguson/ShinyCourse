@@ -24,13 +24,24 @@ shinyUI(fluidPage(
                   value=c(min(leaflet_data$date),max(leaflet_data$date)),
                   timeFormat="%b %Y"),
       
+      br(),
+      
       selectInput(inputId="colourby", label="Colour Cases By:",
                   choices = c("species","date","sex","age"),
                   selected="species"),
       
+      br(),
+      
       pickerInput(inputId = "species", label = "Species:",
                   as.character(sort(unique(leaflet_data$species))), selected=as.character(unique(leaflet_data$species)),
-                  options = list(`actions-box` = TRUE),multiple = T)
+                  options = list(`actions-box` = TRUE),multiple = T),
+      
+      br(),
+      
+      checkboxGroupInput("shapefiles", label = "Select background polygons:",
+                         choices =  c("regions", "protected areas"),
+                         selected = c("regions"))
+      
       
     ),
     
