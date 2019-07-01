@@ -10,6 +10,7 @@ library(leaflet)
 library(lubridate)
 library(dplyr)
 library(rgdal)
+library(rgeos)
 
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
@@ -67,22 +68,28 @@ shinyServer(function(input, output) {
   ## Render map
   output$mymap <- renderLeaflet({
     
-    ## Initialise map with tile
-    m <- leaflet() %>% addProviderTiles("Stamen.Terrain") 
+    ## Initialise map with tile. Set central point of viewing window and initial amount of zoom.
+    m <- leaflet() %>% 
+      addProviderTiles("Stamen.Terrain") %>%
+      setView(c(gCentroid(regions)@coords)[1], c(gCentroid(regions)@coords)[2], zoom = 6)
+    
     
     ## Add selected shapefiles
     if("regions" %in% input$shapefiles){
-      m <- m %>% addPolygons(data=regions,color="black",fillColor = "white",
-                             label=regions$Region_Nam, weight=1, fillOpacity=0.7)}
+      m <- m %>% 
+        addPolygons(data=regions,color="black",fillColor = "white",
+                    label=regions$Region_Nam, weight=1, fillOpacity=0.7)}
     if("protected areas" %in% input$shapefiles){
-      m <- m %>% addPolygons(data=PAs,color="transparent",fillColor = "sienna",
-                             weight=1, fillOpacity=0.6)}
+      m <- m %>% 
+        addPolygons(data=PAs,color="transparent",fillColor = "sienna",
+                    weight=1, fillOpacity=0.6)}
     
     ## Add coloured points and legend
     colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
-    m %>% addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_data_sub()$y,
-                     color = pal()(leaflet_data_sub()[,colourby]),
-                     opacity=1, fillOpacity=1, popup = popupInfo()) %>%
+    m %>% 
+      addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_data_sub()$y,
+                 color = pal()(leaflet_data_sub()[,colourby]),
+                 opacity=1, fillOpacity=1, popup = popupInfo()) %>%
       addLegend(position = "bottomright", title = input$colourby,
                 pal = pal(), values = leaflet_data[,colourby], opacity=1,
                 labFormat = labelFormat(big.mark = "")) 
