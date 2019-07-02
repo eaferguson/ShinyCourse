@@ -22,8 +22,8 @@ shinyServer(function(input, output) {
   # Produce plot
   output$barPlot <- renderPlot({
    ggplot() +
-      geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
-      labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+      geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
+      labs(x=input$xaxis, y="Number of records") +
       theme_classic() +
       theme(axis.text = element_text(size=14),
             axis.title = element_text(size=18),

@@ -23,10 +23,10 @@ shinyServer(function(input, output) {
   # Produce plot
   output$barPlot <- renderPlot({
     ggplot() +
-      geom_bar(data=raw_data, # set the dataset used
-               aes(x=raw_data[[input$xaxis]]), # use the input from the ui to give the column name for the x-axis
-               fill=col_palette[1]) + # use the first colour from the colour palette
-      labs(x=paste0(input$xaxis), y="Number of records") + # Set the axis labels
+      geom_bar(data = raw_data, # set the dataset used
+               aes_string(x = input$xaxis), # use the input from the ui to give the column name for the x-axis
+               fill = col_palette[1]) + # use the first colour from the colour palette
+      labs(x = input$xaxis, y="Number of records") + # Set the axis labels
       theme_classic() + # use a simple theme (no gridlines)
       theme(axis.text = element_text(size=14), # make all plot text bigger (axes, titles, labels)
             axis.title = element_text(size=18),
