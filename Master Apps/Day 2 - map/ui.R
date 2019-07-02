@@ -17,6 +17,8 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 # Tranform dates from characters to date objects
 leaflet_data <- raw_data %>% mutate(date=ymd(date)) 
 
+# Get the unique names of the species for the drop down menu
+all_species <- unique(leaflet_data$species)
 
 
 #------------------------------------------------------------------------------#
@@ -43,8 +45,8 @@ shinyUI(fluidPage(
       
       # Slider for date selection
       sliderInput(inputId = "date", label = "Date:", 
-                  min = min(leaflet_data$date),max =max(leaflet_data$date),
-                  value=c(min(leaflet_data$date),max(leaflet_data$date)),
+                  min = min(leaflet_data$date), max =max(leaflet_data$date),
+                  value=c(min(leaflet_data$date), max(leaflet_data$date)),
                   timeFormat="%b %Y"),
       
       br(),
@@ -57,9 +59,10 @@ shinyUI(fluidPage(
       br(),
       
       # Menu for selecting which species to display
+      
       pickerInput(inputId = "species", label = "Species:",
-                  as.character(sort(unique(leaflet_data$species))), selected=as.character(unique(leaflet_data$species)),
-                  options = list(`actions-box` = TRUE),multiple = T),
+                  sort(all_species), selected= sort(all_species), # Use sort to get names in alphabetical order
+                  options = list(`actions-box` = TRUE), multiple = T),
       
       br(),
       
