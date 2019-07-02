@@ -203,6 +203,45 @@ shinyApp(
 )
 ```
 
+## Creating a barplot
+
+Before we had you create a barplot of cases by sex
+
+
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=sex)) + 
+  theme_classic()
+```
+
+And by species
+
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=species)) + 
+  theme_classic()
+```
+
+What part of the code changes to make those two plots?
+
+## User defined barplot
+
+In Shiny, we can let the users define what to plot. Using the drop down menu provided, they could choose to plot the sex or the specie.
+
+user interface code here
+
+which allows them to select the xaxis.
+
+We can make the plot interactive on the server side by using the users selection as an input in our plot code
+
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes_string(x=input$x_axis)) + 
+  theme_classic()
+```
+
+
+
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
@@ -278,6 +317,9 @@ shinyApp(
 ```
 
 <!----------------------------------------------------------------------------->
+
+
+
 ## Your turn  
 
 Complete section 1.4c of the handout.  
