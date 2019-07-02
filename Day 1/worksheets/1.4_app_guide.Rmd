@@ -1,0 +1,115 @@
+---
+title: "Shiny Workshop: Day 1"
+Date: "1.4. App Guide"
+output:
+  html_document:
+  theme: yeti
+highlight: tango
+
+---
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.blue {color: #4E23B8;}
+hr {border: 2px solid black;}
+a.title:link {color: white; text-decoration: none;}
+a.title:visited {color: white; text-decoration: none;}
+a.title:hover {color: #c9bde9; text-decoration: none;}
+a.title:active {color: white; text-decoration: none;}
+a.main:link {color: #4E23B8; text-decoration: none;}
+a.main:visited {color: #4E23B8; text-decoration: none;}
+a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
+a.main:active {color: #4E23B8; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; }
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; }
+
+<!--- Collapse button --->
+input {display: none; visibility: hidden;}
+label { display: block; padding: 0.5em; text-align: center; border-bottom: 1px solid #CCC; color: #666;}
+label:hover {color: #000;}
+label::before {font-weight: bold; font-size: 15px; content: "+"; vertical-align: text-top; display: inline-block;  width: 20px; height: 20px; margin-right: 3px; background: radial-gradient(ellipse at center, #CCC 50%, transparent 50%);}
+.expand {height: 0px; overflow: hidden; transition: height 0.5s; color: #FFF;}
+section {padding: 0 20px;}
+.toggle:checked ~ .expand {height: 250px;}
+.toggle:checked ~ label::before {content: "-";}
+</style>
+
+```{r, echo=FALSE}
+library(kableExtra)
+```
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4. Shiny App Guide -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3>Shiny App Guide</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4>Pre-built apps</h4>
+Most of the activities in this section will use a pre-built app from the Apps folder, which are all set up in a similar way: <br>
+
+<em> server.R scripts </em>
+<ul>
+<li> The server script contains all reactive processing code used for the app </li>
+<li> The script starts by loading in any required package libraries, data and creating a colour palette to use </li>
+<li> Some scripts may also do some data processing </li>
+<li> The server section is opened with ``shinyServer(function(input, output) {`` </li>
+</ul>
+<em> ui.R scripts </em>
+<ul>
+<li> The ui scripts contains all code that produces the screen that the app user will see </li>
+<li> The script starts by loading in package libraries, data and often some data processing </li>
+<li> The ui section is opened with ``shinyUI(fluidPage(``.  </li>
+<li> The ui uses special functions to format the text, such as ``br()`` which gives a line break or ``h4()`` which sets the font size </li>
+<li> There will then be some code to setup the layout with a side panel and a main panel: we use the side panel to show the widgets, and the main panel for the outputs </li>
+</ul>
+<br>
+
+<h4> Important Notes </h4>
+<ul>
+<li> Each app must be contained in its own folder, because the scripts are named <b>server.R</b> and <b>ui.R</b> - which are not unique! </li>
+<li> Any data you use in an app must be located in the same folder as the server.R and ui.R scripts that use it. We store our data in a sub-folder called "data" to keep the app folder organised. </li>
+</ul>
+<center><img style="width: 50%;" src="figures/folders.jpg"/></center>
+<br>
+
+<h4> Inputs </h4>
+input is used in the <b>ui</b> to sets the options for the user to interact with. <br><br>
+``` {r, echo=FALSE}
+widgets <- data.frame(Name=c("``actionButton()``", "``checkboxInput()``", "``checkboxGroupInput()``",
+"``dateInput()``", "``dateRangeInput()``", "``numericInput()``", "``radioButtons()``",
+"``selectInput()``", "``sliderInput()``", "``textInput()``"),
+Produces=c("a button click input", "a single checkbox",
+"a set of checkboxes where multiple can be selected",
+"a calendar for date selection",
+"a pair of calendars for start and end date selection",
+"a free-text for numbers", "a set of buttons where only 1 can be selected",
+"a dropdown menu", "a slider bar", "a free-text for letters/words"))
+kable_styling(kable(widgets), font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed"))
+```
+<br>
+
+<h4> Outputs </h4>
+render is used in the <b>server</b> to generate the output, and saved to an object as ``output$___``.
+output is used in the <b>ui</b> to display the output to the user. <br><br>
+``` {r, echo=FALSE}
+outputs <- data.frame("render"=c("``renderImage()``", "``renderPlot()``", "``renderPrint()``",
+"``renderTable()``", "``DT::renderDataTable()``", "``renderText()``",
+"``rendeerUI()``"),
+"output"=c("``imageOutput()``", "``plotOutput()``", "``verbatimTextOutput()``",
+"``tableOutput()``", "``dataTableOutput()``", "``textOutput()``",
+"``uiOutput()`` or ``htmlOutput()``"),
+"Produces"=c("an image", "a plot/map", "any printed output formatted as code",
+"a table", "an interactable table", "any character string formatted to match app",
+"any character string formatted with raw HTML code"))
+kable_styling(kable(outputs), font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed"))
+```
+<br>
+
+<h4> More Information </h4>
+For more information on shiny, there is a <em>cheat-sheet</em> available <a class="main"  href="https://shiny.rstudio.com/images/shiny-cheatsheet.pdf" target="_blank">here</a>
+<br><br>

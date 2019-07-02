@@ -42,7 +42,7 @@ margin-bottom: 10px;
 width: 80%;
 font-size: 0.6em;
 }
-.bold {color: #4E23B8;}
+.blue {color: #4E23B8;}
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -71,7 +71,7 @@ $(this).parents('slide').children('div.footnotes').html(newContent);
 <li> 1.1 Getting to know your data </li>
 <li> 1.2 Data subsetting and summarising </li>
 <li> 1.3 Build exploratory plots </li>
-<li> <b class="bold"> 1.4 Build an interactive plot in RShiny </b></li>
+<li> <b class="blue"> 1.4 Build an interactive plot in RShiny </b></li>
 </ul>
 
 <h3><b>Day 2:</b></h3>
@@ -95,13 +95,7 @@ A shiny app is normally built with 2 sections:
 - The <b>ui</b> (user interface) contains code for the part of the app that the user sees.  
 - The <b>server</b> contains code for the processing behind the user interface.
 
-These can be contained in one R script, or multiple R scripts saved in the same folder. 
-
-  - The 2 methods are very similar
-  - Can be easier to separate your code and sections using the 'multiple file' layout.  
-
-**All our examples and practice sections will use seperate <b>server.R</b> and <b>ui.R</b> files.
-
+These can be contained in one R script, or as multiple R scripts saved in the same folder. 
 
 <!----------------------------------------------------------------------------->
 ## Your turn - complete section 1.4a
@@ -109,13 +103,19 @@ These can be contained in one R script, or multiple R scripts saved in the same 
   <center><img src="figures/ui_server_example.PNG" height="490px" /></center>
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4a  
+## Summary - section 1.4a  
+
+  - The 2 methods are very similar
+  - It can be easier to separate your code and sections using the 'multiple file' layout.  
+
+All of our examples and practice sections will use seperate <b>server.R</b> and <b>ui.R</b> files.
 
 <!----------------------------------------------------------------------------->
 ## Inputs  
 
 - To make the app interactive, you need an input that the user can change  
-- Shiny includes a selection of functions for this called <b>widgets</b>:  
+- Shiny includes a selection of functions for this called <b>widgets</b>.
+- These are used in the <b>ui</b> to sets the options for the user to interact with. 
 
 ``` {r, echo=FALSE}
 widgets <- data.frame(Name=c("``actionButton()``", "``checkboxInput()``", "``checkboxGroupInput()``",
@@ -134,8 +134,8 @@ kable_styling(kable(widgets), font_size=16)
 ## Outputs  
 
 - An output is required to show the user the effects of their input  
-- ``render()`` functions are used in the <b>server</b>, saved to an object as ``output$___``  
-- ``output()`` functions are used in the <b>ui</b>
+- ``render()`` is used in the <b>server</b> to generate the output
+- ``output()`` is used in the <b>ui</b> to display the output to the user
 
 ``` {r, echo=FALSE}
 outputs <- data.frame("render"=c("``renderImage()``", "``renderPlot()``", "``renderPrint()``",
@@ -143,7 +143,10 @@ outputs <- data.frame("render"=c("``renderImage()``", "``renderPlot()``", "``ren
                                  "``rendeerUI()``"),
                       "output"=c("``imageOutput()``", "``plotOutput()``", "``verbatimTextOutput()``",
                                  "``tableOutput()``", "``dataTableOutput()``", 
-                                 "``textOutput()``", "``uiOutput()`` or ``htmlOutput()``"))
+                                 "``textOutput()``", "``uiOutput()`` or ``htmlOutput()``"),
+                      "Produces"=c("an image", "a plot/map", "any printed output formatted as code",
+                                   "a table", "an interactable table", "any character string formatted to match app", 
+                                   "any character string formatted with raw HTML code"))
 kable_styling(kable(outputs), font_size=16)
 ```
 
@@ -203,44 +206,117 @@ shinyApp(
 )
 ```
 
-## Creating a barplot
+<!----------------------------------------------------------------------------->
+## 
+<center>
+<h2 class="blue"> What if we want the user to select <br> 
+what data is shown? </h2>
+</center>
 
-Before we had you create a barplot of cases by sex
-
-
-```{r, eval = F, echo = T}
-ggplot() + 
-  geom_bar(data=raw_data, aes(x=sex)) + 
-  theme_classic()
-```
-
-And by species
-
-```{r, eval = F, echo = T}
-ggplot() + 
-  geom_bar(data=raw_data, aes(x=species)) + 
-  theme_classic()
-```
-
-What part of the code changes to make those two plots?
-
+<!----------------------------------------------------------------------------->
 ## User defined barplot
 
-In Shiny, we can let the users define what to plot. Using the drop down menu provided, they could choose to plot the sex or the specie.
-
-user interface code here
-
-which allows them to select the xaxis.
-
-We can make the plot interactive on the server side by using the users selection as an input in our plot code
+Before, we had you create a barplot of cases by sex:
 
 ```{r, eval = F, echo = T}
 ggplot() + 
-  geom_bar(data=raw_data, aes_string(x=input$x_axis)) + 
+  geom_bar(data=raw_data, aes(x=sex, fill=sex)) + 
   theme_classic()
 ```
 
+And by species:
 
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=species, fill=species)) + 
+  theme_classic()
+```
+
+<br>
+<span class="blue">What part of the code changes to make those two plots?<span>
+
+<!----------------------------------------------------------------------------->
+## User defined barplot
+
+In Shiny, we can let the user define what to plot.  
+For example, using the dropdown menu provided, the user could choose to plot the sex or the species on the x-axis.
+<br><br>
+<b>ui</b>
+```{r, echo=TRUE, eval=FALSE}
+selectInput(inputId = "xaxis", 
+            label = h3("Select the x-axis variable:"),
+            choices = list("Sex" = "sex", "Species" = "species"),
+            selected = 1)
+```
+
+<br>
+<b>app</b>
+```{r, echo=FALSE}
+shinyApp(
+  
+  ui = fluidPage(
+    tags$head(
+      tags$style(HTML("
+      #txt {font-size: 26px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+    "))),
+   selectInput("xaxis", label = h3("Select the x-axis variable:"),
+                    choices = list("Sex" = "sex", "Species" = "species"),
+                    selected = 1)
+  ),
+  
+  server = function(input, output) {}
+)
+```
+
+<!----------------------------------------------------------------------------->
+## User defined barplot
+
+The plot is made interactive on the server side by using the users selection as an input in our plot code.
+<br><br>
+<b>server</b>
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes_string(x=input$xaxis, fill=input$xaxis)) + 
+  theme_classic()
+```
+<b>app</b>
+<br>
+```{r, echo=FALSE}
+shinyApp(
+  
+  ui = fluidPage(
+    tags$head(
+      tags$style(HTML("
+      #txt {font-size: 26px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+    "))),
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("xaxis", label = h3("Select the x-axis variable:"),
+                    choices = list("Sex" = "sex", "Species" = "species"),
+                    selected = 1)
+      ),
+      mainPanel(
+        plotOutput("barPlot", height=200)
+      )
+    )
+  ),
+  
+  server = function(input, output) {
+    output$barPlot <- renderPlot({
+      ggplot() +
+        geom_bar(data=raw_data, aes_string(x=input$xaxis, fill=input$xaxis)) +
+        theme_classic() +
+        theme(axis.text = element_text(size=14),
+              axis.title = element_text(size=18),
+              plot.title = element_text(size=20),
+              legend.title = element_text(size=18),
+              legend.text = element_text(size=14))
+    })
+  }
+)
+```
 
 <!----------------------------------------------------------------------------->
 ## Your turn  
@@ -248,12 +324,13 @@ ggplot() +
 Read the <em>App Guide</em> of the handout, then complete section 1.4b.  
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4b {.smaller}
+## Summary - section 1.4b ui code
 
 <b>ui</b>
 ```{r, echo=TRUE, eval=FALSE}
 # SIDE PANEL
-selectInput("xaxis", label = h3("Select the x-axis variable:"),
+selectInput(inputId = "xaxis", 
+            label = h3("Select the x-axis variable:"),
             choices = list("Sex" = "sex", "Species" = "species", "Age" = "age"),
             selected = 1)
 
@@ -261,12 +338,17 @@ selectInput("xaxis", label = h3("Select the x-axis variable:"),
 plotOutput("barPlot", height=700)
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4b server code
+
 <b>server</b>
 ```{r, echo=TRUE, eval=FALSE}
 output$barPlot <- renderPlot({
   ggplot() +
-    geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
-    labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+    geom_bar(data=raw_data, 
+             aes_string(x=input$xaxis), 
+             fill=col_palette[1]) +
+    labs(x=paste0(input$xaxis), y="Number of records") +
     theme_classic() +
     theme(axis.text = element_text(size=14),
           axis.title = element_text(size=18),
@@ -277,7 +359,7 @@ output$barPlot <- renderPlot({
 ```
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4b
+## Summary - section 1.4b app
 
 ```{r, echo=FALSE}
 shinyApp(
@@ -304,7 +386,7 @@ shinyApp(
     output$barPlot <- renderPlot({
       ggplot() +
         geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
-        labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+        labs(x=paste0(input$xaxis), y="Number of records") +
         theme_classic() +
         theme(axis.text = element_text(size=14),
               axis.title = element_text(size=18),
@@ -317,15 +399,12 @@ shinyApp(
 ```
 
 <!----------------------------------------------------------------------------->
-
-
-
 ## Your turn  
 
 Complete section 1.4c of the handout.  
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4c {.smaller}
+## Summary - section 1.4c ui code
 
 <b>ui</b>
 ```{r, echo=TRUE, eval=FALSE}
@@ -340,12 +419,15 @@ verbatimTextOutput("output_values")
 plotOutput("barPlot", height=700)
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4c server code 
+
 <b>server</b>
 ```{r, echo=TRUE, eval=FALSE}
 output$barPlot <- renderPlot({
   ggplot() +
-    geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
-    labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+    geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
+    labs(x=input$xaxis, y="Number of records") +
     theme_classic() +
     theme(axis.text = element_text(size=14),
           axis.title = element_text(size=18),
@@ -353,10 +435,16 @@ output$barPlot <- renderPlot({
           legend.title = element_text(size=18),
           legend.text = element_text(size=14))
 })
+output$output_text <- renderPrint({
+  paste0("You have chosen to show '", input$xaxis, "' on the x-axis.")
+})
+output$output_values <- renderPrint({
+  summary(raw_data[[input$xaxis]])
+})
 ```
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4c
+## Summary - section 1.4c app
 
 ```{r, echo=FALSE}
 shinyApp(
@@ -386,8 +474,8 @@ shinyApp(
   server = function(input, output) {
     output$barPlot <- renderPlot({
       ggplot() +
-        geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
-        labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+        geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
+        labs(x=input$xaxis, y="Number of records") +
         theme_classic() +
         theme(axis.text = element_text(size=14),
               axis.title = element_text(size=18),
@@ -410,52 +498,63 @@ shinyApp(
 
 - All code within the server must be contained within a **reactive** element, otherwise the app will fail to run.  
 
-- The previous examples take the user input and either output it directly or carry out minor processing inside the ``render()`` functions.  
+- The previous examples take the user input and output it using a ``render()`` function, which are **reactive**.  
 
-- If we want to subset the data based on user input that can be available to *multiple outputs*, we need to use additional **reactive** functions...
+```{r echo=TRUE, eval=FALSE}
+output$output_text <- renderPrint({
+    paste0("You have chosen to show '", input$xaxis, "' on the x-axis.")
+    })
+```
+
+- If we want to process the data based on user input (e.g. filter, select, summarise), we need wrap the code within a **reactive function**.  
+  
+- ``reactive()``
+- ``eventReactive()``
+- ``reactiveValues()``
+
+<!----------------------------------------------------------------------------->
+## 
+<center>
+<h2 class="blue"> What if we want the user to subset the data? </h2>
+</center>
 
 <!----------------------------------------------------------------------------->
 ## The ``reactive()`` function
 
-- The ``reactive()`` function is used to carry out data processing in response to a user input, with the output saved as an object  
+- The ``reactive()`` function is used to carry out data processing in response to one or more user inputs, with the output saved as an object  
 
-- Objects created in the function should be done with an ``=``, NOT ``<-``  
+- Objects created in the function should be done with an ``=`` NOT ``<-``  
 
 - The last line of the function should be the object you would like to be saved overall (e.g. a data subset)  
 
-- The final object must be referenced within a ``render()`` function followed by a set of brackets in order to be used  
+- When <b>any</b> input is changed, the output will update
 
 <!----------------------------------------------------------------------------->
-## The ``reactive()`` function {.smaller}
+## An example with the ``reactive()`` function
 
 <b>ui</b>
 ```{r, echo=TRUE, eval=FALSE}
-radioButtons(inputId = "radio", label = "Choose a number:", selected = 1, 
-             choices = list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3)), 
-
-verbatimTextOutput("chosen_letter")
+radioButtons(inputId = "select_species", label = "Select a Species:",  
+             choices = sort(unique(raw_data$species))),
+tableOutput("chosen_species_info")
 ```
 
 <b>server</b>
 ```{r, echo=TRUE, eval=FALSE}
-n_to_l <- reactive({
-  if(input$radio == 1){
-    n_letter = "a"
-  } else if(input$radio == 2){
-    n_letter = "b"
-  } else if(input$radio == 3){
-    n_letter = "c"
-  }
-  n_letter
+data_sub <- reactive({
+  data_subset = raw_data %>%
+    filter(species == input$select_species)
+  data_subset = head(data_subset)
+  data_subset
 })
 
-output$chosen_letter <- renderPrint({
-  n_to_l()
+output$chosen_species_info <- renderTable({
+  data_sub()
 })
 ```
 
 <!----------------------------------------------------------------------------->
-## The ``reactive()`` function
+## An example with the ``reactive()`` function
 
 ```{r, echo=FALSE}
 shinyApp(
@@ -468,30 +567,25 @@ shinyApp(
     "))),
     
     HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
-    radioButtons(inputId = "radio", label = "Choose a number:",
-                 choices = list("Choice 1"=1, "Choice 2"=2, "Choice 3"=3), 
-                 selected = 1), 
-    
+    radioButtons(inputId = "select_species", label = "Select a Species:",  
+             choices = sort(unique(raw_data$species))), 
+
     br(),
     
-    HTML("<div id='txt'>Input: <b>textOutput()</b></div>"),
-    verbatimTextOutput("chosen_letter")
+    HTML("<div id='txt'>Input: <b>tableOutput()</b></div>"),
+    tableOutput("chosen_species_info")
   ),
   
   server = function(input, output) {
-    n_to_l <- reactive({
-      if(input$radio == 1){
-        n_letter = "a"
-      } else if(input$radio == 2){
-        n_letter = "b"
-      } else if(input$radio == 3){
-        n_letter = "c"
-      }
-      n_letter
+    data_sub <- reactive({
+      data_subset = raw_data %>%
+        filter(species == input$select_species)
+      data_subset = head(data_subset)
+      data_subset
     })
     
-    output$chosen_letter <- renderPrint({
-      n_to_l()
+    output$chosen_species_info <- renderTable({
+      data_sub()
     })
   },
   
@@ -511,7 +605,7 @@ Complete section 1.4d of the handout.
 </div>
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4d  
+## Summary - section 1.4d  
 
 
 <!----------------------------------------------------------------------------->
@@ -526,7 +620,7 @@ Complete section 1.4e of the handout.
 </div>
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4e  
+## Summary - section 1.4e  
 
 <!----------------------------------------------------------------------------->
 ## Your turn  
@@ -540,10 +634,115 @@ Complete section 1.4f of the handout.
 </div>
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4f    
+## Summary - section 1.4f    
 
 <!----------------------------------------------------------------------------->
-## The ``reactiveValues()`` function
+## 
+<center>
+<h2 class="blue"> What if we want to delay the app changes? </h2>
+</center>
+
+<!----------------------------------------------------------------------------->
+## The ``eventReactive()`` function
+
+- The ``eventReactive`` function is very similar to the ``reactive()`` function - it is used to carry out data processing.
+
+- The difference is that it is triggered by a specific user input
+
+- The input can be set as any of the widgets in your app, but the it works well with ``actionButton()``
+
+
+- The ``reactive()`` function is used to carry out data processing in response to one or more user inputs, with the output saved as an object  
+
+- Objects created in the function should be done with an ``=`` NOT ``<-``  
+
+- The last line of the function should be the object you would like to be saved overall (e.g. a data subset)  
+
+- When <b>any</b> input is changed, the plot will update
+<!----------------------------------------------------------------------------->
+## An example with the ``eventReactive()`` function
+
+<b>ui</b>
+```{r, echo=TRUE, eval=FALSE}
+radioButtons(inputId = "select_species", label = "Select a Species:",  
+             choices = sort(unique(raw_data$species)))
+actionButton(inputId="go_button", label="Click to generate the plot:")
+plotOutput("chosen_species")
+```
+
+<b>server</b>
+```{r, echo=TRUE, eval=FALSE}
+data_subset <- eventReactive(input$go_button, {
+      data_sub = raw_data %>%
+        filter(species == input$select_species)
+      data_sub
+    })
+
+output$chosen_species <- renderPlot({
+      ggplot() + 
+        geom_bar(data=data_subset(), aes(x=age)) + 
+        ggtitle(unique(data_subset()$species)) + 
+        theme_classic()
+    })
+```
+
+<!----------------------------------------------------------------------------->
+## An example with the ``eventReactive()`` function
+
+```{r, echo=FALSE}
+shinyApp(
+  
+  ui = fluidPage(
+    tags$head(
+      tags$style(HTML("
+      #txt {font-size: 18px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 18px; font-weight: normal;}
+    "))),
+    
+    sidebarLayout(
+      sidebarPanel(
+        HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
+        radioButtons(inputId = "select_species", label = "Select a Species:",  
+                     choices = sort(unique(raw_data$species))),
+        br(),
+        HTML("<div id='txt'>Input: <b>actionButton()</b></div>"),
+        actionButton(inputId="go_button", label="Click to generate the plot:")
+      ), 
+      mainPanel(
+        plotOutput("chosen_species")
+      )
+    )
+    ),
+    
+  server = function(input, output) {
+    
+     data_subset <- eventReactive(input$go_button, {
+      data_sub = raw_data %>%
+        filter(species == input$select_species)
+      data_sub
+    })
+    
+    output$chosen_species <- renderPlot({
+      ggplot() + 
+        geom_bar(data=data_subset(), aes(x=age)) + 
+        ggtitle(unique(data_subset()$species)) + 
+        theme_classic()
+    })
+  },
+  
+  options = list(height = 500)
+)
+```
+
+<!----------------------------------------------------------------------------->
+## 
+<center>
+<h2 class="blue"> What if we want to delay the app changes, <br>
+but show a base dataset? </h2>
+</center>
+
+<!----------------------------------------------------------------------------->
+## What if we want to show a base dataset?
 
 - ``reactiveValues`` produce an object that acts like a list: you can store multiple values or objects to <em>slots</em>, that are referenced with the ``$`` symbol.  
 - The created ``reactiveValues`` object can be created with values, or values can be added after creation:  
@@ -557,12 +756,6 @@ rv$z <- data.frame(n = c(1, 2, 3), t = c("a", "b", "c"))
 
 - These stored values are updated by reactive functions.  
 - This is helpful to display a default dataset that the user can update, particularly if you want a process to be triggered by a specific user event...
-
-<!----------------------------------------------------------------------------->
-## The ``observeEvent()`` function
-
-- ``observeEvent`` watches for a specific user input, then runs a section of code  
-- The input can be any of the widgets in your app, but works well with ``actionButton()``
 
 <!----------------------------------------------------------------------------->
 ##  ``reactiveValues()`` & ``observeEvent()`` functions working together
@@ -640,5 +833,14 @@ Complete section 1.4g of the handout.
 
 <!----------------------------------------------------------------------------->
 ## Your turn - Results section 1.4g    
+
+<!----------------------------------------------------------------------------->
+##  Summary
+
+- Processing data: reactive()
+
+- Delay processing: observeEvent()
+
+- Display a base dataset: reactiveValues()
 
 
