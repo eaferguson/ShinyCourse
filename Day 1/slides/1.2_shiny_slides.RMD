@@ -226,7 +226,7 @@ plotOutput("barPlot", height=700)
 ```{r, echo=TRUE, eval=FALSE}
 output$barPlot <- renderPlot({
   ggplot() +
-    geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
+    geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
     labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
     theme_classic() +
     theme(axis.text = element_text(size=14),
@@ -264,7 +264,7 @@ shinyApp(
   server = function(input, output) {
     output$barPlot <- renderPlot({
       ggplot() +
-        geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
+        geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
         labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
         theme_classic() +
         theme(axis.text = element_text(size=14),
