@@ -74,10 +74,10 @@ install.packages("dplyr")
 # Load in libraries
 library(dplyr)
 
-# If you are want to read the information for a function, type 1 question mark in front of the function name:
+# If you want to read the information for a function, type 1 question mark in front of the function name:
 ?read.csv
 
-# If you are want to know which package a function belongs to, type 2 question marks in front of the function name:
+# If you want to know which package a function belongs to, type 2 question marks in front of the function name:
 ??read.csv
 
 # Load in data
@@ -88,7 +88,6 @@ raw_data <- read.csv("data/raw_data.csv")
 <h4> We have several tools to get to know the data </h4>
 
 <ul>
-<li> Highlight use of View(), summary(), head(), tail() </li>
 <li> ``View()``: allows us to view the dataframe as a spreadsheet. </li>
 <li> ``names()``: give us the names of the columns in our data frame </li>
 <li> ``dim()``: tells us the dimensions of our dataframes.  </li>
@@ -100,7 +99,7 @@ raw_data <- read.csv("data/raw_data.csv")
 <li> ``?`` and ``??`` opens the helpfile for a function. </li>
 </ul>
 
-<p class="question">Try out the following commands to get to know the data?:</p>
+<p class="question">Try out the following commands to get to know the data:</p>
 ``` {r, eval=FALSE}
 # How many entries does the data frame have?
 View(raw_data)
@@ -115,7 +114,6 @@ dim(raw_data)
 summary(raw_data)
 
 # In which region did the 1st case occur?
-
 head(raw_data)
 
 # In which region did the last case occur?
@@ -158,10 +156,10 @@ Subsetting is commonly used in R to select data that you would like to use. The 
 
 <p class="question">Compare the results of using the function normally vs. with the pipe operator:</p>
 ```{r, eval=FALSE}
-select(raw_data, Age, Region)
+select(raw_data, age, region)
 
 raw_data %>% 
-  select(Age, Region)
+  select(age, region)
 ```
 
 The `` filter `` function can be used to select rows based on their values.
@@ -207,10 +205,10 @@ Sometimes, you may want to work with summaries of your data. The `` summarise ``
 <p class="question">What do each of the following filters summarise?</p>
 ```{r, eval=FALSE}
 raw_data %>% 
-  summarise(n_males = length(which(Sex=="M")))
+  summarise(n_males = length(which(sex=="M")))
 
 raw_data %>% 
-  summarise(total_age = sum(Age))
+  summarise(total_age = sum(age))
 ```
 
 As mentioned earlier, dplyr functions can be stacked using the `` %>% `` (pipe) operator. For example, the `` summarise `` function can be combined with `` group_by `` to summarise variables by one or more columns.  
@@ -218,11 +216,11 @@ As mentioned earlier, dplyr functions can be stacked using the `` %>% `` (pipe) 
 <p class="question">How are these two tables different?</p>
 ```{r, eval=FALSE}
 raw_data %>% 
-  group_by(Sex) %>% 
+  group_by(sex) %>% 
   summarise(n_records = length(sex))
 
 raw_data %>% 
-  group_by(Region, Sex) %>% 
+  group_by(region, sex) %>% 
   summarise(total_age = sum(age))
 ```
 
@@ -305,27 +303,6 @@ ggplot() +
 
 ```
 
-<h4> Map in Leaflet </h4>
-```{r}
-# Create a new column specifying domestic vs. wildlife vs. human
-raw_data$species_type[which(raw_data$species=="dog" | raw_data$species=="cat")] <- "Domestic"
-raw_data$species_type[which(raw_data$species=="jackal" | raw_data$species=="lion")] <- "Wildlife"
-raw_data$species_type[which(raw_data$species=="human")] <- "Human"
-
-# Use only one year
-leaflet_data <- raw_data %>% 
-  mutate(year = substr(date, 1,4)) %>% 
-  filter(year == 2014)
-
-# Setup point colours using the colorFactor() function
-leaflet_pal <- colorFactor(palette=col_palette[1:3], domain = unique(leaflet_data$species_type))
-
-# Plot
-leaflet() %>%
-  addPolygons(data=region_shp, weight=1, color="black", fillColor = "white", fillOpacity=1) %>%
-  addCircleMarkers(data=leaflet_data, lng=~x, lat=~y, color=~leaflet_pal(species_type),
-                   radius=3, opacity = 1, fillOpacity=1, label=~species)
-```
 
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4. Introducing rShiny -->
