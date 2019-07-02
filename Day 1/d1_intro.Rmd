@@ -253,72 +253,114 @@ raw_data %>%
 </div> <!--- End grid -->
 
 
-<ul>
-<li>Introduce a few basic plots</li>
-</ul>
-<br>
-
 ``` {r, eval=FALSE}
 library(ggplot2)
-library(lubridate)
-library(leaflet)
 
 ```
 
 <h4> Basic barplot in ggplot2 </h4>
-``` {r}
+
+The basic structure:  
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;geom_bar(data=raw_data, aes(x=sex))
+
+<h4> Step 1 - choosing a plot type </h4>
+
+First we need to specify a plot type
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(data=raw_data, aes(x=sex))
+
+  - ggplot has several plot types:
+    - <b style="color:red;">geom_bar</b>: **barplot**
+    - <b style="color:red;">geom_hist</b>: **histogram**
+    - <b style="color:red;">geom_point</b>: **scatterplot/points**
+    - <b style="color:red;">geom_line</b>: **line plot**
+
+<h4> Step 2 supplying the data </h4>
+
+Second we need to supply our data
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, aes(x=sex))
+
+
+The data can also be specified here:
+
+ggplot(<b style="color:blue;">data=raw_data</b>) + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(aes(x=sex))
+
+
+<h4> Step 3 - specifying the variables in aesthetics </h4>
+
+
+Third, we specify the variables we want to plot using aesthetics, or aes().
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, <b style="color:green;">aes(x=sex)</b>)
+
+  
+Different plots take different arguments in aes()
+
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_point</b> takes <b style="color:green;">aes(x=sex, y = age)</b>
+
+<h4> An example barplot </h4>
+
+```{r, echo = T, out.width = "100%"}
 ggplot() + 
-  geom_bar(data=raw_data, aes(x=sex), fill=col_palette[1]) + 
+  geom_bar(data=raw_data, aes(x=sex))
+```
+
+<h4> Introducing ggplot - aesthetics </h4>
+
+Change the colour in aesthetics
+
+```{r, echo = T, eval = F, out.width = "80%"}
+ggplot() +  
+  geom_bar(data=raw_data, aes(x=sex, fill = "red"))  
+```
+
+<h4> Introducing ggplot - aesthetics </h4>
+
+Change the colour in aesthetics by variable
+
+```{r, echo = T, eval = F, out.width = "80%"}
+ggplot() +
+  geom_bar(data=raw_data, aes(x=sex, fill = sex))
+``` 
+
+<h4> Additional features </h4>
+
+Adding **labels**, **titles**, and **themes**
+
+```{r, eval = F, echo = T, out.width = "80%"}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=sex, fill=sex))+ 
+  xlab("Sex") + # Label for the X axis
+  ylab("Cases") + # Label for the Y axis
+  ggtitle("Disease cases by Sex") + #Title
+  theme_classic() # Plot theme for background etc.
+``` 
+
+<h4> 1.3.1 Create a barplot of species </h4>
+
+Create a barplot of species and colour by species. 
+
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
   theme_classic()
 ```
 
-<h4> More complicated barplot (time series) in ggplot2 </h4>
-```{r}
-# Set start and end dates for time series
-raw_data$date <- as.Date(raw_data$date)
-ts_start <- as.Date(paste0(substr(min(raw_data$date),1,7), "-01"))
-ts_end <- ceiling_date(max(raw_data$date),'month')
-ts_breaks <- seq(ts_start, ts_end, by="month")
+<h4> 1.3.2 Add a title and some labels to the barplot of species </h4>
 
-# Subset data
-male_data <- raw_data %>% filter(sex=="M")
-female_data <- raw_data %>% filter(sex=="F")
-
-# Use histogram function to summarise numbers for each month
-ts_male <- hist(male_data$date, plot=FALSE, breaks=ts_breaks)
-ts_female <- hist(female_data$date, plot=FALSE, breaks=ts_breaks)
-
-# Create a data frame containing the time series data
-ts_data <- data.frame(date = rep(ts_breaks[1:length(ts_breaks)-1], 2),
-                      sex = c(rep("Male", length(ts_male$counts)), 
-                              rep("Female", length(ts_female$counts))),
-                      n = c(ts_male$counts, ts_female$counts))
-
-# Plot
+```{r, eval = F, echo = T}
 ggplot() + 
-  geom_col(data=ts_data, aes(x=date, y=n, fill=sex)) + 
-  labs(x="Date", y="Number") + 
-  scale_fill_manual(name="Gender", values=col_palette[1:2]) + 
+  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
+  _________ +
+  _________ +
+  _________ +
   theme_classic()
-
 ```
-
-
-<!--- ---------------------------------------------------------------------- -->
-<!--- 1.4. Introducing rShiny -->
-
-<div class="row"> <!--- Setup grid for layout -->
-<div class="col-md-12"> <!--- Begin column set -->
-<div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="1.4">1.4 &nbsp; Introducing rShiny</h3>
-</div> <!--- End panel -->
-</div> <!--- End column set -->
-</div> <!--- End grid -->
-
-<ul>
-<li>Provide template for simple layout</li>
-<li>Use exploratory plots</li>
-<li>Introduce reactive elements/inputs/widgets</li>
-<li>Single pane app with no tabs</li>
-</ul>
-<br>
