@@ -1,0 +1,66 @@
+---
+title: "Package Test Script"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+---
+
+<hr style="border-color: black; border-width: 2px;">
+<br>
+<h4> Name: `r your_name` </h4>
+<h4> Email Address: `r your_email_address` </h4><br>
+
+<hr style="border-color: black; border-width: 2px;">
+
+<h3>Check packages are loaded:</h3>
+
+```{r, echo=FALSE, results='asis'}
+packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
+              "lubridate", "dplyr", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
+              "rgeos", "magrittr", "mapview", "ggplot2",
+              "htmltools")
+for(i in packages){
+  lapply(i, require, character.only = TRUE)
+  pr = Xmisc::is.package.loaded(i, character.only = TRUE)
+  if(pr==FALSE){
+    pr = htmltools::HTML(paste0("<span style='color:red;'>", pr, "</span><br>"))
+  } else {
+    pr = htmltools::HTML(paste0("<span style='color:black;'>", pr, "</span><br>"))
+  }
+  cat(paste0(i, ": ", pr))
+}
+```
+
+<hr style="border-color: black; border-width: 2px;">
+
+<h3> Additional checks: </h3>
+
+<li><b>ggplot2</b> barplot subsetted with <b>dplyr</b> from 2000 onwards (normally 1975), coloured red, blue & green by storm type with <b>RColorBrewer</b>.</li><br>
+```{r echo=FALSE, fig.width=12, fig.height=5}
+data("storms")
+
+# Get colour palette
+pal <- brewer.pal(name="Set1", n=3)
+
+storms_sub <- storms %>% filter(year>=2000)
+ggplot() + 
+  geom_bar(data=storms_sub, aes(x=year, fill=status)) + 
+  scale_fill_manual(values=pal) + 
+  theme_classic()
+```
+
+<br><br><br>
+<li><b>leaflet</b> map with points coloured white-red with <b>RColorBrewer</b> and labelled with <b>htmltools</b>.</li><br>
+```{r echo=FALSE, fig.width=10, fig.height=5, message=FALSE, warning=FALSE}
+storms$category <- factor(storms$category)
+
+disc_pal <- brewer.pal(name="Reds", n=7)
+map_labels <- lapply(seq(nrow(storms)), function(i) {
+    paste0( '<p>', "Sent in by: ", '<b>', storms[i, "name"], '</b>')})
+
+leaflet() %>% 
+  addProviderTiles("Stamen.Terrain") %>%
+  addCircleMarkers(data=storms, radius=2, color = ~disc_pal, fillOpacity=1, 
+                   label=lapply(map_labels, HTML), stroke=FALSE)
+```
+
+
+
