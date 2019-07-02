@@ -19,7 +19,9 @@
 # UPDATE R VERSION
 
 # Set vector of packages to be installed
-packages <- c("shiny", "leaflet", "RColorBrewer", "lubridate", "dplyr", "rgdal", "raster", "rmarkdown")
+packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
+              "lubridate", "dplyr", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
+              "rgeos", "magrittr", "mapview")
 
 # Install packages
 install.packages(pkgs=packages, dependencies="Depends", quiet=TRUE)
