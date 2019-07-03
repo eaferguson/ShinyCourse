@@ -27,13 +27,13 @@ your_email_address = "rachel.steenson@glasgow.ac.uk"
 # UPDATE R VERSION
 
 # Set vector of packages to be installed
-packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
+packages <- c("htmltools", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
               "lubridate", "dplyr", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
               "rgeos", "magrittr", "mapview", "ggplot2",
-              "Xmisc", "htmltools")
+              "Xmisc")
 
 # Install packages
 install.packages(pkgs=packages, dependencies="Depends", quiet=TRUE)
 
 # RENDER ASSOCIATED RMARKDOWN FILE
-rmarkdown::render("starterScript/starterScript_report.Rmd")
+rmarkdown::render("starterScript_report.Rmd")

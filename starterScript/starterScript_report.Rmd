@@ -1,6 +1,8 @@
 ---
 title: "Package Test Script"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
+output: html_document
+runtime: shiny
 ---
 
 <hr style="border-color: black; border-width: 2px;">
@@ -13,10 +15,9 @@ date: "`r format(Sys.Date(), '%d %B %Y')`"
 <h3>Check packages are loaded:</h3>
 
 ```{r, echo=FALSE, results='asis'}
-packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
+packages <- c("htmltools", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
               "lubridate", "dplyr", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
-              "rgeos", "magrittr", "mapview", "ggplot2",
-              "htmltools")
+              "rgeos", "magrittr", "mapview", "ggplot2")
 for(i in packages){
   lapply(i, require, character.only = TRUE)
   pr = Xmisc::is.package.loaded(i, character.only = TRUE)
@@ -47,20 +48,45 @@ ggplot() +
   theme_classic()
 ```
 
-<br><br><br>
-<li><b>leaflet</b> map with points coloured white-red with <b>RColorBrewer</b> and labelled with <b>htmltools</b>.</li><br>
+<br>
+<li><b>leaflet</b> map with points coloured white > red with <b>RColorBrewer</b> and labelled with <b>htmltools</b>, with Scotland polygon coloured orange, loaded and transformed using <b>rgdal</b>.</li><br>
 ```{r echo=FALSE, fig.width=10, fig.height=5, message=FALSE, warning=FALSE}
+# Download cities shapefile
+dsn <- system.file("vectors", package = "rgdal")[1]
+scot <- readOGR(dsn=dsn, layer="scot_BNG", verbose=FALSE)
+scot <- spTransform(scot, CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+
+# Set category as factor
 storms$category <- factor(storms$category)
 
+# etup colour palette
 disc_pal <- brewer.pal(name="Reds", n=7)
+
+# Create labels
 map_labels <- lapply(seq(nrow(storms)), function(i) {
     paste0( '<p>', "Sent in by: ", '<b>', storms[i, "name"], '</b>')})
 
+# Create plot
 leaflet() %>% 
   addProviderTiles("Stamen.Terrain") %>%
+  addPolygons(data=scot, fill="yellow", color="orange", weight=1) %>%
   addCircleMarkers(data=storms, radius=2, color = ~disc_pal, fillOpacity=1, 
                    label=lapply(map_labels, HTML), stroke=FALSE)
 ```
 
+<br>
+<li><b>kableExtra</b> formatted table ordered by date column, created using <b>lubridate</b>.</li><br>
+```{r echo=FALSE, fig.width=10, fig.height=5, message=FALSE, warning=FALSE}
+storms$date <- paste0(storms$day,"/", storms$month, "/", storms$year)
+storms$date <- dmy(storms$date)
 
+storms_summary <- storms %>%
+  group_by(date, status, category) %>%
+  summarise(n=length(date))
+kable(storms_summary) %>%
+  kable_styling(bootstrap_options = "condensed") %>%
+  scroll_box(width = "100%", height = "400px")
+```
+
+<br><br><br>
 
