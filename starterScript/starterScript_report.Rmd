@@ -2,7 +2,6 @@
 title: "Package Test Script"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
 output: html_document
-runtime: shiny
 ---
 
 <hr style="border-color: black; border-width: 2px;">
