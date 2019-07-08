@@ -13,11 +13,20 @@ output: html_document
 
 <h3>Check packages are loaded:</h3>
 
-```{r, echo=FALSE, results='asis'}
-packages <- c("htmltools", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
-              "lubridate", "dplyr", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
-              "rgeos", "magrittr", "mapview", "ggplot2")
-for(i in packages){
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+# Define a function to test if a padckage is installed
+is.installed <- function(mypkg){
+  is.element(mypkg, installed.packages()[,1])
+}
+
+# Set vector of package names
+list.of.packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "dplyr", 
+                      "ggplot2", "RColorBrewer", "kableExtra",  "rgdal", "raster", "htmltools",
+                      "rmarkdown", "png",  "rgeos", "magrittr", "mapview", "knitr",
+                      "lubridate", "Xmisc", "pillar", "vctrs", "sf") 
+
+# Print if package will load in correctly
+for(i in list.of.packages){
   lapply(i, require, character.only = TRUE)
   pr = Xmisc::is.package.loaded(i, character.only = TRUE)
   if(pr==FALSE){
@@ -27,64 +36,130 @@ for(i in packages){
   }
   cat(paste0(i, ": ", pr))
 }
+
+# Download dataset
+data("iris")
+
+# Add extra columns for date setup and long/lat
+iris$year <- as.numeric(sample(x=1990:2015, size=nrow(iris), replace=TRUE))
+iris$month <- as.numeric(sample(x=1:12, size=nrow(iris), replace=TRUE))
+iris$day <- as.numeric(sample(x=1:28, size=nrow(iris), replace=TRUE))
+iris$long <- sample(x=50:100, size=nrow(iris), replace=TRUE)
+iris$lat <- sample(x=25:50, size=nrow(iris), replace=TRUE)
 ```
 
 <hr style="border-color: black; border-width: 2px;">
 
 <h3> Additional checks: </h3>
 
-<li><b>ggplot2</b> barplot subsetted with <b>dplyr</b> from 2000 onwards (normally 1975), coloured red, blue & green by storm type with <b>RColorBrewer</b>.</li><br>
+<b>ggplot2</b> barplot subsetted with <b>dplyr</b> from 2000 onwards, coloured red, blue & green by species with <b>RColorBrewer</b>.
+<li>If If data is shown from 1990 to 2015, <b>dplyr</b> is missing.</li>
+<li>If bars are plotted in grey, <b>rColorBrewer</b> is missing.</li>
+<li>Check plot title for ggplot2/base R</li><br>
 ```{r echo=FALSE, fig.width=12, fig.height=5}
-data("storms")
+# Get colour palette from RColorBrewer, else set greyscale palette
+if(Xmisc::is.package.loaded("RColorBrewer")){
+  pal <- brewer.pal(name="Set1", n=3)
+} else {
+  pal <- c("darkgrey", "dimgrey", "grey")
+}
 
-# Get colour palette
-pal <- brewer.pal(name="Set1", n=3)
+# Subset data with dplyr, else use whole dataset
+if(Xmisc::is.package.loaded("dplyr")){
+  iris_sub <- iris %>% filter(year>=2000)
+} else {
+  iris_sub <- iris 
+}
 
-storms_sub <- storms %>% filter(year>=2000)
-ggplot() + 
-  geom_bar(data=storms_sub, aes(x=year, fill=status)) + 
-  scale_fill_manual(values=pal) + 
-  theme_classic()
+# Create plot with ggplot, else us base R
+if(Xmisc::is.package.loaded("ggplot2")){
+  ggplot() +
+    geom_bar(data=iris_sub, aes(x=year, fill=Species)) +
+    scale_fill_manual(values=pal) +
+    theme_classic() + 
+    ggtitle("Created with ggplot2")
+} else {
+  brks = seq(min(iris_sub$year), max(iris_sub$year), by=1)
+  hist(iris_sub$year, main="Created with base R", breaks=brks, xlab="year", ylab="count", col=pal[1])
+  hist(iris_sub$year[which(iris_sub$Species!="setosa")], breaks=brks, col=pal[2], add=TRUE)
+  hist(iris_sub$year[which(iris_sub$Species=="virginica")], breaks=brks, col=pal[3], add=TRUE)
+}
+
 ```
 
 <br>
-<li><b>leaflet</b> map with points coloured white > red with <b>RColorBrewer</b> and labelled with <b>htmltools</b>, with Scotland polygon coloured orange, loaded and transformed using <b>rgdal</b>.</li><br>
+<b>leaflet</b> map with points coloured red and labelled with <b>htmltools</b>, with Scotland polygon coloured orange, loaded and transformed using <b>rgdal</b>.
+<li>If data is plotted as a scatter plot, <b>leaflet</b> is missing. </li>
+<li>If no polygons appear over Scotland, <b>rgdal</b> is missing. </li>
+<li>If no labels appear, <htmltools</li> is missing. </li>
+
 ```{r echo=FALSE, fig.width=10, fig.height=5, message=FALSE, warning=FALSE}
 # Download cities shapefile
-dsn <- system.file("vectors", package = "rgdal")[1]
-scot <- readOGR(dsn=dsn, layer="scot_BNG", verbose=FALSE)
-scot <- spTransform(scot, CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+if(Xmisc::is.package.loaded("rgdal")){
+  dsn <- system.file("vectors", package = "rgdal")[1]
+  scot <- readOGR(dsn=dsn, layer="scot_BNG", verbose=FALSE)
+  scot <- spTransform(scot, CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+}
+
+if(Xmisc::is.package.loaded("htmltools")){
+map_labels <- lapply(seq(nrow(iris)), function(i) {
+    paste0( '<p>', "Sepal Length (mm): ", '<b>', iris[i, "Sepal.Length"], '</b>')})
+}
 
 # Set category as factor
-storms$category <- factor(storms$category)
-
-# etup colour palette
-disc_pal <- brewer.pal(name="Reds", n=7)
-
-# Create labels
-map_labels <- lapply(seq(nrow(storms)), function(i) {
-    paste0( '<p>', "Sent in by: ", '<b>', storms[i, "name"], '</b>')})
+iris$Species <- factor(iris$Species)
 
 # Create plot
-leaflet() %>% 
-  addProviderTiles("Stamen.Terrain") %>%
-  addPolygons(data=scot, fill="yellow", color="orange", weight=1) %>%
-  addCircleMarkers(data=storms, radius=2, color = ~disc_pal, fillOpacity=1, 
-                   label=lapply(map_labels, HTML), stroke=FALSE)
+if(Xmisc::is.package.loaded("leaflet")){
+  map <- leaflet() %>%
+  addProviderTiles("Stamen.Terrain") 
+  
+  if(Xmisc::is.package.loaded("htmltools")){
+  map <- map %>%
+    addCircleMarkers(data=iris, radius=4, color = "red", fillOpacity=1, stroke=FALSE,
+                   label=lapply(map_labels, HTML))
+  } else {
+    map <- map %>%
+    addCircleMarkers(data=iris, radius=4, color = "red", fillOpacity=1, stroke=FALSE)
+  }
+  
+    if(Xmisc::is.package.loaded("rgdal")){
+    map <- map %>%
+      addPolygons(data=scot, fill="yellow", color="orange", weight=1, fillOpacity=1)
+    }
+  map
+} else {
+  plot(iris$long, iris$lat, col="red", pch=19)
+}
+
 ```
 
 <br>
-<li><b>kableExtra</b> formatted table ordered by date column, created using <b>lubridate</b>.</li><br>
+<b>kableExtra</b> formatted table ordered by date column, created using <b>lubridate</b>.
+<li>If table is not contained in a scroll box, <b>kableExtra</b> is missing. </li>
+<li>If table is not ordered by date is in the format yyyy-mm-dd, <b>lubridate</b> is missing. </li><br>
 ```{r echo=FALSE, fig.width=10, fig.height=5, message=FALSE, warning=FALSE}
-storms$date <- paste0(storms$day,"/", storms$month, "/", storms$year)
-storms$date <- dmy(storms$date)
+# Create date column, formatted as character
+iris$date <- paste0(iris$day,"/", iris$month, "/", iris$year)
 
-storms_summary <- storms %>%
-  group_by(date, status, category) %>%
-  summarise(n=length(date))
-kable(storms_summary) %>%
-  kable_styling(bootstrap_options = "condensed") %>%
+# Transform to date object
+if(Xmisc::is.package.loaded("lubridate")){
+  iris$date <- dmy(iris$date)
+}
+
+# Subset data
+iris_subset <- iris[c("date", "Species", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")]
+
+# Order by date
+iris_subset <- iris_subset[order(iris_subset$date),]
+
+# Create table
+tbl <- knitr::kable(iris_subset, row.names=FALSE) 
+if(Xmisc::is.package.loaded("kableExtra")){
+  tbl <- kable_styling(kable_input=tbl, bootstrap_options = "condensed") %>%
   scroll_box(width = "100%", height = "400px")
+}
+tbl
 ```
 
 <br><br><br>
