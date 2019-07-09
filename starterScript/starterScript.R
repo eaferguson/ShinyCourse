@@ -5,6 +5,7 @@
 # lines of code in each section of this script.
 
 # Please set your working directory to where you have stored these files.
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 #------------------------------------------------------------------------------#
 # Step 1: TELL US YOUR NAME AND EMAIL ADDRESS
