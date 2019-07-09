@@ -4,7 +4,8 @@
 # on XXXX in Bagamoyo. Please read the instructions carefully, and run the
 # lines of code in each section of this script.
 
-# Please set your working directory to where you have stored these files.
+# Please run this line to set your working directory to where you have stored
+# these files.
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 #------------------------------------------------------------------------------#
@@ -18,10 +19,11 @@ your_email_address = "rachel.steenson@glasgow.ac.uk"
 #------------------------------------------------------------------------------#
 # Step 2: UPDATE R VERSION
 
-# Please run this line of code to update your version of R. If asked whether
+# Please run these lines of code to update your version of R. If asked whether
 # you want to exit RStudio and run the installation from RGui, say "no".
 # It will bring up an external dialog box, and begin installation.
-updateR(fast=TRUE)
+install.packages("installr", quiet=TRUE)
+installr::updateR(fast=TRUE)
 
 # When complete, "[1] TRUE" will appear in the console.
 
@@ -53,7 +55,7 @@ list.of.packages <- c("dplyr", "shiny", "shinyWidgets", "shinydashboard", "leafl
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
 # Install packages
-if(length(new.packages)) install.packages(new.packages)
+if(length(new.packages)) install.packages(new.packages, quiet=TRUE)
 
 #------------------------------------------------------------------------------#
 # Step 5: GENERATE REPORT TO CHECK PACKAGE INSTALLATION
