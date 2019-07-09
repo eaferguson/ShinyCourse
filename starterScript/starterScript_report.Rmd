@@ -6,8 +6,9 @@ output: html_document
 
 <hr style="border-color: black; border-width: 2px;">
 <br>
-<h4> Name: `r your_name` </h4>
-<h4> Email Address: `r your_email_address` </h4><br>
+<h4> Name: <b style="color: #3498db;">`r your_name` </b></h4>
+<h4> Email Address: <b style="color: #3498db;">`r gsub("@", "<!-- -->@", your_email_address)` </b></h4>
+<h4> R Version: <b style="color: #3498db;">`r paste0(R.version$version.string)` </b></h4><br>
 
 <hr style="border-color: black; border-width: 2px;">
 
@@ -23,18 +24,18 @@ is.installed <- function(mypkg){
 list.of.packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "dplyr", 
                       "ggplot2", "RColorBrewer", "kableExtra",  "rgdal", "raster", "htmltools",
                       "rmarkdown", "png",  "rgeos", "magrittr", "mapview", "knitr",
-                      "lubridate", "Xmisc", "pillar", "vctrs", "sf") 
+                      "lubridate", "pillar", "vctrs", "sf", "Xmisc") 
 
 # Print if package will load in correctly
 for(i in list.of.packages){
   lapply(i, require, character.only = TRUE)
   pr = Xmisc::is.package.loaded(i, character.only = TRUE)
   if(pr==FALSE){
-    pr = htmltools::HTML(paste0("<span style='color:red;'>", pr, "</span><br>"))
+    pr = htmltools::HTML(paste0("<span style='color:red; font-weight: bold;'>", pr, "</span>"))
   } else {
-    pr = htmltools::HTML(paste0("<span style='color:black;'>", pr, "</span><br>"))
+    pr = htmltools::HTML(paste0("<span style='color:black;'>", pr, "</span>"))
   }
-  cat(paste0(i, ": ", pr))
+  cat(paste0(i, ": ", pr, "&nbsp;&nbsp;&nbsp; <em> version ", packageVersion(i), "</em><br>"))
 }
 
 # Download dataset
