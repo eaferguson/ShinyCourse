@@ -13,7 +13,7 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-options_list <- c("All Species", sort(unique(raw_data$species)))
+species_list <- c("All Species", sort(unique(raw_data$species)))
 
 #------------------------------------------------------------------------------#
 # Define UI for application that draws a histogram
@@ -36,12 +36,12 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput("select_species", label = h3("Select a Species:"),
-                  choices = options_list,
+                  choices = species_list,
                   selected = 1)
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("tsPlot", height=700)
     )

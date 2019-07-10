@@ -88,8 +88,7 @@ shinyServer(function(input, output) {
    ggplot() +
       geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
       scale_color_manual(name="Species", values=col_palette) +
-      ggtitle(input$select_region) +
-      labs(x="Month", y="Number of records") +
+      labs(title=input$select_region, x="Date (Month)", y="Number of records") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
       scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
       theme_classic() +

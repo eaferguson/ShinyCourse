@@ -39,6 +39,8 @@ shinyUI(fluidPage(
 
     # Add content to the main panel
     mainPanel(
+
+      # Show plot
       plotOutput("barPlot", # output id name
                  height=700) # height in pixels of the plot
 

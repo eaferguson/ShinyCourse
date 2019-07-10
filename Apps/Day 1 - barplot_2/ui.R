@@ -37,7 +37,7 @@ shinyUI(fluidPage(
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("barPlot", height=700)
     )

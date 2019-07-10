@@ -94,19 +94,18 @@ shinyServer(function(input, output) {
 
   # Produce plot
   output$tsPlot <- renderPlot({
-      ggplot() +
-        geom_path(data=data_subset$data, aes(x=month, y=n, color=species), size=1) +
-        scale_color_manual(name="Species", values=col_palette) +
-        ggtitle(input$select_region) +
-        labs(x="Date (Month)", y="Number of records") +
-        scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
-        scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
-        theme_classic() +
-        theme(axis.text = element_text(size=14),
-              axis.title = element_text(size=18),
-              plot.title = element_text(size=20),
-              legend.title = element_text(size=18),
-              legend.text = element_text(size=14))
+    ggplot() +
+      geom_path(data=data_subset$data, aes(x=month, y=n, color=species), size=1) +
+      scale_color_manual(name="Species", values=col_palette) +
+      labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+      scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
+      scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
+      theme_classic() +
+      theme(axis.text = element_text(size=14),
+            axis.title = element_text(size=18),
+            plot.title = element_text(size=20),
+            legend.title = element_text(size=18),
+            legend.text = element_text(size=14))
   })
 
 })

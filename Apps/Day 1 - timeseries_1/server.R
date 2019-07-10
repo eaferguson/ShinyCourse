@@ -9,6 +9,7 @@ library(shiny)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+library(RColorBrewer)
 
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
@@ -53,8 +54,7 @@ shinyServer(function(input, output) {
    ggplot() +
       geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
       scale_color_manual(name="Species", values=col_palette) +
-      ggtitle(paste0(input$select_species, "\n")) +
-      labs(x="\nDate (Month)", y="Number of records\n") +
+      labs(title=input$select_species, x="Date (Month)", y="Number of records") +
       scale_x_continuous(breaks=plot_breaks, labels=yrs,
                          limits=c(min(overall_summary$month), max(overall_summary$month))) +
       scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +

@@ -322,10 +322,10 @@ Goal: Add age as an option to view on the x-axis
 <br> <em> Hints:
 <ul>
 <li>
-Remember to explore the dataset to find the correct column name
+You only need to change the ui file
 </li>
 <li>
-You only need to change the ui file
+Remember to explore the dataset to find the correct column name
 </li>
 </ul>
 <p></em> <br></p>
@@ -353,10 +353,10 @@ Goal: Add another text output
 <br> <em> Hints:
 <ul>
 <li>
-You could show a summary of your data e.g. <code>head()</code>, <code>summary()</code>
+You will need to change both files
 </li>
 <li>
-You will need to change both files
+You could show a summary of your data e.g. <code>head()</code>, <code>summary()</code>
 </li>
 </ul>
 <p></em> <br></p>
@@ -377,6 +377,20 @@ You will need to change both files
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio. <br><br> This is a new app that shows a timeseries plot with a Dropdown menu, which allows the user to select the species plotted. There is an option for “All species”, but if the user selects another option, “All species” is still plotted. <br><br> Please take a moment to have a look at the server and ui scripts, then run the app. <br><br>
+<h4 class="blue">
+Goal: Change the dropdown from Species to Region
+</h4>
+<br> <em> Hints:
+<ul>
+<li>
+You will need to change both files
+</li>
+<li>
+We have named objects descriptively e.g. input$select_species; use this to identify where you should make edits
+</li>
+</ul>
+<p></em> <br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4e. Make a more complicated change to the data used by a widget -->
 <div class="row">
@@ -394,6 +408,23 @@ You will need to change both files
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio. <br><br> This is the same timeseries app as before, but with a new widget - <code>checkboxGroupInput()</code> below. <br><br> Please take a moment to have a look at the server and ui scripts, then run the app. <br><br>
+<h4 class="blue">
+Goal: Change the checkboxes from Sex to Species
+</h4>
+<br> <em> Hints:
+<ul>
+<li>
+You will need to change both files
+</li>
+<li>
+When listing options for the widgets, you can provide a list (e.g. region_list) or set the choices manually (e.g. list(“Dog”=“dog”, “Cat”=“cat”…))
+</li>
+<li>
+For checkboxes, you do not need an option for “Select all” in the ui
+</li>
+</ul>
+<p></em> <br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4f. Change a widget -->
 <div class="row">

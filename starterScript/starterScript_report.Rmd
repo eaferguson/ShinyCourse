@@ -21,10 +21,10 @@ is.installed <- function(mypkg){
 }
 
 # Set vector of package names
-list.of.packages <- c("shiny", "shinyWidgets", "shinydashboard", "leaflet", "dplyr", 
-                      "ggplot2", "RColorBrewer", "kableExtra",  "rgdal", "raster", "htmltools",
-                      "rmarkdown", "png",  "rgeos", "magrittr", "mapview", "knitr",
-                      "lubridate", "pillar", "vctrs", "sf", "Xmisc") 
+list.of.packages <- c("dplyr", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
+                      "lubridate", "htmltools", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
+                      "rgeos", "magrittr", "mapview", "ggplot2", "pillar", "sf", "knitr",
+                      "rlang", "vctrs", "Xmisc")
 
 # Print if package will load in correctly
 for(i in list.of.packages){
