@@ -11,14 +11,14 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Barplot"),
+  titlePanel("Day 1 - Barplot_1"),
 
   # Add a line break
   br(),
 
   # Add text section
   h4("This app our first introduction to rShiny!"),
-  h4("There is only 1 widget: selectInput - a dropdown menu. This is set up to change the variable that is plotted on the x-axis."),
+  h4("There is only 1 widget - a dropdown menu. This is set up to change the variable that is plotted on the x-axis."),
 
   # Add a line break
   br(),

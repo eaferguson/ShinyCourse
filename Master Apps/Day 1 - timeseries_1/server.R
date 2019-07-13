@@ -56,6 +56,7 @@ shinyServer(function(input, output) {
       geom_path(data=data_subset(), aes(x=month, y=n, color=region), size=1) +
       scale_color_manual(name="Region", values=col_palette) +
       labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+      # Extra plotting code to control appearence
       scale_x_continuous(breaks=plot_breaks, labels=yrs,
                          limits=c(min(overall_summary$month), max(overall_summary$month))) +
       theme_classic() +

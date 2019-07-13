@@ -139,13 +139,14 @@ This is the same simple barplot app as before, but with a new ``verbatimtextOutp
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
 <br><br>
-<h4 class="blue">Goal: Add another text output </h4>
+<h4 class="blue">Goal: Add another text output to the side panel</h4>
 <br>
 <em>
 Hints:
 <ul>
 <li>You will need to change both files</li>
 <li>You could show a summary of your data e.g. ``head()``, ``summary()``</li>
+<li>You can reference the input as a column name using a set of double square brackets e.g. ``raw_data[[input$new_text]]``</li>
 </ul>
 </em>
 <br>
@@ -173,7 +174,7 @@ Please take a moment to have a look at the server and ui scripts, then run the a
 Hints:
 <ul>
 <li>You will need to change both files</li>
-<li>We have named objects descriptively e.g. input$select_species; use this to identify where you should make edits</li>
+<li>We have named objects descriptively e.g. ``input$select_species``; use this to identify where you should make edits</li>
 </ul>
 </em>
 <br>
@@ -202,7 +203,7 @@ Hints:
 <ul>
 <li>You will need to change both files</li>
 <li>When listing options for the widgets, you can provide a list (e.g. region_list) or set the choices manually (e.g. list("Dog"="dog", "Cat"="cat"...))</li>
-<li>For checkboxes, you do not need an option for "Select all" in the ui</li>
+<li>For checkboxes, you do not need an option for "Select all" in the ui because the user can automatically select multiple options</li>
 </ul>
 </em>
 <br>
@@ -218,6 +219,24 @@ Hints:
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_3</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is the same timeseries app as before, but with a new ``sliderInput()`` below the others.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Goal: Change from a 1-sided to a 2-sided slider  </h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>Remember to use the ``?`` to view a helpfile if you are stuck</li>
+<li>If an input produces multiple values, they appear in the ui as a character string (vector)</li>
+</ul>
+</em>
+<br>
+
 <!--- ---------------------------------------------------------------------- -->
 <!--- 1.4ag Explore a "Go" button -->
 
@@ -228,3 +247,17 @@ Hints:
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_4</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is the same timeseries app as before, but with a new ``actionButton()`` below the others.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+We'll discuss this app as a group, so please take a moment to think about these questions:
+<ol>
+<li>What reactive elements have changed in the ui code and the server code?  </li>
+<li>Can you think of any scenarios where it would be helpful to use an ``actionButton()`` to trigger a reactive event?</li>
+</ol>
+<br>

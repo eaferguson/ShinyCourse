@@ -25,6 +25,13 @@ library(RColorBrewer)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
 region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
 
+# Format as a date
+raw_data$date <- as.Date(raw_data$date) 
+
+# Create breaks for ts app
+yrs <- c(unique(year(raw_data$date)), 2015) # Extract year and take only the unique years
+plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
+
 # Create a colour palette
 #col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
 col_palette <- brewer.pal(name="Dark2", n=8)
@@ -72,7 +79,7 @@ $(this).parents('slide').children('div.footnotes').html(newContent);
 <li> 1.1 Getting to know your data </li>
 <li> 1.2 Data subsetting and summarising </li>
 <li> 1.3 Build exploratory plots </li>
-<li> <b class="blue"> 1.4 Build an interactive plot in RShiny </b></li>
+<li> <b class="blue"> 1.4 Building an interactive plot in RShiny </b></li>
 </ul>
 
 <h3><b>Day 2:</b></h3>
@@ -89,7 +96,7 @@ $(this).parents('slide').children('div.footnotes').html(newContent);
 </ul>
 
 <!----------------------------------------------------------------------------->
-## Build an interactive plot in RShiny  
+## Building an interactive plot in RShiny  
 
 A shiny app is normally built with 2 sections:  
 
@@ -111,14 +118,14 @@ Complete section 1.4a of the handout.
 
 All of our examples and practice sections will use seperate <b>server.R</b> and <b>ui.R</b> files.  
   
-Whenever we show example code, ui code will have a <span class="ui-background">yellow background</span> and server code with have a <span class="server-background">blue background</span>.
+Whenever we show example code, <span class="ui-background">ui code will have a yellow background</span> and <span class="server-background">server code will have a blue background</span>.
 
 <!----------------------------------------------------------------------------->
 ## Inputs  
 
 - To make the app interactive, you need an input that the user can change  
 - Shiny includes a selection of functions for this called <b>widgets</b>.
-- These are used in the <b>ui</b> to sets the options for the user to interact with. 
+- These are used in the <b>ui</b> to set the options for the user to interact with. 
 
 ``` {r, echo=FALSE}
 widgets <- data.frame(Name=c("actionButton()", "checkboxInput()", "checkboxGroupInput()",
@@ -188,8 +195,8 @@ shinyApp(
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
     
     HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
@@ -244,10 +251,9 @@ ggplot() +
 <!----------------------------------------------------------------------------->
 ## User defined barplot
 
-In Shiny, we can let the user define what to plot.  
-For example, using the dropdown menu provided, the user could choose to plot the sex or the species on the x-axis.
+- In Shiny, we can let the user define what to plot.  
+- E.g. rather than showing 2 plots, the user can swap between sex or species using the dropdown menu provided.
 <br><br>
-<b>ui</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 selectInput(inputId = "xaxis", 
             label = h3("Select the x-axis variable:"),
@@ -255,16 +261,14 @@ selectInput(inputId = "xaxis",
             selected = 1)
 ```
 
-<br>
-<b>app</b>
 ```{r, echo=FALSE}
 shinyApp(
   
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
    selectInput("xaxis", label = h3("Select the x-axis variable:"),
                     choices = list("Sex" = "sex", "Species" = "species"),
@@ -276,30 +280,35 @@ shinyApp(
 ```
 
 <!----------------------------------------------------------------------------->
-## User defined barplot
+## User defined barplot {.smaller}
 
-The plot is made interactive on the server side by using the user's selection as an input in our plot code.
-<br><br>
-<b>server</b>
+- The plot is made interactive by using the user's selection as an input in our server code.<br>
+- We then make the plot visible to the user by adding an output to the ui.<br>
+
 ```{r, eval = F, echo = T, class.source="server-background"}
-ggplot() + 
-  geom_bar(data=raw_data, aes_string(x=input$xaxis, fill=input$xaxis)) + 
-  theme_classic()
+output$barPlot <- renderPlot({
+  ggplot() + 
+    geom_bar(data=raw_data, aes_string(x=input$xaxis, fill=input$xaxis)) + 
+    theme_classic()
+})
 ```
-<b>app</b>
-<br>
+
+```{r, eval = F, echo = T, class.source="ui-background"}
+plotOutput("barPlot", height=200)
+```
+
 ```{r, echo=FALSE}
 shinyApp(
   
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
     sidebarLayout(
       sidebarPanel(
-        selectInput("xaxis", label = h3("Select the x-axis variable:"),
+        selectInput("xaxis", label = h4("Select the x-axis variable:"),
                     choices = list("Sex" = "sex", "Species" = "species"),
                     selected = 1)
       ),
@@ -327,41 +336,32 @@ shinyApp(
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
-Read the <em>App Guide</em> of the handout, then complete section 1.4b.  
+Read the <em>App Guide</em> handout, then complete section 1.4b of the handout.<br><br>
+<center><img src="figures/day1_barplot_1.png" style="width: 90%;" /></center>
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4b ui code
 
-<b>ui</b>
+<b>shinyUI Side Panel</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
-# SIDE PANEL
 selectInput(inputId = "xaxis", 
             label = h3("Select the x-axis variable:"),
             choices = list("Sex" = "sex", "Species" = "species", "Age" = "age"),
             selected = 1)
-
-# MAIN PANEL
-plotOutput("barPlot", height=700)
 ```
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4b server code
 
-<b>server</b>
+<b>shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
-# SERVER SECTION
 output$barPlot <- renderPlot({
   ggplot() +
     geom_bar(data=raw_data, 
              aes_string(x=input$xaxis), 
              fill=col_palette[1]) +
     labs(x=paste0(input$xaxis), y="Number of records") +
-    theme_classic() +
-    theme(axis.text = element_text(size=14),
-          axis.title = element_text(size=18),
-          plot.title = element_text(size=20),
-          legend.title = element_text(size=18),
-          legend.text = element_text(size=14))
+    ...
 })
 ```
 
@@ -374,8 +374,8 @@ shinyApp(
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
     sidebarLayout(
       sidebarPanel(
@@ -408,44 +408,32 @@ shinyApp(
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
-Complete section 1.4c of the handout.  
+Complete section 1.4c of the handout.<br><br>
+<center><img src="figures/day1_barplot_2.png" style="width: 90%;" /></center>
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4c ui code
 
-<b>ui</b>
+<b>shinyUI Side Panel</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
-# SIDE PANEL
-selectInput("xaxis", label = h3("Select the x-axis variable:"),
-            choices = list("Sex" = "sex", "Species" = "species", "Age" = "age"),
-            selected = 1)
-verbatimTextOutput("output_text"),
-verbatimTextOutput("output_values")
+# Existing text output
+verbatimTextOutput("output_text") 
 
-# MAIN PANEL
-plotOutput("barPlot", height=700)
+# New text output
+verbatimTextOutput("output_values") 
 ```
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4c server code 
 
-<b>server</b>
+<b>shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
-# SERVER SECTION
-output$barPlot <- renderPlot({
-  ggplot() +
-    geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
-    labs(x=input$xaxis, y="Number of records") +
-    theme_classic() +
-    theme(axis.text = element_text(size=14),
-          axis.title = element_text(size=18),
-          plot.title = element_text(size=20),
-          legend.title = element_text(size=18),
-          legend.text = element_text(size=14))
-})
-output$output_text <- renderPrint({
+# Existing text output
+output$output_text <- renderPrint({ 
   paste0("You have chosen to show '", input$xaxis, "' on the x-axis.")
 })
+
+# New text output
 output$output_values <- renderPrint({
   summary(raw_data[[input$xaxis]])
 })
@@ -460,8 +448,8 @@ shinyApp(
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
     sidebarLayout(
       sidebarPanel(
@@ -505,7 +493,7 @@ shinyApp(
 ## Making your code 'reactive'  
 
 - All code within the server must be contained within a **reactive** element, otherwise the app will fail to run.  
-- The previous examples used ``render()`` functions, which are **reactive**.  
+- The previous examples used ``render()`` functions, which are **reactive** but limited to a small amount of code.  
 
 ```{r echo=TRUE, eval=FALSE, class.source="ui-background"}
 output$output_text <- renderPrint({
@@ -534,21 +522,24 @@ output$output_text <- renderPrint({
 
 - The last line of the function should be the object you would like to be saved overall (e.g. a data subset)  
 
-- When <b>any</b> input is changed, the output will update
+- When <b>any</b> input used in the ``reactive`` function is changed, the output will automatically update
 
 <!----------------------------------------------------------------------------->
-## An example with the ``reactive()`` function
+## An example with the ``reactive()`` function {.smaller}
 
-<b>ui</b>
+<b>shinyUI Side Panel</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 radioButtons(inputId = "select_species", label = "Select a Species:",  
              choices = sort(unique(raw_data$species))),
+```
+
+<b>shinyUI Main Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 tableOutput("chosen_species_info")
 ```
 
-<b>server</b>
+<b>shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
-# SERVER SECTION
 data_sub <- reactive({
   data_subset = raw_data %>%
     filter(species == input$select_species)
@@ -564,25 +555,28 @@ output$chosen_species_info <- renderTable({
 <!----------------------------------------------------------------------------->
 ## An example with the ``reactive()`` function
 
+<br><br>
+
 ```{r, echo=FALSE}
 shinyApp(
   
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
     
-    HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
-    radioButtons(inputId = "select_species", label = "Select a Species:",  
-             choices = sort(unique(raw_data$species))), 
-
-    br(),
-    
-    HTML("<div id='txt'>Input: <b>tableOutput()</b></div>"),
-    tableOutput("chosen_species_info")
-  ),
+    sidebarLayout(
+      sidebarPanel(
+        HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
+        radioButtons(inputId = "select_species", label = "Select a Species:",  
+                     choices = sort(unique(raw_data$species)))),
+      mainPanel(
+        
+        HTML("<div id='txt'>Output: <b>tableOutput()</b></div>"),
+        tableOutput("chosen_species_info")
+      ))),
   
   server = function(input, output) {
     data_sub <- reactive({
@@ -604,65 +598,117 @@ shinyApp(
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
-Complete section 1.4d of the handout.  
+Complete section 1.4d of the handout.<br><br>
+<center><img src="figures/day1_timeseries_1.png" style="width: 90%;" /></center>
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4d ui code
 
+<b>Above shinyUI Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
-# ABOVE UI SECTION
 options_list <- c("All Regions", sort(unique(raw_data$region)))
+```
 
-# SIDE PANEL
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 selectInput("select_region", label = h3("Select a Region:"),
-                  choices = options_list,
-                  selected = 1)
+            choices = options_list,
+            selected = 1)
 ```
 
 <!----------------------------------------------------------------------------->
-## Summary - section 1.4d server code {.smaller}
+## Summary - section 1.4d server code (1/2)
 
+<b>Above shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
-# ABOVE SERVER SECTION
 overall_summary <- raw_data %>%
   group_by(month) %>%
   summarise(n = length(month)) %>%
   mutate(region = "All Regions")
+
 region_summary <- raw_data %>%
   group_by(month, region) %>%
   summarise(n = length(month))
-summary_data <- bind_rows(overall_summary, region_summary)
 
-# SERVER SECTION
+summary_data <- bind_rows(overall_summary, region_summary)
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4d server code (2/2)
+
+<b>shinyServer Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
 data_subset <- reactive({
   data_sub = summary_data %>%
     filter(region==input$select_region | region=="All Regions")
   as.data.frame(data_sub)
 })
+
 output$tsPlot <- renderPlot({
    ggplot() +
       geom_path(data=data_subset(), aes(x=month, y=n, color=region), size=1) +
       scale_color_manual(name="Region", values=col_palette) +
       labs(title=input$select_region, x="Date (Month)", y="Number of records") + 
     ...
-  })
+})
 ```
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4d app
 
-<b style="color: red;">Issues adding app with pre-processing - will find fix! </b>
+```{r, echo=FALSE}
+overall_summary_1.4d <- raw_data %>%
+  group_by(month) %>%
+  summarise(n = length(month)) %>%
+  mutate(region = "All Regions")
+region_summary_1.4d <- raw_data %>%
+  group_by(month, region) %>%
+  summarise(n = length(month))
+summary_data_1.4d <- bind_rows(overall_summary_1.4d, region_summary_1.4d)
+
+shinyApp(
+  ui = fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("select_region", label = h3("Select a Region:"),
+                    choices = c("All Regions", sort(unique(raw_data$region))),
+                    selected = 1)),
+      mainPanel(
+        plotOutput("tsPlot", height=400)))
+  ),
+  server = function(input, output) {
+    data_subset <- reactive({
+      data_sub = summary_data_1.4d %>%
+        filter(region==input$select_region | region=="All Regions")
+      as.data.frame(data_sub)
+    })
+    output$tsPlot <- renderPlot({
+      ggplot() +
+        geom_path(data=data_subset(), aes(x=month, y=n, color=region), size=1) +
+        scale_color_manual(name="Region", values=col_palette) +
+        labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+        scale_x_continuous(breaks=plot_breaks, labels=yrs,
+                           limits=c(min(overall_summary_1.4d$month), max(overall_summary_1.4d$month))) +
+        theme_classic() +
+        theme(axis.text = element_text(size=14), legend.text = element_text(size=14),
+              axis.title = element_text(size=18), legend.title = element_text(size=18),
+              plot.title = element_text(size=20))
+    })
+  }
+)
+```
 
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
-Complete section 1.4e of the handout.  
+Complete section 1.4e of the handout.<br><br>
+<center><img src="figures/day1_timeseries_2.png" style="width: 90%;" /></center>  
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4e ui code
 
+<b>shinyUI Side Panel </b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
-# SIDE PANEL
 checkboxGroupInput("select_species", label = h3("Select a Species"),
                          choices = list("Cat" = "cat", "Dog" = "dog", "Human"="human", 
                                         "Jackal"="jackal", "Lion"="lion"),
@@ -670,62 +716,250 @@ checkboxGroupInput("select_species", label = h3("Select a Species"),
 ```
 
 <!----------------------------------------------------------------------------->
-## Summary - section 1.4e server code {.smaller}
+## Summary - section 1.4e server code (1/2) {.smaller}
 
+<b>Above shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
-# ABOVE SERVER SECTION
 overall_summary <- raw_data %>%
   group_by(month) %>%
   summarise(n = length(month)) %>%
   mutate(region="All data",
          species="All data")
+
 region_allspecies_summary <- raw_data %>%
   group_by(month, region) %>%
   summarise(n = length(month)) %>%
   mutate(species="All species")
+
 species_allregions_summary <- raw_data %>%
   group_by(month, species) %>%
   summarise(n = length(month)) %>%
   mutate(region="All Regions")
+
 region_species_summary <- raw_data %>%
   group_by(month, region, species) %>%
   summarise(n = length(month))
-summary_data <- bind_rows(overall_summary, region_allspecies_summary, species_allregions_summary, region_species_summary)
 
-# SERVER SECTION
-data_sub = summary_data %>%
-  filter(region==input$select_region | region=="All data")
-if(length(input$select_species)>0){
-  data_sub = data_sub %>%
-    filter(species %in% input$select_species | species=="All species" | species=="All data")
-} else {
-  data_sub = data_sub %>%
-    filter(species=="All species" | species=="All data")
-}
-data_sub = data_sub %>%
-  group_by(month, region, species) %>%
-  summarise(n = sum(n))
-as.data.frame(data_sub)
-  })
-output$tsPlot <- renderPlot({
-   ggplot() +
-      geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
-      scale_color_manual(name="Species", values=col_palette) +
-    ...
+summary_data <- bind_rows(overall_summary, region_allspecies_summary, 
+                          species_allregions_summary, region_species_summary)
 ```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4e server code (2/2) {.smaller}
+
+<b>shinyServer Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+data_subset <- reactive({
+  
+  data_sub = summary_data %>%
+    filter(region==input$select_region | region=="All data")
+  
+  if(length(input$select_species)>0){
+    data_sub = data_sub %>%
+      filter(species %in% input$select_species | species=="All species" | species=="All data")
+  } else {
+    data_sub = data_sub %>%
+      filter(species=="All species" | species=="All data")
+  }
+  
+  data_sub = data_sub %>%
+    group_by(month, region, species) %>%
+    summarise(n = sum(n))
+  as.data.frame(data_sub)
+})
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4e app
+
+```{r, echo=FALSE}
+overall_summary_1.4e <- raw_data %>%
+  group_by(month) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All data",
+         species="All data")
+region_allspecies_summary_1.4e <- raw_data %>%
+  group_by(month, region) %>%
+  summarise(n = length(month)) %>%
+  mutate(species="All species")
+species_allregions_summary_1.4e <- raw_data %>%
+  group_by(month, species) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All Regions")
+region_species_summary_1.4e <- raw_data %>%
+  group_by(month, region, species) %>%
+  summarise(n = length(month))
+summary_data_1.4e <- bind_rows(overall_summary_1.4e, region_allspecies_summary_1.4e, 
+                               species_allregions_summary_1.4e, region_species_summary_1.4e)
+
+shinyApp(
+  ui = fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("select_region", label = h3("Select a Region:"),
+                    choices = c("All Regions", sort(unique(raw_data$region))),
+                    selected = 1),
+        br(),
+        checkboxGroupInput("select_species", label = h3("Select a Species"),
+                           choices = list("Cat" = "cat", "Dog" = "dog", "Human"="human", 
+                                          "Jackal"="jackal", "Lion"="lion"),
+                           selected = c("cat", "dog", "human", "jackal", "lion"))),
+      mainPanel(
+        plotOutput("tsPlot", height=400)))),
+  
+  server = function(input, output) {
+    data_subset <- reactive({
+      data_sub = summary_data_1.4e %>%
+        filter(region==input$select_region | region=="All data")
+      if(length(input$select_species)>0){
+        data_sub = data_sub %>%
+          filter(species %in% input$select_species | species=="All species" | species=="All data")
+      } else {
+        data_sub = data_sub %>%
+          filter(species=="All species" | species=="All data")
+      }
+      data_sub = data_sub %>%
+        group_by(month, region, species) %>%
+        summarise(n = sum(n))
+      as.data.frame(data_sub)
+    })
+    output$tsPlot <- renderPlot({
+      ggplot() +
+        geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
+        scale_color_manual(name="Species", values=col_palette) +
+        labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+        scale_x_continuous(breaks=plot_breaks, labels=yrs, 
+                           limits=c(min(overall_summary$month), max(overall_summary$month))) +
+        theme_classic() +
+        theme(axis.text = element_text(size=14),
+              axis.title = element_text(size=18),
+              plot.title = element_text(size=20),
+              legend.title = element_text(size=18),
+              legend.text = element_text(size=14))
+    })
+  }
+)
+```
+
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
-Complete section 1.4f of the handout.  
-
-<div style="color: #FF6666;"> Notes for linking:  
-
-- Change from a 1-sided to a 2-sided slider <em>(remind about ?sliderInput help page)</em>  
-- apps/Day 1 - timeseries_3
-</div>
+Complete section 1.4f of the handout.<br><br>
+<center><img src="figures/day1_timeseries_3.png" style="width: 90%;" /></center>  
 
 <!----------------------------------------------------------------------------->
-## Summary - section 1.4f    
+## Summary - section 1.4f ui code
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+sliderInput("age_slider", label = h3("Select a maximum age"),
+                  min = min_age, max = max_age, value = c(min_age, max_age))
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4f server code {.smaller}
+
+<b>shinyServer Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+data_subset <- reactive({
+
+    data_sub = summary_data %>%
+      filter(region==input$select_region | region=="All data")
+
+    if(length(input$select_species)>0){
+      data_sub = data_sub %>%
+        filter(species %in% input$select_species | species=="All species" | species=="All data")
+    } else {
+      data_sub = data_sub %>%
+        filter(species=="All species" | species=="All data")
+    }
+
+    data_sub = data_sub %>%
+      filter(age >= input$age_slider[1] & age <= input$age_slider[2] | is.na(age))
+
+    data_sub = data_sub %>%
+      group_by(month, region, species) %>%
+      summarise(n = sum(n))
+    as.data.frame(data_sub)
+  })
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4f app
+
+```{r, echo=FALSE}
+overall_summary_1.4f <- raw_data %>%
+  group_by(month) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All data",
+         species="All data")
+region_allspecies_summary_1.4f <- raw_data %>%
+  group_by(month, region, age) %>%
+  summarise(n = length(month)) %>%
+  mutate(species="All species")
+species_allregions_summary_1.4f <- raw_data %>%
+  group_by(month, species, age) %>%
+  summarise(n = length(month)) %>%
+  mutate(region="All Regions")
+region_species_summary_1.4f <- raw_data %>%
+  group_by(month, region, species, age) %>%
+  summarise(n = length(month))
+summary_data_1.4f <- bind_rows(overall_summary_1.4f, region_allspecies_summary_1.4f, 
+                               species_allregions_summary_1.4f, region_species_summary_1.4f)
+
+shinyApp(
+  ui = fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("select_region", label = h4("Select a Region:"),
+                    choices = c("All Regions", sort(unique(raw_data$region))),
+                    selected = 1),
+        br(),
+        checkboxGroupInput("select_species", label = h4("Select a Species"),
+                           choices = list("Cat" = "cat", "Dog" = "dog", "Human"="human", 
+                                          "Jackal"="jackal", "Lion"="lion"),
+                           selected = c("cat", "dog", "human", "jackal", "lion")),
+        br(),
+        sliderInput("age_slider", label = h4("Select a maximum age"),
+                  min = min(raw_data$age), max = max(raw_data$age), value = c(min(raw_data$age), max(raw_data$age)))),
+      mainPanel(
+        plotOutput("tsPlot", height=400)))),
+  
+  server = function(input, output) {
+    data_subset <- reactive({
+      data_sub = summary_data_1.4f %>%
+        filter(region==input$select_region | region=="All data")
+      if(length(input$select_species)>0){
+        data_sub = data_sub %>%
+          filter(species %in% input$select_species | species=="All species" | species=="All data")
+      } else {
+        data_sub = data_sub %>%
+          filter(species=="All species" | species=="All data")
+      }
+      data_sub = data_sub %>%
+        filter(age >= input$age_slider[1] & age <= input$age_slider[2] | is.na(age))
+      data_sub = data_sub %>%
+        group_by(month, region, species) %>%
+        summarise(n = sum(n))
+      as.data.frame(data_sub)
+    })
+    output$tsPlot <- renderPlot({
+      ggplot() +
+        geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
+        scale_color_manual(name="Species", values=col_palette) +
+        labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+        scale_x_continuous(breaks=plot_breaks, labels=yrs, 
+                           limits=c(min(overall_summary_1.4f$month), max(overall_summary_1.4f$month))) +
+        theme_classic() +
+        theme(axis.text = element_text(size=14),
+              axis.title = element_text(size=18),
+              plot.title = element_text(size=20),
+              legend.title = element_text(size=18),
+              legend.text = element_text(size=14))
+    })
+  }
+)
+```
 
 <!----------------------------------------------------------------------------->
 ## 
@@ -753,16 +987,14 @@ Complete section 1.4f of the handout.
 <!----------------------------------------------------------------------------->
 ## An example with the ``eventReactive()`` function
 
-<b>ui</b>
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 radioButtons(inputId = "select_species", label = "Select a Species:",  
              choices = sort(unique(raw_data$species)))
 actionButton(inputId="go_button", label="Click to generate the plot:")
 plotOutput("chosen_species")
 ```
 
-<b>server</b>
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
 data_subset <- eventReactive(input$go_button, {
       data_sub = raw_data %>%
         filter(species == input$select_species)
@@ -851,15 +1083,13 @@ rv$z <- data.frame(n = c(1, 2, 3), t = c("a", "b", "c"))
 <!----------------------------------------------------------------------------->
 ##  ``reactiveValues()`` & ``observeEvent()`` functions working together
 
-<b>ui</b>
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 actionButton(inputId="go_button", label="Click to generate a random number:")
 
 verbatimTextOutput("random_number")
 ```
 
-<b>server</b>
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
 rn <- reactiveValues(n = NA)
 
 observeEvent(input$go_button, {
@@ -880,8 +1110,8 @@ shinyApp(
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 26px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 26px; font-weight: normal;}
+      #txt {font-size: 20px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
     "))),
     
     HTML("<div id='txt'>Input: <b>actionButton()</b></div>"),
@@ -912,21 +1142,42 @@ shinyApp(
 <!----------------------------------------------------------------------------->
 ## Your turn  
 
-Complete section 1.4g of the handout. 
-
-<div style="color: #FF6666;"> Notes:  
-
-- Have a look at the 4th time series plot.  
-- What reactive elements have changed in the server code and the ui code?  
-- Can you think of any scenarios where it would be helpful to use a "Go" button to trigger a reactive event?  
-- apps/Day 1 - timeseries_4
-</div>
+Complete section 1.4g of the handout.<br><br>
+<center><img src="figures/day1_timeseries_4.png" style="width: 90%;" /></center> 
 
 <!----------------------------------------------------------------------------->
-## Your turn - Results section 1.4g    
+## Summary - section 1.4g    
+
+<b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
 
 <!----------------------------------------------------------------------------->
-##  Summary
+## Summary - section 1.4g    
+
+<b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+actionButton("action_button", label = "Update plot")
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g    
+
+<b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+actionButton("action_button", label = "Update plot")
+```
+
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g    
+
+<b class="blue">Can you think of any scenarios where it would be helpful to use an ``actionButton()`` to trigger a reactive event? </b><br><br>
+
+<!----------------------------------------------------------------------------->
+##   Summary
 
 - Processing data: reactive()
 

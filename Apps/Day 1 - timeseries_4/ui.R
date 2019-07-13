@@ -24,14 +24,14 @@ max_age <- max(raw_data$age)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Day 1 - Timeseries_4"),
 
   # Add a line break
   br(),
 
   # Add text section
-  h4("This app is identical to the last, with a new widget: checkboxGroupInput"),
-  h4("Using these widgets, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
+  h4("This app is identical to the last, with a new widget: actionButton"),
+  h4("The action button triggers the plot update after the user has set the other widget values"),
 
   # Add a line break
   br(),

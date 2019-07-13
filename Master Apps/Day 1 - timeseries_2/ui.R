@@ -19,7 +19,7 @@ region_list <- c("All Regions", sort(unique(raw_data$region)))
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Exploratory plots: Timeseries_2 (Master)"),
 
   # Add a line break
   br(),

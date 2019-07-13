@@ -19,14 +19,14 @@ region_list <- c("All Regions", sort(unique(raw_data$region)))
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Day 1 - Timeseries_2"),
 
   # Add a line break
   br(),
 
   # Add text section
   h4("This app is identical to the last, with a new widget: checkboxGroupInput"),
-  h4("Using these widgets, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
+  h4("Using these widgets together, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
 
   # Add a line break
   br(),

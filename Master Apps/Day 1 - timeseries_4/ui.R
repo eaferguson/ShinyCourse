@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_3
+# Day 1 - timeseries_4
 # This is the user-interface definition of a Shiny web application. You can
 # run the application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
@@ -13,7 +13,7 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-options_list <- c("All Regions", sort(unique(raw_data$region)))
+options_list <- c("All regions", sort(unique(raw_data$region)))
 
 # Collect min and max ages for the slider
 min_age <- min(raw_data$age)
@@ -24,14 +24,14 @@ max_age <- max(raw_data$age)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Day 1 - Timeseries_3"),
+  titlePanel("Day 1 - Timeseries_4 (Master)"),
 
   # Add a line break
   br(),
 
   # Add text section
-  h4("This app is identical to the last, with a new widget: sliderInput"),
-  h4("Using these widgets together, we can change the region, the sex and the maximum age we want to view on the plot. The line showing 'all data' will always be visible!"),
+  h4("This app is identical to the last, with a new widget: actionButton"),
+  h4("The action button triggers the plot update after the user has set the other widget values"),
 
   # Add a line break
   br(),
@@ -54,7 +54,11 @@ shinyUI(fluidPage(
 
       # Add a slider
       sliderInput("age_slider", label = h3("Select a maximum age"),
-                  min = min_age, max = max_age, value = max_age)
+                  min = min_age, max = max_age, value = c(min_age, max_age)),
+      br(),
+
+      # Add an action button
+      actionButton("action_button", label = "Update plot")
 
     ),
 

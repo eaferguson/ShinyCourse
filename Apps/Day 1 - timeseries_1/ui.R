@@ -20,14 +20,14 @@ species_list <- c("All Species", sort(unique(raw_data$species)))
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Day 1 - Timeseries_1"),
 
   # Add a line break
   br(),
 
   # Add text section
   h4("This app is a little more complicated than the first one."),
-  h4("There is still only 1 widget (selectInput), but this time we are changing the species we want to view on the plot."),
+  h4("There is still only 1 dropdown menu, but this time we are changing the species we want to view on the plot."),
 
   # Add a line break
   br(),
