@@ -58,9 +58,13 @@ start_df <- summary_data %>%
   group_by(month, region, species) %>%
   summarise(n = sum(n))
 
+# Collect min and max ages for the slider
+min_age <- min(raw_data$age)
+max_age <- max(raw_data$age)
+
 #------------------------------------------------------------------------------#
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
   # Setup reactiveValues object that can be updated reactively
   data_subset <- reactiveValues(data = start_df)
@@ -89,7 +93,19 @@ shinyServer(function(input, output) {
     data_sub = data_sub %>%
       group_by(month, region, species) %>%
       summarise(n = sum(n))
-    data_subset$data <- as.data.frame(data_sub)
+    data_subset$data = as.data.frame(data_sub)
+  })
+
+  # Reset the app
+  observeEvent(input$reset_button, {
+
+    # Use the default data when reset
+    data_subset$data = as.data.frame(start_df)
+
+    # Reset the widgets to their default values
+    updateSelectInput(session, inputId = "select_region", selected = "All regions")
+    updateCheckboxGroupInput(session, inputId = "select_species", selected = c("cat", "dog", "human", "jackal", "lion"))
+    updateSliderInput(session, inputId = "age_slider", min = min_age, max = max_age, value = c(min_age, max_age))
   })
 
   # Produce plot

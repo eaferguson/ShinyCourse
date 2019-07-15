@@ -58,7 +58,10 @@ shinyUI(fluidPage(
       br(),
 
       # Add an action button
-      actionButton("action_button", label = "Update plot")
+      actionButton("action_button", label = "Update plot"),
+
+      # Add another action button
+      actionButton("reset_button", label = "Reset plot")
 
     ),
 
