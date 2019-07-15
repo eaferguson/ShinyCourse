@@ -506,6 +506,7 @@ output$output_text <- renderPrint({
 - ``reactive()``  
 - ``eventReactive()``
 - ``reactiveValues()``
+- ``observeEvent()``
 
 <!----------------------------------------------------------------------------->
 ## 
@@ -829,7 +830,7 @@ shinyApp(
         scale_color_manual(name="Species", values=col_palette) +
         labs(title=input$select_region, x="Date (Month)", y="Number of records") +
         scale_x_continuous(breaks=plot_breaks, labels=yrs, 
-                           limits=c(min(overall_summary$month), max(overall_summary$month))) +
+                           limits=c(min(overall_summary_1.4e$month), max(overall_summary_1.4e$month))) +
         theme_classic() +
         theme(axis.text = element_text(size=14),
               axis.title = element_text(size=18),
@@ -974,26 +975,31 @@ shinyApp(
 
 - The difference is that it is triggered by a specific user input
 
-- The input can be set as any of the widgets in your app, but the it works well with ``actionButton()``
+- The input can be set as any of the widgets in your app, but it works well with ``actionButton()``
 
+- ``eventReactive()`` returns ``NULL`` util the button is pressed, which means any outputs that rely on it are hidden until the button is pressed...
 
-- The ``reactive()`` function is used to carry out data processing in response to one or more user inputs, with the output saved as an object  
-
-- Objects created in the function should be done with an ``=`` NOT ``<-``  
-
-- The last line of the function should be the object you would like to be saved overall (e.g. a data subset)  
-
-- When <b>any</b> input is changed, the plot will update
 <!----------------------------------------------------------------------------->
-## An example with the ``eventReactive()`` function
+## An example with the ``eventReactive()`` function 
 
+<b>shinyUI Side Panel</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 radioButtons(inputId = "select_species", label = "Select a Species:",  
-             choices = sort(unique(raw_data$species)))
+             choices = sort(unique(raw_data$species)),
+             selected = 1)
+
 actionButton(inputId="go_button", label="Click to generate the plot:")
+```
+
+<b>shinyUI Main Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 plotOutput("chosen_species")
 ```
 
+<!----------------------------------------------------------------------------->
+## An example with the ``eventReactive()`` function
+
+<b>shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
 data_subset <- eventReactive(input$go_button, {
       data_sub = raw_data %>%
@@ -1004,8 +1010,7 @@ data_subset <- eventReactive(input$go_button, {
 output$chosen_species <- renderPlot({
       ggplot() + 
         geom_bar(data=data_subset(), aes(x=age)) + 
-        ggtitle(unique(data_subset()$species)) + 
-        theme_classic()
+        ggtitle(unique(data_subset()$species)) 
     })
 ```
 
@@ -1061,48 +1066,60 @@ shinyApp(
 ## 
 <center>
 <h2 class="blue"> What if we want to delay the app changes, <br>
-but show a base dataset? </h2>
+but still show an output to start with? </h2>
 </center>
 
 <!----------------------------------------------------------------------------->
-## What if we want to show a base dataset?
+## What if we want to delay the app changes, but still show an output to start with?
 
-- ``reactiveValues`` produce an object that acts like a list: you can store multiple values or objects to <em>slots</em>, that are referenced with the ``$`` symbol.  
-- The created ``reactiveValues`` object can be created with values, or values can be added after creation:  
-```{r, eval=FALSE, echo=TRUE}
-# Create reactiveValues object with 2 slots (x and y)
-rv <- reactiveValues(x = 34, y <- "This is a shiny Workshop!")
-
-# Add a dataframe to the reactiveValues object in a new slot
-rv$z <- data.frame(n = c(1, 2, 3), t = c("a", "b", "c"))
-```
-
-- These stored values are updated by reactive functions.  
-- This is helpful to display a default dataset that the user can update, particularly if you want a process to be triggered by a specific user event...
+- We can combine 2 functions: ``observeEvent()`` and ``reactiveValues()`` 
 
 <!----------------------------------------------------------------------------->
-##  ``reactiveValues()`` & ``observeEvent()`` functions working together
+## The ``observeEvent()`` function
 
-```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
-actionButton(inputId="go_button", label="Click to generate a random number:")
+- The ``observeEvent()`` function is very similar to the ``eventReactive()`` function - it is used to carry out a process in response to a specific user input.
 
-verbatimTextOutput("random_number")
-```
+- The difference is that it does not produce an output - it works by updating existing outputs
 
+<!----------------------------------------------------------------------------->
+## The ``reactiveValues()`` function
+
+- The ``reactiveValues()`` function produce an object that acts like a list: you can store multiple values or objects to <em>slots</em>, that are accessed with the ``$`` symbol
+
+- The ``reactiveValues`` object can be created with values, or values can be added after  
+
+- Stored values are updated by reactive functions
+
+<!----------------------------------------------------------------------------->
+##  ``observeEvent()`` and ``reactiveValues()`` {.smaller}
+
+<b>``eventReactive()`` - shinyServer Section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
-rn <- reactiveValues(n = NA)
+data_subset <- eventReactive(input$go_button, {
+      data_sub = raw_data %>% filter(species == input$select_species)
+      data_sub
+    })
+output$chosen_species <- renderPlot({
+      ggplot() + geom_bar(data=data_subset(), aes(x=age)) + 
+        ggtitle(unique(data_subset()$species)) 
+    })
+```
 
+<b>``observeEvent()`` and ``reactiveValues()`` - shinyserver Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+rv <- reactiveValues(data_sub = filter(raw_data, species=="cat"))
 observeEvent(input$go_button, {
-  rn$n = sample(x = 1:100, size = 1)
-})
-
-output$random_number <- renderPrint({
-  print(rn$n) 
-})
+      rv$data_sub = raw_data %>%
+        filter(species == input$select_species)
+    })
+output$chosen_species <- renderPlot({
+      ggplot() + geom_bar(data = rv$data_sub, aes(x=age)) + 
+        ggtitle(unique(rv$data_sub$species))
+    })
 ```
 
 <!----------------------------------------------------------------------------->
-## ``reactiveValues()`` & ``observeEvent()`` functions working together
+## ``reactiveValues()`` & ``eventReactive()``
 
 ```{r, echo=FALSE}
 shinyApp(
@@ -1110,28 +1127,39 @@ shinyApp(
   ui = fluidPage(
     tags$head(
       tags$style(HTML("
-      #txt {font-size: 20px;}
-      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 20px; font-weight: normal;}
+      #txt {font-size: 18px;}
+      #txt b {font-family: 'Lucida Console', Monospace; color: #5bb662; font-size: 18px; font-weight: normal;}
     "))),
     
-    HTML("<div id='txt'>Input: <b>actionButton()</b></div>"),
-    actionButton(inputId="go_button", label="Click to generate a random number:"), 
+    sidebarLayout(
+      sidebarPanel(
+        HTML("<div id='txt'>Input: <b>radioButtons()</b></div>"),
+        radioButtons(inputId = "select_species", label = "Select a Species:",  
+                     choices = sort(unique(raw_data$species))),
+        br(),
+        HTML("<div id='txt'>Input: <b>actionButton()</b></div>"),
+        actionButton(inputId="go_button", label="Click to generate the plot:")
+      ), 
+      mainPanel(
+        plotOutput("chosen_species")
+      )
+    )
+    ),
     
-    br(), br(),
-    
-    HTML("<div id='txt'>Input: <b>textOutput()</b></div>"),
-    verbatimTextOutput("random_number")
-  ),
-  
   server = function(input, output) {
-    rn <- reactiveValues(n=NA)
     
-    observeEvent(input$go_button, {
-      rn$n = sample(x=1:100, size=1)
+     rv <- reactiveValues(data_sub = filter(raw_data, species=="cat"))
+
+observeEvent(input$go_button, {
+      rv$data_sub = raw_data %>%
+        filter(species == input$select_species)
     })
-    
-    output$random_number <- renderPrint({
-      print(rn$n) 
+
+output$chosen_species <- renderPlot({
+      ggplot() + 
+        geom_bar(data = rv$data_sub, aes(x=age)) + 
+        ggtitle(unique(rv$data_sub$species)) + 
+        theme_classic()
     })
   },
   
@@ -1158,6 +1186,8 @@ Complete section 1.4g of the handout.<br><br>
 <b>shinyUI Side Panel</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
 actionButton("action_button", label = "Update plot")
+
+actionButton("reset_button", label = "Reset plot")
 ```
 
 <!----------------------------------------------------------------------------->
@@ -1165,16 +1195,124 @@ actionButton("action_button", label = "Update plot")
 
 <b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
 
-<b>shinyUI Side Panel</b>
-```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
-actionButton("action_button", label = "Update plot")
+<b>Above shinyserver Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+start_df <- summary_data %>%
+  filter(region=="All regions" | region=="All data") %>%
+  group_by(month, region, species) %>%
+  summarise(n = sum(n))
+
+min_age <- min(raw_data$age)
+max_age <- max(raw_data$age)
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g 
+
+<b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
+
+<b>shinyserver Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+data_subset <- reactiveValues(data = start_df)
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g {.smaller}
+
+<b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
+
+<b>shinyserver Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+observeEvent(input$action_button, {
+
+  data_sub = summary_data %>%
+      filter(region==input$select_region | region=="All data")
+
+    if(length(input$select_species)>0){
+      data_sub = data_sub %>%
+        filter(species %in% input$select_species | species=="All species" | species=="All data")
+    } else {
+      data_sub = data_sub %>%
+        filter(species=="All species" | species=="All data")
+    }
+
+    data_sub = data_sub %>%
+      filter(age >= input$age_slider[1] & age <= input$age_slider[2] | is.na(age))
+
+    data_sub = data_sub %>%
+      group_by(month, region, species) %>%
+      summarise(n = sum(n))
+    data_subset$data <- as.data.frame(data_sub)
+  })
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g
+
+<b class="blue">What reactive elements have changed in the ui code and the server code? </b><br><br>
+
+<b>shinyserver Section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+ output$tsPlot <- renderPlot({
+    ggplot() +
+      geom_path(data=data_subset$data, aes(x=month, y=n, color=species), size=1) +
+      scale_color_manual(name="Species", values=col_palette) +
+     ...
+   })
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g
+
+<b class="blue">Can you spot any new functions in the shinyServer that we have not introduced yet? </b><br><br>
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g
+
+<b class="blue">Can you spot any new functions in the shinyServer that we have not introduced yet? </b><br><br>
+
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+observeEvent(input$reset_button, {
+  
+  updateSelectInput(session, inputId = "select_region", 
+                    selected = "All regions")
+  
+  updateCheckboxGroupInput(session, inputId = "select_species", 
+                           selected = c("cat", "dog", "human", "jackal", "lion"))
+  
+  updateSliderInput(session, inputId = "age_slider", 
+                    min = min_age, max = max_age, value = c(min_age, max_age))
+})
+```
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4g    
 
 <b class="blue">Can you think of any scenarios where it would be helpful to use an ``actionButton()`` to trigger a reactive event? </b><br><br>
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.4g    
+
+<b class="blue">Can you think of any scenarios where it would be helpful to use an ``actionButton()`` to trigger a reactive event? </b><br><br><br>
+
+<ul>
+<li>Delay an action
+<ul style="list-style-type:none;">
+<li>complicated processing (e.g. model)<li>
+<li>plotting (e.g. map)</li>
+</ul>
+</li>
+<li>Select data
+<ul style="list-style-type:none;">
+<li>swap quickly between datasets or variables</li>
+</ul>
+</li>
+<li>Reset the app
+<ul style="list-style-type:none;">
+<li>replace any user choices with base values</li>
+</ul>
+</li>
+</ul>
 
 <!----------------------------------------------------------------------------->
 ##   Summary

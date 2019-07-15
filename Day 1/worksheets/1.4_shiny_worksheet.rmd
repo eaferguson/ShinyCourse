@@ -250,7 +250,7 @@ Hints:
 
 Please navigate to the <b class="blue">Apps/Day 1 - timeseries_4</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
 <br><br>
-This is the same timeseries app as before, but with a new ``actionButton()`` below the others.
+This is the same timeseries app as before, but with 2 new ``actionButton()`` below the others.
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
 <br><br>
@@ -258,6 +258,7 @@ Please take a moment to have a look at the server and ui scripts, then run the a
 We'll discuss this app as a group, so please take a moment to think about these questions:
 <ol>
 <li>What reactive elements have changed in the ui code and the server code?  </li>
+<li>Can you spot any new functions in the shinyServer that we have not introduced yet? What do these do?</li>
 <li>Can you think of any scenarios where it would be helpful to use an ``actionButton()`` to trigger a reactive event?</li>
 </ol>
 <br>
