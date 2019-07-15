@@ -9,8 +9,6 @@ runtime: shiny
 ---
 
 ```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-#webshot::install_phantomjs()
-
 library(dplyr)
 library(ggplot2)
 library(lubridate)
@@ -33,7 +31,6 @@ yrs <- c(unique(year(raw_data$date)), 2015) # Extract year and take only the uni
 plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
 
 # Create a colour palette
-#col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
 col_palette <- brewer.pal(name="Dark2", n=8)
 ```
 
@@ -1315,12 +1312,28 @@ observeEvent(input$reset_button, {
 </ul>
 
 <!----------------------------------------------------------------------------->
-##   Summary
+## Building an interactive plot in RShiny - Summary 
 
-- Processing data: reactive()
+<b>Basic functions</b><br>
 
-- Delay processing: observeEvent()
+- <b class="blue">inputs</b> are used in the ui to give the user options to change  
+<em>e.g.</em> ``selectInput()``
 
-- Display a base dataset: reactiveValues()
+- <b class="blue">render</b> is used in the server to create the plots, tables etc. that the user sees  
+<em>e.g.</em> ``renderPlot()``
+
+- <b class="blue">outputs</b> are used to display the rendered objects in the ui  
+<em>e.g.</em> ``plotOutput()``
+
+<!----------------------------------------------------------------------------->
+## Building an interactive plot in RShiny - Summary 
+
+<b>Reactive functions</b><br>
+
+- ``reactive()`` is used to carry out processes immediately, such as subsetting and calculations
+
+- If you want to delay the processing in your app, you can use ``eventReactive()`` to watch for a specific user input and then carry out processes
+
+- If you want to delay the processing in your app, but display a base dataset, you can use ``reactiveValues()`` to create a stored object and ``observeEvent()`` to update the value after a specific user input 
 
 
