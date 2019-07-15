@@ -24,7 +24,7 @@ max_age <- max(raw_data$age)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Day 1 - Timeseries_4 (Master)"),
+  titlePanel("Day 1 - Timeseries_4"),
 
   # Add a line break
   br(),
@@ -58,7 +58,10 @@ shinyUI(fluidPage(
       br(),
 
       # Add an action button
-      actionButton("action_button", label = "Update plot")
+      actionButton("action_button", label = "Update plot"),
+
+      # Add another action button
+      actionButton("reset_button", label = "Reset plot")
 
     ),
 
