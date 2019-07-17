@@ -1,10 +1,11 @@
 ---
-title: "Shiny Workshop: Day 1"
-Date: "1.4. App Guide"
+title: "Data Visualisation using RShiny: Day 1"
+author: "Building an interactive plot in RShiny"
+date: "1.4 App Guide"
 output:
   html_document:
   theme: yeti
-highlight: tango
+  highlight: tango
 
 ---
 
@@ -22,16 +23,6 @@ a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
 a.main:active {color: #4E23B8; text-decoration: none;}
 .panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; }
 .panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; }
-
-<!--- Collapse button --->
-input {display: none; visibility: hidden;}
-label { display: block; padding: 0.5em; text-align: center; border-bottom: 1px solid #CCC; color: #666;}
-label:hover {color: #000;}
-label::before {font-weight: bold; font-size: 15px; content: "+"; vertical-align: text-top; display: inline-block;  width: 20px; height: 20px; margin-right: 3px; background: radial-gradient(ellipse at center, #CCC 50%, transparent 50%);}
-.expand {height: 0px; overflow: hidden; transition: height 0.5s; color: #FFF;}
-section {padding: 0 20px;}
-.toggle:checked ~ .expand {height: 250px;}
-.toggle:checked ~ label::before {content: "-";}
 </style>
 
 ```{r, echo=FALSE}
@@ -39,17 +30,37 @@ library(kableExtra)
 ```
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 1.4. Shiny App Guide -->
+<!--- Contents section -->
 
+<br>
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
-<div class="panel panel-section"> <!--- Begin panel -->
-<h3>Shiny App Guide</h3>
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+<ul>
+<li><a class="title" href="#1">Pre-built apps</a></li>
+<li><a class="title" href="#2">Important Notes</a></li>
+<li><a class="title" href="#3">Inputs (Widgets)</a></li>
+<li><a class="title" href="#4">Outputs</a></li>
+<li><a class="title" href="#5">More Information</a></li>
+</ul>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-<h4>Pre-built apps</h4>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1. Pre-built apps -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1">Pre-built apps</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
 Most of the activities in this section will use a pre-built app from the Apps folder, which are all set up in a similar way: <br>
 
 <em> server.R scripts </em>
@@ -69,7 +80,17 @@ Most of the activities in this section will use a pre-built app from the Apps fo
 </ul>
 <br>
 
-<h4> Important Notes </h4>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2. Important Notes -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2">Important Notes</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
 <ul>
 <li> Each app must be contained in its own folder, because the scripts are named <b>server.R</b> and <b>ui.R</b> - which are not unique! </li>
 <li> Any data you use in an app must be located in the same folder as the server.R and ui.R scripts that use it. We store our data in a sub-folder called "data" to keep the app folder organised. </li>
@@ -77,7 +98,17 @@ Most of the activities in this section will use a pre-built app from the Apps fo
 <center><img style="width: 50%;" src="figures/folders.jpg"/></center>
 <br>
 
-<h4> Inputs </h4>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3. Inputs (Widgets) -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3">Inputs (Widgets)</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
 input is used in the <b>ui</b> to sets the options for the user to interact with. <br><br>
 ``` {r, echo=FALSE}
 widgets <- data.frame(Name=c("``actionButton()``", "``checkboxInput()``", "``checkboxGroupInput()``",
@@ -93,7 +124,17 @@ kable_styling(kable(widgets), font_size=14, full_width=FALSE, position="left", b
 ```
 <br>
 
-<h4> Outputs </h4>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 4. Outputs -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="4">Outputs</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
 render is used in the <b>server</b> to generate the output, and saved to an object as ``output$___``.
 output is used in the <b>ui</b> to display the output to the user. <br><br>
 ``` {r, echo=FALSE}
@@ -110,6 +151,16 @@ kable_styling(kable(outputs), font_size=14, full_width=FALSE, position="left", b
 ```
 <br>
 
-<h4> More Information </h4>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 5. More Information -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="5">More Information</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
 For more information on shiny, there is a <em>cheat-sheet</em> available <a class="main"  href="https://shiny.rstudio.com/images/shiny-cheatsheet.pdf" target="_blank">here</a>
 <br><br>
