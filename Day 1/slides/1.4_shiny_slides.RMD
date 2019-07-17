@@ -1335,5 +1335,3 @@ observeEvent(input$reset_button, {
 - If you want to delay the processing in your app, you can use ``eventReactive()`` to watch for a specific user input and then carry out processes
 
 - If you want to delay the processing in your app, but display a base dataset, you can use ``reactiveValues()`` to create a stored object and ``observeEvent()`` to update the value after a specific user input 
-
-
