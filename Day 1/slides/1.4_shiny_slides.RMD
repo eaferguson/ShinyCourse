@@ -100,7 +100,7 @@ These can be contained in one R script, or as multiple R scripts saved in the sa
 <!----------------------------------------------------------------------------->
 ## Your turn - complete section 1.4a
 
-  <center><img src="figures/ui_server_example.PNG" height="490px" /></center>
+
 
 <!----------------------------------------------------------------------------->
 ## Summary - section 1.4a  
