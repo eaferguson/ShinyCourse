@@ -10,7 +10,6 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Create a colour palette
-#col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 col_palette <- brewer.pal(name="Dark2", n=8)
 
 #------------------------------------------------------------------------------#
