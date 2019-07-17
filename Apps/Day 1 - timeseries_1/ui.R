@@ -13,21 +13,21 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-options_list <- c("All Species", sort(unique(raw_data$species)))
+species_list <- c("All Species", sort(unique(raw_data$species)))
 
 #------------------------------------------------------------------------------#
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Day 1 - Timeseries_1"),
 
   # Add a line break
   br(),
 
   # Add text section
   h4("This app is a little more complicated than the first one."),
-  h4("There is still only 1 widget (selectInput), but this time we are changing the species we want to view on the plot."),
+  h4("There is still only 1 dropdown menu, but this time we are changing the species we want to view on the plot."),
 
   # Add a line break
   br(),
@@ -36,12 +36,12 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput("select_species", label = h3("Select a Species:"),
-                  choices = options_list,
+                  choices = species_list,
                   selected = 1)
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("tsPlot", height=700)
     )

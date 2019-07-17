@@ -13,20 +13,20 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-options_list <- c("All Regions", sort(unique(raw_data$region)))
+region_list <- c("All Regions", sort(unique(raw_data$region)))
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Day 1 - Timeseries_2"),
 
   # Add a line break
   br(),
 
   # Add text section
   h4("This app is identical to the last, with a new widget: checkboxGroupInput"),
-  h4("Using these widgets, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
+  h4("Using these widgets together, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
 
   # Add a line break
   br(),
@@ -37,7 +37,7 @@ shinyUI(fluidPage(
 
       # Add a dropdown menu widget
       selectInput("select_region", label = h3("Select a Region:"),
-                  choices = options_list,
+                  choices = region_list,
                   selected = 1),
       br(),
 
@@ -48,7 +48,7 @@ shinyUI(fluidPage(
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("tsPlot", height=700)
     )

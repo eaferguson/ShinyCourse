@@ -32,7 +32,7 @@ overall_summary <- raw_data %>%
   mutate(region="All data",
          species="All data")
 
-# Summarise for 'all' sexes, divided by region data
+# Summarise for 'all' species, divided by region data
 region_allspecies_summary <- raw_data %>%
   group_by(month, region) %>%
   summarise(n = length(month)) %>%
@@ -44,7 +44,7 @@ species_allregions_summary <- raw_data %>%
   summarise(n = length(month)) %>%
   mutate(region="All Regions")
 
-# Summarise region and sex data
+# Summarise region and species data
 region_species_summary <- raw_data %>%
   group_by(month, region, species) %>%
   summarise(n = length(month))
@@ -84,10 +84,9 @@ shinyServer(function(input, output) {
    ggplot() +
       geom_path(data=data_subset(), aes(x=month, y=n, color=species), size=1) +
       scale_color_manual(name="Species", values=col_palette) +
-      ggtitle(input$select_region) +
-      labs(x="Month", y="Number of records") +
+      labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+      # Extra plotting code to control appearence
       scale_x_continuous(breaks=plot_breaks, labels=yrs, limits=c(min(overall_summary$month), max(overall_summary$month))) +
-      scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
       theme_classic() +
       theme(axis.text = element_text(size=14),
             axis.title = element_text(size=18),

@@ -1,8 +1,8 @@
 #------------------------------------------------------------------------------#
 
 # This script will complete some preperation for the upcoming rShiny workshop
-# on XXXX in Bagamoyo. Please read the instructions carefully, and run the
-# lines of code in each section of this script.
+# in Bagamoyo. Please read the instructions carefully, and run the lines of
+# code in each section of this script.
 
 # Please run this line to set your working directory to where you have stored
 # these files.
@@ -13,8 +13,8 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 # Please write your name and email address below, than run the lines to save
 # to the 'environment':
-your_name = "Rachel S"
-your_email_address = "rachel.steenson@glasgow.ac.uk"
+your_name = ""
+your_email_address = ""
 
 #------------------------------------------------------------------------------#
 # Step 2: UPDATE R VERSION
@@ -48,8 +48,8 @@ update.packages(checkBuilt=TRUE, ask=FALSE)
 # Set vector of packages to be installed
 list.of.packages <- c("dplyr", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
                       "lubridate", "htmltools", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
-                      "rgeos", "magrittr", "mapview", "ggplot2",
-                      "pillar", "sf", "knitr")
+                      "rgeos", "magrittr", "mapview", "ggplot2", "pillar", "sf", "knitr",
+                      "rlang", "vctrs", "Xmisc", "tidyverse")
 
 # Check if packages are already installed - if yes, remove from list
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -70,7 +70,7 @@ if(length(new.packages)) install.packages(new.packages, quiet=TRUE)
 # Please run this line of code to generate the .html file.
 rmarkdown::render("starterScript_report.Rmd")
 
-# Please send the .html file to rachel.steenson@glasgow.ac.uk.
+# Please send the .html file to rachel.steenson@glasgow.ac.uk
 
 # If you have any issues with this, please let us know immediately by emailing
 # rachel.steenson@glasgow.ac.uk

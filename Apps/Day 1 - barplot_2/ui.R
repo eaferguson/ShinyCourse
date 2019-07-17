@@ -10,14 +10,14 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Barplot"),
+  titlePanel("Day 1 - Barplot_2"),
 
   # Add a line break
   br(),
 
   # Add text section
   h4("This app our first introduction to rShiny!"),
-  h4("There is only 1 widget: selectInput - a dropdown menu. We have set this up to change the variable that is plotted on the x-axis."),
+  h4("There is still only 1 widget - a dropdown menu - but there is now a text output below."),
 
   # Add a line break
   br(),
@@ -37,7 +37,7 @@ shinyUI(fluidPage(
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("barPlot", height=700)
     )

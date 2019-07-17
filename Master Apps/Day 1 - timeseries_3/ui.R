@@ -24,7 +24,7 @@ max_age <- max(raw_data$age)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Exploratory plots: Timeseries_3 (Master)"),
 
   # Add a line break
   br(),

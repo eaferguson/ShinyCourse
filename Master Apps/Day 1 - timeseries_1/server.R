@@ -20,7 +20,7 @@ col_palette <- brewer.pal(name="Dark2", n=8)
 
 # Collect list of years
 raw_data$date <- as.Date(raw_data$date) # Change the structure of 'date' to a date
-yrs <- c(unique(year(raw_data$date)), 2015) #Extract year and take only the unique years
+yrs <- c(unique(year(raw_data$date)), 2015) # Extract year and take only the unique years
 
 # Plot Breaks
 plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
@@ -29,7 +29,7 @@ plot_breaks = seq(from=0, to=12*length(yrs)-1, by=12)
 overall_summary <- raw_data %>%
   group_by(month) %>%
   summarise(n = length(month)) %>%
-  mutate(region="All Regions")
+  mutate(region = "All Regions")
 
 # Summarise data by region
 region_summary <- raw_data %>%
@@ -55,17 +55,14 @@ shinyServer(function(input, output) {
    ggplot() +
       geom_path(data=data_subset(), aes(x=month, y=n, color=region), size=1) +
       scale_color_manual(name="Region", values=col_palette) +
-      ggtitle(input$select_region) +
-      labs(x="Date (Month)", y="Number of records") +
+      labs(title=input$select_region, x="Date (Month)", y="Number of records") +
+      # Extra plotting code to control appearence
       scale_x_continuous(breaks=plot_breaks, labels=yrs,
                          limits=c(min(overall_summary$month), max(overall_summary$month))) +
-      scale_y_continuous(limits=c(min(overall_summary$month), max(overall_summary$month))) +
       theme_classic() +
-      theme(axis.text = element_text(size=14),
-            axis.title = element_text(size=18),
-            plot.title = element_text(size=20),
-            legend.title = element_text(size=18),
-            legend.text = element_text(size=14))
+      theme(axis.text = element_text(size=14), legend.text = element_text(size=14),
+            axis.title = element_text(size=18), legend.title = element_text(size=18),
+            plot.title = element_text(size=20))
   })
 
 })

@@ -13,14 +13,14 @@ library(ggplot2)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Collect a list of regions for the dropdown menu
-options_list <- c("All Regions", sort(unique(raw_data$region)))
+region_list <- c("All Regions", sort(unique(raw_data$region)))
 
 #------------------------------------------------------------------------------#
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Timeseries"),
+  titlePanel("Exploratory plots: Timeseries_1 (Master)"),
 
   # Add a line break
   br(),
@@ -36,7 +36,7 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       selectInput("select_region", label = h3("Select a Region:"),
-                  choices = options_list,
+                  choices = region_list,
                   selected = 1)
 
     ),

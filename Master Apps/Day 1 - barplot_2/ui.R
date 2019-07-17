@@ -10,7 +10,7 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Exploratory plots: Barplot"),
+  titlePanel("Exploratory plots: Barplot_2 (Master)"),
 
   # Add a line break
   br(),

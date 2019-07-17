@@ -24,6 +24,7 @@ shinyServer(function(input, output) {
    ggplot() +
       geom_bar(data=raw_data, aes_string(x=input$xaxis), fill=col_palette[1]) +
       labs(x=input$xaxis, y="Number of records") +
+      # Extra plotting code to control appearence
       theme_classic() +
       theme(axis.text = element_text(size=14),
             axis.title = element_text(size=18),
