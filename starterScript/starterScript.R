@@ -1,4 +1,6 @@
 #------------------------------------------------------------------------------#
+# Workshop: Data Visualisation using RShiny, Bagamoyo, August 2019
+#------------------------------------------------------------------------------#
 
 # This script will complete some preperation for the upcoming rShiny workshop
 # in Bagamoyo. Please read the instructions carefully, and run the lines of
@@ -25,16 +27,25 @@ your_email_address = ""
 install.packages("installr", quiet=TRUE)
 installr::updateR(fast=TRUE)
 
-# When complete, "[1] TRUE" will appear in the console.
+# If your R version is up to date, the following message will print in the console:
+# "No need to update. You are using the latest R version:
+# R version 3.6.1 (2019-07-05)[1] FALSE"
+
+# If an update is needed, "[1] TRUE" will appear in the console When complete.
+
+# Please note, some of your old packages may not be copied accross, and these
+# will need re-installing.
 
 #------------------------------------------------------------------------------#
 # Step 3: UPDATE R PACKAGES
 
 # R packages are regularly updated by the developers, so it is important you
-# have the most updated versions to prevent issues.
+# have the most recent versions to prevent issues.
 
 # Please run this line of code to update your existing packagaes
 update.packages(checkBuilt=TRUE, ask=FALSE)
+
+# If you are asked to use a personal library, say "No".
 
 #------------------------------------------------------------------------------#
 # Step 4: INSTALL NEW R PACKAGES
@@ -45,13 +56,14 @@ update.packages(checkBuilt=TRUE, ask=FALSE)
 # Please run the following lines of code to install the packages from this list
 # that are not already installed on your computer.
 
-# Set vector of packages to be installed
-list.of.packages <- c("dplyr", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
-                      "lubridate", "htmltools", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
-                      "rgeos", "magrittr", "mapview", "ggplot2", "pillar", "sf", "knitr",
-                      "rlang", "vctrs", "Xmisc", "tidyverse")
+# This is the packages that will be installed
+list.of.packages <- c("dplyr", "ggplot2", "htmltools", "kableExtra", "knitr",
+                      "leaflet", "lubridate", "magrittr", "mapview", "pillar",
+                      "plotly", "png", "raster", "RColorBrewer", "rgdal", "rgeos",
+                      "rlang", "rmarkdown", "sf", "shiny", "shinydashboard",
+                      "shinyWidgets", "tidyverse", "vctrs", "Xmisc")
 
-# Check if packages are already installed - if yes, remove from list
+# Check if packages are already installed, and remove from the list if present
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 
 # Install packages
@@ -65,7 +77,7 @@ if(length(new.packages)) install.packages(new.packages, quiet=TRUE)
 # starterScript_report.html.
 
 # This report is very important to us. It will be saved in the folder you have
-# saved this report in.
+# stored this report in.
 
 # Please run this line of code to generate the .html file.
 rmarkdown::render("starterScript_report.Rmd")

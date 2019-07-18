@@ -15,16 +15,12 @@ output: html_document
 <h3>Check packages are loaded:</h3>
 
 ```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
-# Define a function to test if a padckage is installed
-is.installed <- function(mypkg){
-  is.element(mypkg, installed.packages()[,1])
-}
-
 # Set vector of package names
-list.of.packages <- c("dplyr", "shiny", "shinyWidgets", "shinydashboard", "leaflet", "RColorBrewer",
-                      "lubridate", "htmltools", "rgdal", "raster", "rmarkdown", "png", "kableExtra",
-                      "rgeos", "magrittr", "mapview", "ggplot2", "pillar", "sf", "knitr",
-                      "rlang", "vctrs", "Xmisc")
+list.of.packages <- c("dplyr", "ggplot2", "htmltools", "rmarkdown", "knitr",
+                      "leaflet", "lubridate", "magrittr", "mapview", "pillar",
+                      "plotly", "png", "raster", "RColorBrewer", "rgdal", "rgeos",
+                      "rlang", "kableExtra", "sf", "shiny", "shinydashboard",
+                      "shinyWidgets", "tidyverse", "vctrs", "Xmisc")
 
 # Print if package will load in correctly
 for(i in list.of.packages){
@@ -138,7 +134,7 @@ if(Xmisc::is.package.loaded("leaflet")){
 <br>
 <b>kableExtra</b> formatted table ordered by date column, created using <b>lubridate</b>.
 <li>If table is not contained in a scroll box, <b>kableExtra</b> is missing. </li>
-<li>If table is not ordered by date is in the format yyyy-mm-dd, <b>lubridate</b> is missing. </li><br>
+<li>If table is not ordered by date in the format yyyy-mm-dd, <b>lubridate</b> is missing. </li><br>
 ```{r echo=FALSE, fig.width=10, fig.height=5, message=FALSE, warning=FALSE}
 # Create date column, formatted as character
 iris$date <- paste0(iris$day,"/", iris$month, "/", iris$year)
