@@ -1,7 +1,7 @@
 ---
 title: "Data Visualisation using RShiny: Day 1"
 author: "Building an interactive plot in RShiny"
-date: "1.4 App Guide"
+date: "1.4 Guide"
 output:
   html_document:
   theme: yeti
