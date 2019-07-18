@@ -1,0 +1,582 @@
+---
+title: "Data Visualisation using RShiny: Day 1"
+author: "Building an interactive plot in RShiny"
+date: "1.1 - 1.4 Worksheet"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+
+---
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.blue {color: #4E23B8;}
+hr {border: 2px solid black;}
+a.title:link {color: white; text-decoration: none;}
+a.title:visited {color: white; text-decoration: none;}
+a.title:hover {color: #c9bde9; text-decoration: none;}
+a.title:active {color: white; text-decoration: none;}
+a.main:link {color: #4E23B8; text-decoration: none;}
+a.main:visited {color: #4E23B8; text-decoration: none;}
+a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
+a.main:active {color: #4E23B8; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Load in libraries
+library(kableExtra)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+library(rgdal)
+
+# Load in data
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012", verbose=FALSE)
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+```
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Contents section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+
+<b>1.1 &nbsp; Getting to know your data</b>
+<ul>
+<li><a class="title" href="#1.1a">1.1a Explore our dataset</a></li>
+</ul>
+<br>
+
+<b>1.2 &nbsp; Data subsetting and summarising</b>
+<ul>
+<li><a class="title" href="#1.2a">1.2a Subsetting data</a></li>
+<li><a class="title" href="#1.2b">1.2b Summarising data</a></li>
+<li><a class="title" href="#1.2c">1.2c Mutating your data and using the pipe</a></li>
+</ul>
+<br>
+
+<b>1.3 &nbsp; Building exploratory plots</b>
+<ul>
+<li><a class="title" href="#1.3a">1.3a Practice plotting with ggplot2</a></li>
+</ul>
+<br>
+
+<b>1.4 &nbsp; Building an interactive plot in RShiny</b>
+<ul>
+<li><a class="title" href="#1.4a">1.4a Create a shiny app</a></li>
+<li><a class="title" href="#1.4b">1.4b Add an option to a radio button widget</a></li>
+<li><a class="title" href="#1.4c">1.4c Add a new text output</a></li>
+<li><a class="title" href="#1.4d">1.4d Make a simple change to the data used by a widget</a></li>
+<li><a class="title" href="#1.4e">1.4e Make a more complicated change to the data used by a widget </a></li>
+<li><a class="title" href="#1.4f">1.4f Change a widget</a></li>
+<li><a class="title" href="#1.4g">1.4g Explore a "Go" button</a></li>
+</ul>
+<br>
+
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.1 Getting to know your data -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>1.1 &nbsp; Getting to know your data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.1a. Explore our dataset -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.1a">1.1a &nbsp; Explore our dataset</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4 class="blue">Questions: </h4>
+Try out the following commands to get to know the data:  
+<br>
+<ol>
+<li>``nrow(raw_data)``</li>
+How many entries does the data frame have?  
+<br>
+<li>``names(raw_data)``</li>
+What are the names of the first 3 columns?  
+<br>
+<li>``dim(raw_data)``</li>
+What are the dimensions of our data?  
+<br>
+<li>``summary(raw_data)``</li>
+What is the mean age of the organisms infected?  
+<br>
+<li>``head(raw_data)``</li>
+In which region did the 1st case occur?  
+<br>
+<li>``tail(raw_data)``</li>
+In which region did the last case occur?  
+<br>
+<li>``str(raw_data)``</li>
+Which variables are numerical (num)?  
+<br>
+<li>``unique(raw_data$species)``</li>
+What types of species do we have in the data?  
+<br>
+<li> ``table(raw_data$species)``</li>
+Which species has the most cases?  
+<br>
+<li>``?names()``</li>
+What is the first argument for the function names?  
+</ol>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.2 Data subsetting and summarising -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>1.2 &nbsp; Data subsetting and summarising</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.2a. Subsetting data -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.2a">1.2a &nbsp; Subsetting data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Make sure you have dplyr loaded into your R session by using:
+```{r, eval=FALSE}
+library(dplyr)
+```
+<br>
+<h4 class="blue">Questions: </h4>
+What do each of these lines of code subset the data for?
+<br>
+<ol>
+<li>
+```{r, eval=FALSE}
+select(raw_data, x, y, age)
+```
+</li>
+<br>
+<li>
+```{r, eval=FALSE}
+filter(raw_data, region %in% c("Mara", "Pwani", "Dar-es-salaam"))
+```
+</li>
+<br>
+<li>
+```{r, eval=FALSE}
+filter(raw_data, age >= 30)
+```
+</li>
+</ol>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.2b. Summarising data -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.2b">1.2b &nbsp; Summarising data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4 class="blue">Questions: </h4>
+<ol>
+<li> What do each of these lines of code summarise?
+<ol type="a">
+<li>
+```{r, eval=FALSE}
+summarise(raw_data, n_males = length(which(sex=="M")))
+```
+</li>
+<br>
+<li>
+```{r, eval=FALSE}
+summarise(raw_data, total_age = sum(age))
+```
+</li>
+<br>
+</ol>
+</li>
+<li>How are these two tables different?</li>
+```{r, eval=FALSE}
+df_1 <- group_by(raw_data, sex)
+summarise(df_1, 
+          n_records = length(sex),
+          mean_age = mean(age))
+
+df_2 <- group_by(raw_data, region, sex)
+summarise(df_2, 
+          n_records = length(sex),
+          mean_age = mean(age))
+
+```
+</ol>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.2c. Mutating your data and using the pipe -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.2c">1.2c &nbsp; Mutating your data and using the pipe</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>What do each of these lines of code add as a new column?  
+<br>
+<ol type="a">
+<li>
+```{r, eval=FALSE}
+raw_data <- mutate(raw_data, "new_col_1" = substr(date, 1, 4))
+```
+</li>
+<li>
+```{r, eval=FALSE}
+raw_data <- mutate(raw_data, "new_col_2" = ifelse(density >= 500,"High", "Low"))
+```
+</li>
+</ol>
+</li>
+<br>
+<li>Fill in the blanks for the following lines of code in your R script:  
+<br>
+<ol type="a">
+<li>Subset for only records with wildlife  (i.e. jackal, lion)</li>
+```{r, eval=FALSE}
+raw_data %>%
+  ___(____________)
+```
+<li>Subset for humans, and summarise the mean age per region</li>
+```{r, eval=FALSE}
+raw_data %>%
+  ___(____________) %>%
+  ___(region) %>%
+  ___(mean_age = ________)
+```
+</ol>
+</li>
+</ol>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.3 Building exploratory plots -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>1.3 &nbsp; Building exploratory plots</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.3a. Practice plotting with ggplot2 -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.3a">1.3a &nbsp; Practice plotting with ggplot2</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Make sure you have the following packages loaded into your R session:
+```{r, eval=FALSE}
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+```
+<br>
+<h4 class="blue">Questions: </h4>
+Fill in the blanks for the following lines of code in your R script:  
+<br>
+<ol>
+<li>Create a barplot of species and colour by species.</li>
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
+  theme_classic()
+```
+<br>
+<li>Add a title, x and y axis labels to the barplot of species</li>
+```{r, eval = F, echo = T}
+ggplot() + 
+  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
+  _________ +
+  _________ +
+  _________ +
+  theme_classic()
+```
+</ol>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4 Building an interactive plot in RShiny -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>1.4 &nbsp; Building an interactive plot in RShiny</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4a. Create a shiny app -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4a">1.4a &nbsp; Create a shiny app</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4 class="blue">Activity: Create an app in a single R script</h4>
+<ol>
+<li> Open up R Studio </li>
+<li> On the top menu, click on:  </li>
+&nbsp;&nbsp; File > New File > Shiny Web App  
+<li> Type in a name for your app, click on <em>Single File (app.R)</em>, check you are happy with the directory, then click Create! </li> 
+<li> Click on the <img src="figures/run.png" style="display: inline-block; margin: 0" /> button to run the code and load the app </li>
+</ol> 
+<br>
+<h4 class="blue">Activity: Create an app using multiple R scripts</h4>
+<ol>
+<li> On the top menu, click on:  </li>
+&nbsp;&nbsp; File > New File > Shiny Web App  
+<li> Type in a name for your app, click on <em>Multiple File (ui.R/server.R)</em>, check you are happy with the directory, then click Create! </li> 
+<li> Run the app as before </li>
+</ol>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4b. Add an option to a radio button widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4b">1.4b &nbsp; Add an option to a radio button widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/barplot_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is a simple app that uses our dataset to show a barplot.
+<br>
+There is only 1 widget - ``selectInput()`` - to show a Dropdown menu that selects a variable to show on the x-axis.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br>
+We've added comments to the 2 scripts to help explain what the code does, but some of it should be familiar from earlier.
+<br><br>
+<h4 class="blue">Activity: Add age as an option  to view on the x-axis</h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You only need to change the ui file</li>
+<li>Remember to explore the dataset to find the correct column name</li>
+</ul>
+</em>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4c. Add a new text output -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4c">1.4c &nbsp; Add a new text output</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/barplot_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is the same simple barplot app as before, but with a new ``verbatimtextOutput()`` below.
+<br>
+<em>Verbatim</em> simply mean "as is"" - it prints the output to look like ``code``.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>How many inputs does the app use?</li>
+<li>How many outputs/renders does the app use?</li>
+</ol>
+<br>
+<h4 class="blue">Activity: Add another text output to the side panel</h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>You could show a summary of your data e.g. ``head()``, ``summary()``</li>
+<li>You can reference the input as a column name using a set of double square brackets e.g. ``raw_data[[input$new_text]]``</li>
+</ul>
+</em>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4d. Make a simple change to the data used by a widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4d">1.4d &nbsp; Make a simple change to the data used by a widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is a new app that shows a timeseries plot with a Dropdown menu, which allows the user to select the species plotted. There is an option for "All species", but if the user selects another option, "All species" is still plotted.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>What function is used to subset in the ``reactive()`` function?</li>
+<li>What does the ``|``mean in the ``reactive()`` function?</li>
+</ol>
+<br>
+<h4 class="blue">Activity: Change the dropdown from Species to Region  </h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>We have named objects descriptively e.g. ``input$select_species``; use this to identify where you should make edits</li>
+</ul>
+</em>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4e. Make a more complicated change to the data used by a widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4e">1.4e &nbsp; Make a more complicated change to the data used by a widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is the same timeseries app as before, but with a new ``checkboxGroupInput()`` below.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>Why do we create categories for "All data", "Both sexes" and "All regions" when summarising the data?</li>
+<li>In the ``checkboxGroupInput()`` function in the ui, we provide a list for the choices given to the user.  
+Which of these (Male, Female, M, F) are present in the data, and which have we set to appear in the app?</li>
+</ol>
+<br><h4 class="blue">Activity: Change the checkboxes from Sex to Species  </h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>When listing options for the widgets, you can provide a list (e.g. ``region_list``) or set the choices manually (e.g. ``list("Dog"="dog", "Cat"="cat"...``))</li>
+<li>For checkboxes, you do not need an option for "Select all" in the ui because the user can automatically select multiple options</li>
+</ul>
+</em>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4f. Change a widget -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4f">1.4f &nbsp; Change a widget</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_3</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is the same timeseries app as before, but with a new ``sliderInput()`` below the others.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>What does the ``<=`` mean in the ``reactive()`` function?</li>
+<li>What does the ``value`` argument in the ``sliderInput()`` set?</li>
+</ol>
+<br><h4 class="blue">Activity: Change from a 1-sided to a 2-sided slider  </h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>Remember to use the ``?`` to view a helpfile if you are stuck</li>
+<li>If an input produces multiple values, they appear in the ui as a character string (vector)</li>
+</ul>
+</em>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1.4ag Explore a "Go" button -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1.4g">1.4g &nbsp; Explore a "Go" button</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Please navigate to the <b class="blue">Apps/Day 1 - timeseries_4</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is the same timeseries app as before, but with 2 new ``actionButton()`` below the others.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+We'll discuss this app as a group, so please take a moment to think about these questions:
+<ol>
+<li>What reactive elements have changed in the ui code and the server code?  </li>
+<li>Can you spot any new functions in the shinyServer that we have not introduced yet? What do these do?</li>
+<li>Can you think of any scenarios where it would be helpful to use an ``actionButton()`` to trigger a reactive event?</li>
+</ol>
+<br>
