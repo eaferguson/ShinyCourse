@@ -1,6 +1,7 @@
 ---
-title: "Shiny Workshop: Day 1"
-Date: "Worksheet 1.4"
+title: "Data Visualisation using RShiny: Day 1"
+author: "Building an interactive plot in RShiny"
+date: "1.4 Worksheet"
 output: 
   html_document:
     theme: yeti
@@ -22,16 +23,6 @@ a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
 a.main:active {color: #4E23B8; text-decoration: none;}
 .panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
 .panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
-
-<!--- Collapse button --->
-input {display: none; visibility: hidden;}
-label { display: block; padding: 0.5em; text-align: center; border-bottom: 1px solid #CCC; color: #666;}
-label:hover {color: #000;}
-label::before {font-weight: bold; font-size: 15px; content: "+"; vertical-align: text-top; display: inline-block;  width: 20px; height: 20px; margin-right: 3px; background: radial-gradient(ellipse at center, #CCC 50%, transparent 50%);}
-.expand {height: 0px; overflow: hidden; transition: height 0.5s; color: #FFF;}
-section {padding: 0 20px;}
-.toggle:checked ~ .expand {height: 250px;}
-.toggle:checked ~ label::before {content: "-";}
 </style>
 
 ```{r, echo=FALSE}
@@ -72,7 +63,7 @@ Click to view a specific section of the document.
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-<h4 class="blue">Goal: Create an app in a single R script</h4>
+<h4 class="blue">Activity: Create an app in a single R script</h4>
 <ol>
 <li> Open up R Studio </li>
 <li> On the top menu, click on:  </li>
@@ -81,7 +72,7 @@ Click to view a specific section of the document.
 <li> Click on the <img src="figures/run.png" style="display: inline-block; margin: 0" /> button to run the code and load the app </li>
 </ol> 
 <br>
-<h4 class="blue">Goal: Create an app using multiple R scripts</h4>
+<h4 class="blue">Activity: Create an app using multiple R scripts</h4>
 <ol>
 <li> On the top menu, click on:  </li>
 &nbsp;&nbsp; File > New File > Shiny Web App  
@@ -108,8 +99,10 @@ This is a simple app that uses our dataset to show a barplot.
 There is only 1 widget - ``selectInput()`` - to show a Dropdown menu that selects a variable to show on the x-axis.
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
+<br>
+We've added comments to the 2 scripts to help explain what the code does, but some of it should be familiar from earlier.
 <br><br>
-<h4 class="blue">Goal: Add age as an option  to view on the x-axis</h4>
+<h4 class="blue">Activity: Add age as an option  to view on the x-axis</h4>
 <br>
 <em>
 Hints:
@@ -135,11 +128,17 @@ Please navigate to the <b class="blue">Apps/barplot_2</b> folder and open up the
 <br><br>
 This is the same simple barplot app as before, but with a new ``verbatimtextOutput()`` below.
 <br>
-<em>Verbatim</em> simply mean as is - it prints the output to look like ``code``.
+<em>Verbatim</em> simply mean "as is"" - it prints the output to look like ``code``.
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
 <br><br>
-<h4 class="blue">Goal: Add another text output to the side panel</h4>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>How many inputs does the app use?</li>
+<li>How many outputs/renders does the app use?</li>
+</ol>
+<br>
+<h4 class="blue">Activity: Add another text output to the side panel</h4>
 <br>
 <em>
 Hints:
@@ -168,7 +167,13 @@ This is a new app that shows a timeseries plot with a Dropdown menu, which allow
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
 <br><br>
-<h4 class="blue">Goal: Change the dropdown from Species to Region  </h4>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>What function is used to subset in the ``reactive()`` function?</li>
+<li>What does the ``|``mean in the ``reactive()`` function?</li>
+</ol>
+<br>
+<h4 class="blue">Activity: Change the dropdown from Species to Region  </h4>
 <br>
 <em>
 Hints:
@@ -196,13 +201,19 @@ This is the same timeseries app as before, but with a new ``checkboxGroupInput()
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
 <br><br>
-<h4 class="blue">Goal: Change the checkboxes from Sex to Species  </h4>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>Why do we create categories for "All data", "Both sexes" and "All regions" when summarising the data?</li>
+<li>In the ``checkboxGroupInput()`` function in the ui, we provide a list for the choices given to the user.  
+Which of these (Male, Female, M, F) are present in the data, and which have we set to appear in the app?</li>
+</ol>
+<br><h4 class="blue">Activity: Change the checkboxes from Sex to Species  </h4>
 <br>
 <em>
 Hints:
 <ul>
 <li>You will need to change both files</li>
-<li>When listing options for the widgets, you can provide a list (e.g. region_list) or set the choices manually (e.g. list("Dog"="dog", "Cat"="cat"...))</li>
+<li>When listing options for the widgets, you can provide a list (e.g. ``region_list``) or set the choices manually (e.g. ``list("Dog"="dog", "Cat"="cat"...``))</li>
 <li>For checkboxes, you do not need an option for "Select all" in the ui because the user can automatically select multiple options</li>
 </ul>
 </em>
@@ -225,7 +236,12 @@ This is the same timeseries app as before, but with a new ``sliderInput()`` belo
 <br><br>
 Please take a moment to have a look at the server and ui scripts, then run the app.
 <br><br>
-<h4 class="blue">Goal: Change from a 1-sided to a 2-sided slider  </h4>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>What does the ``<=`` mean in the ``reactive()`` function?</li>
+<li>What does the ``value`` argument in the ``sliderInput()`` set?</li>
+</ol>
+<br><h4 class="blue">Activity: Change from a 1-sided to a 2-sided slider  </h4>
 <br>
 <em>
 Hints:
