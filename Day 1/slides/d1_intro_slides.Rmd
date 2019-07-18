@@ -1,10 +1,11 @@
 ---
 title: "Data Visualisation using RShiny"
-author: "Rachel Steenson, Elaine Ferguson, Will Harvey, and Laurie Baker"
+author: "Laurie Baker, Elaine Ferguson, Will Harvey, and Rachel Steenson"
 date: "**Tanzania**, August, 2019"
 output: 
   ioslides_presentation:
     incremental: true
+    widescreen: true
 ---
 
 ```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -13,6 +14,7 @@ library(ggplot2)
 library(lubridate)
 library(leaflet)
 library(rgdal)
+library(kableExtra)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
 region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
 
@@ -33,6 +35,10 @@ div.footnotes {
   width: 80%;
   font-size: 0.6em;
 }
+.blue {color: #4E23B8;}
+.hl1-background {background-color: #fcf0cd;}
+.hl2-background {background-color: #dfecfc;}
+
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -53,7 +59,7 @@ $(document).ready(function() {
 });
 </script>
 
-
+<!----------------------------------------------------------------------------->
 ## Background
 
 ### **What is RShiny?**
@@ -66,22 +72,25 @@ $(document).ready(function() {
 > - Communicate your results to colleagues, stakeholders, managers
 > - Allow others to explore their own hypotheses
 
-## Course Overview
+<!----------------------------------------------------------------------------->
+## Course Overview {.smaller}
 
 ### **Day 1:**
 > - Getting to know your data
-> - Data subsetting, summarising and exploratory plots
-> - Build an interactive exploratory plot in RShiny
+> - Data subsetting, summarising
+> - Building exploratory plots
+> - Building an interactive plot in RShiny
 
 ### **Day 2:**
 > - Introduction to leaflet
 > - Building a leaflet map in R
-> - Build an interactive map in RShiny
+> - Building an interactive map in RShiny
 
 ### **Day 3:**
 > - Review
 > - Build your own apps!
 
+<!----------------------------------------------------------------------------->
 ## Daily Schedule
 
 ### **Morning Session**
@@ -93,9 +102,10 @@ $(document).ready(function() {
 
 ### **Afternoon Session**
 > - Part 3
-> - Afternoon tea
+> - Break: tea and coffee
 > - Part 4
 
+<!----------------------------------------------------------------------------->
 ## Getting Help
 
 ```{r, out.width = "500px", out.height = "500px"}
@@ -104,8 +114,8 @@ knitr::include_graphics("figures/sticky notes.jpg")
  
 ```
 
+<!----------------------------------------------------------------------------->
 ## Deadly virus spreads through Tanzania!
-
 
 ```{r, out.width = "760px", out.height = "380px"}
 library(png)
@@ -113,8 +123,20 @@ knitr::include_graphics("figures/headline.png")
  
 ```
 
-> - **Your mission**: visualise the disease advance and save the wildlife and citizens of Tanzania!!
+**Your mission**
+Visualise the disease advance and save the wildlife and citizens of Tanzania!!
 
+<!----------------------------------------------------------------------------->
+## Day 1
+
+<ul>
+<li> <b class="blue">1.1 Getting to know your data </b></li>
+<li> 1.2 Data subsetting and summarising </li>
+<li> 1.3 Building exploratory plots </li>
+<li> 1.4 Building an interactive plot in RShiny </li>
+</ul>
+
+<!----------------------------------------------------------------------------->
 ## Getting to know the data
 
 Step 1: Set the working directory
@@ -124,126 +146,132 @@ Step 1: Set the working directory
 # Session > Set Working Directory > To Source File Location
 ```
 
-Step 2: Install and load packages
+Step 2: Load packages
 
 ```{r, echo = T, eval = FALSE}
-install.packages("dplyr")
 library("dplyr")
 ```
-
 
 Step 3: Read in the data
 ```{r, echo = T, eval = F}
 raw_data <- read.csv("data/raw_data.csv")
 ```
 
-```{r, include = F}
-library("dplyr")
-```
-
-
-## Getting to know the data
+<!----------------------------------------------------------------------------->
+## Getting to know the data {.smaller}
 
 We have several tools to get to know our data
 
 - ``View()``: allows us to view the dataframe as a spreadsheet.
-- ``names()``: give us the names of the columns in our data frame
+- ``nrow()``: tells us the number of rows in our data frame.
+- ``names()``: give us the names of the columns in our data frame.
 - ``dim()``: tells us the dimensions of our dataframes. 
 - ``summary()``: give us summary statistics (counts, min, median, mean, max).
-- ``head()``: gives us the first 6 elements of the data
-- ``tail()``: gives us the last 6 elements of the data
-- ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer))
+- ``head()``: gives us the first 6 elements of the data.
+- ``tail()``: gives us the last 6 elements of the data.
+- ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer)).
 - ``unique()``: tells us the unique elements of a variable. 
+- ``table()``: gives us count number for the columns specified.
 - ``?`` and ``??`` accesses the help file for a function.
 
+<!----------------------------------------------------------------------------->
 ## Your Turn
 
-> - ``View(raw_data)``: how many entries does the data frame have?
-> - ``names(raw_data)``: what are the names of the first 3 columns?
-> - ``dim(raw_data)``: what are the dimensions of our data?
-> - ``summary(raw_data)``: which species had more cases? What is the mean age of everything infected?
-> - ``head(raw_data)``: In which region did the 1st case occur?
-> - ``tail(raw_data)``: In which region did the last case occur?
-> - ``str(raw_data)``: Which variables are numbers (num)?
-> - ``unique(raw_data$species)``: What are the unique elements of a variable?
-> - ``?names()``: What is the first argument for the function names?
+> - Navigate to Day 1/worksheets, and open <b>1.0_worksheet.html</b>
 
-## ``View()``, ``names()``, ``dim()``
+> - All the activities we'll guide you to are in this file.
 
-How many entries does the data frame have?
+> - The contents table is interactive - you can click to move to the activity.
+
+<br>
+
+Complete section 1.1a of the worksheet
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
+
+<b class="blue">How many entries does the data frame have?</b>
 
 ```{r, echo = TRUE}
-
-View(raw_data)
-
+nrow(raw_data)
 ```
 
-What are the names of the first 3 columns?
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
+
+<b class="blue">What are the names of the first 3 columns?</b>
 
 ```{r, echo = TRUE}
-
 names(raw_data)
-
 ```
 
-What are the dimensions of our data?
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
+
+<b class="blue">What are the dimensions of our data?</b>
 
 ```{r, echo = TRUE}
-
 dim(raw_data)
-
 ```
 
-## ``summary()`` 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  {.smaller}
 
-Which species has more cases? What is the mean age of those infected?
+<b class="blue">What is the mean age of those infected?</b>
 
 ```{r, echo = TRUE}
-
 summary(raw_data)
-
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
 
-## ``head()``, ``tail()``
-
-In which region did the 1st case occur?
+<b class="blue">In which region did the 1st case occur?</b>
 
 ```{r, echo = TRUE}
-
-head(raw_data, 1)
-
+head(raw_data)
 ```
 
-In which region did the last case occur?
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
+
+<b class="blue">In which region did the last case occur?</b>
 
 ```{r, echo = TRUE}
-
-tail(raw_data, 1)
-
+tail(raw_data)
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
 
-## ``str()``
+<b class="blue">Which variables are numerical (have num written next to them)?</b>
 
-Which variables are numbers (have num written next to them)?
 ```{r, echo = T}
-
 str(raw_data)
-
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
 
-## ``unique()``, ``?names()`` 
+<b class="blue">What types of species do we have in our dataset?</b>
 
-What types of species do we have in our dataset?
 ```{r, echo = T}
-
 unique(raw_data$species)
-
 ```
 
-What is the first argument for the function ``names()`` 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
+
+<b class="blue">Which species has the most cases?</b>
+
+```{r, echo = T}
+table(raw_data$species)
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.1a  
+
+<b class="blue">What is the first argument for the function ``names()``?</b>
 
 ```{r, out.width = "400px", out.height = "300px"}
 library(png)
@@ -251,68 +279,54 @@ knitr::include_graphics("figures/names_info.png")
  
 ```
 
-# Data subsetting and summarising
+<!----------------------------------------------------------------------------->
+## Day 1
 
+<ul>
+<li> 1.1 Getting to know your data </li>
+<li><b class="blue"> 1.2 Data subsetting and summarising </b></li>
+<li> 1.3 Building exploratory plots </li>
+<li> 1.4 Building an interactive plot in RShiny </li>
+</ul>
+
+<!----------------------------------------------------------------------------->
 ## Data subsetting and summarising
 
 To understand the outbreak we may want to look more closely at a particular **region**, **time**, or **variable**. 
 
 The ``dplyr`` package allows us to filter and select different elements using **verbs**:
 
- - ``select()`` picks variables based on their names.
- - ``filter()`` picks cases based on their values.
- - ``summarise()`` reduces multiple values down to a single summary.
- - ``mutate()`` adds new variables that are functions of existing variables
-
-## ``dplyr`` and the piping function ``%>%``
-
-In ``dplyr`` you can use the piping function %>% where 
-
-```{r, eval = F, echo = T}
-filter(raw_data, region == "Pwani")
-
-```
-
-Is the same as
-
-```{r, eval = F, echo = T}
-
-raw_data %>% 
-  filter(region == "Pwani")
-
-```
+ - ``select()`` subsets columns based on their names.
+ - ``filter()`` subsets rows based on their values.
+ - ``summarise()`` calculates summary statistics.
+ - ``group_by()`` groups variables for summarising.
+ - ``mutate()`` adds new columns that are functions of existing variables.
 
 Similar to regular R you can use the ``<-`` or ``=`` to store the object
 
-```{r, eval = F, echo = T}
-species_df <- raw_data %>%
-                      select(species, date, age)
+<!----------------------------------------------------------------------------->
+## Subsetting columns using ``select()`` {.smaller}
 
-``` 
+``select()`` subsets columns based on their names.
 
-## Selecting columns using ``select()`` 
-
-``select()`` picks variables based on their names.
-
+<b>E.g. Subset for the species column:</b>
 ```{r, eval = T, echo = T}
-species_df1 <- raw_data %>% 
-    select(species)
-
-head(species_df1, 1)
-
-species_df3 <- raw_data %>%
-    select(species, region, sex)
-
-head(species_df3, 1)
-
+species_df1 <-  select(raw_data, species)
+head(species_df1, 3)
 ```
 
+<b>E.g. Subset for the species, region and sex columns:</b>
+```{r, eval = T, echo = T}
+species_df3 <- select(raw_data, species, region, sex)
+head(species_df3, 3)
+```
 
-## Selecting rows using ``filter()`` 
+<!----------------------------------------------------------------------------->
+## Subsetting rows using ``filter()`` 
 
-``filter()`` picks cases based on their values.
+``filter()`` subsets rows based on their values.
 
-To select the observations you want it is useful to know some comparison operators
+To select the observations you want it is useful to know some comparison operators:
 
   - ``>`` **greater than**
   - ``>=`` **greater than or equal to**
@@ -323,164 +337,357 @@ To select the observations you want it is useful to know some comparison operato
   - ``!`` **not**
   - ``%in% c(....)`` **one in** a list of elements
 
-## Selecting rows using ``filter()`` 
+<!----------------------------------------------------------------------------->
+## Subsetting rows using ``filter()`` {.smaller}
 
-Filter by value that is equal to
-
-```{r, eval = T, echo = T}
-pwani_df <- raw_data %>% 
-    filter(region == "Pwani")
-```
-
-Filter by value that is less than
+<b>E.g. Filter by value that is equal to:</b>
 
 ```{r, eval = T, echo = T}
-early_df <- raw_data %>%
-    filter(month < 40)
+filter_1 <- filter(raw_data, region == "Pwani")
+head(filter_1, 3)
 ```
 
-Filter by value that is not equal to OR keep values in a list
+<br>
+<b>E.g. Filter by value that is less than:</b>
 
 ```{r, eval = T, echo = T}
-human_wild_animal_df <- raw_data %>%
-    filter(species != "cat" & species != "dog") 
+filter_2 <- filter(raw_data, month < 40)
+head(filter_2, 3)
 ```
 
+<!----------------------------------------------------------------------------->
+## Subsetting rows using ``filter()`` {.smaller}
+
+<b>E.g. Filter by value that is not equal to:</b>
 
 ```{r, eval = T, echo = T}
-human_wild_animal_df <- raw_data %>%
-    filter(species %in% c("jackal", "lion")) 
+filter_3 <- filter(raw_data, species != "cat" & species != "dog")
+head(filter_3, 3)
 ```
 
-
-## Using **summarise()**
-
-``summarise()`` reduces multiple values down to a single summary.
+<br>
+<b>E.g. Filter by multiple values:</b>
 
 ```{r, eval = T, echo = T}
-raw_data %>% 
-    summarise(mean_age = mean(age)) # mean() takes the average
-
-raw_data %>% 
-    summarise(total_cases = n()) # n() takes the number of elements
-
-
+filter_4 <- filter(raw_data, species %in% c("jackal", "lion"))
+head(filter_4, 3)
 ```
 
-## Using **mutate()**
-
-**mutate()** adds new variables that are functions of existing variables
-
-```{r, eval = T, echo = T}
-raw_data_df <- raw_data %>% 
-    mutate(animal_type = ifelse(species == "human", "human", "animal")) 
-
-head(raw_data_df)
-```
-
-## Combining multiple operations
-
-Number of cases from domestic and wild animals in Pwani. 
-
-```{r, eval = T, echo = T}
-pwani_df <- raw_data %>%
-              filter(region == "Pwani")
-pwani_non_human <- pwani_df %>%
-                      filter(species != "human")
-pwani_non_human <- pwani_non_human %>%
-                      mutate("animal_type" = ifelse(species 
-                      %in% c("dog", "cat"), "domestic", "wild"))
-pwani_grouped<- pwani_non_human %>%
-      group_by(animal_type)
-
-pwani_grouped %>% summarise(n())
-```
-      
-
-
-## Combining multiple operations
-
-Or we can use the piping function ``%>%``
-
-```{r, eval = T, echo = T}
-raw_data %>% 
-  filter(region == "Pwani", species != "human") %>% 
-  mutate("animal_type" = ifelse(species %in% c("dog", "cat"), 
-          "domestic", "wild")) %>% 
-  group_by(animal_type) %>% 
-  summarise(n())
-```
-
-
+<!----------------------------------------------------------------------------->
 ## Your Turn
 
-Complete section 1.2.1-1.2.3 of the handout. 
+Complete section 1.2a of the worksheet
 
-## Your Turn - Results section 1.2.1
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
 
-What do each of these lines of code filter the data for?
+<b class="blue"> What do each of these lines of code subset the data for?</b>
 
-```{r, eval=FALSE, echo = T}
-raw_data %>% 
-  filter(region %in% c("Mara", "Pwani", "Dar-es-salaam"))
-
-raw_data %>% 
-  filter(age >= 30)
+```{r, echo=TRUE, eval=FALSE}
+select(raw_data, x, y, age)
 ```
 
-
-## Your Turn - Results section 1.2.2
-
-<p class="question">What do each of the following filters summarise?</p>
-```{r, eval=T, echo = T}
-raw_data %>% 
-  summarise(n_males = length(which(sex=="M")))
-
-raw_data %>% 
-  summarise(total_age = sum(age))
+```{r, echo=TRUE, eval=FALSE}
+filter(raw_data, region %in% c("Mara", "Pwani", "Dar-es-salaam"))
 ```
 
+```{r, echo=TRUE, eval=FALSE}
+filter(raw_data, age >= 30)
+```
 
-## Your Turn - Results section 1.2.3
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
 
-Fill in the blanks for the following lines in your R
+<b class="blue"> What do each of these lines of code subset the data for?</b>
 
-```{r, eval = F, echo = T}
-# Subset for only records with a dog 
+```{r, echo=TRUE, eval=FALSE}
+select(raw_data, x, y, age)
+```
+
+```{r, echo=FALSE, eval=TRUE}
+head(select(raw_data, x, y, age), 6)
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
+
+<b class="blue"> What do each of these lines of code subset the data for?</b>
+
+```{r, echo=TRUE, eval=FALSE}
+filter(raw_data, region %in% c("Mara", "Pwani", "Dar-es-salaam"))
+```
+
+```{r, echo=FALSE, eval=TRUE}
+head(filter(raw_data, region %in% c("Mara", "Pwani", "Dar-es-salaam")), 6)
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
+
+<b class="blue"> What do each of these lines of code subset the data for?</b>
+
+```{r, echo=TRUE, eval=FALSE}
+filter(raw_data, age >= 30)
+```
+
+```{r, echo=FALSE, eval=TRUE}
+head(filter(raw_data, age >= 30), 6)
+```
+
+<!----------------------------------------------------------------------------->
+## Calculate summary statistics using ``summarise()``
+
+``summarise()`` uses existing R functions to calculate summary statistics.
+
+<br>
+<b>E.g. Calculate the mean age:</b>
+
+```{r, eval = T, echo = T}
+summarise(raw_data, mean_age = mean(age))
+```
+
+<b>E.g. Calculate the total number of cases:</b>
+
+```{r, eval = T, echo = T}
+summarise(raw_data, total_cases = n()) 
+```
+
+<!----------------------------------------------------------------------------->
+## Group variables before summarising
+
+``group_by()`` can be used to group variables before summarising.
+
+<br>
+<b>E.g. Calculate the mean age by species:</b>
+
+```{r, eval = T, echo = T}
+grouped_df <- group_by(raw_data, species)
+summarise(grouped_df, mean_age = mean(age))
+```
+
+<!----------------------------------------------------------------------------->
+## Your Turn
+
+Complete section 1.2b of the worksheet
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
+
+<b class="blue"> What do each of these lines of code summarise?</b>
+
+```{r, echo = TRUE, eval=FALSE}
+summarise(raw_data, n_males = length(which(sex=="M")))
+```
+
+```{r, echo = TRUE, eval=FALSE}
+summarise(raw_data, total_age = sum(age))
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
+
+<b class="blue"> What do each of these lines of code summarise?</b>
+
+```{r, echo = TRUE}
+summarise(raw_data, n_males = length(which(sex=="M")))
+```
+
+```{r, echo = TRUE}
+summarise(raw_data, total_age = sum(age))
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b
+
+<b class="blue">How are these two tables different?</b>
+```{r, echo = TRUE, eval=FALSE}
+df_1 <- group_by(raw_data, sex)
+summarise(df_1, 
+          n_records = length(sex),
+          mean_age = mean(age))
+```
+
+```{r, echo = TRUE, eval=FALSE}
+df_2 <- group_by(raw_data, region, sex)
+summarise(df_2, 
+          n_records = length(sex),
+          mean_age = mean(age))
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2b {.smaller}
+
+<b class="blue">How are these two tables different?</b>
+```{r, echo = TRUE, eval=TRUE}
+df_1 <- group_by(raw_data, sex)
+summarise(df_1, n_records = length(sex), mean_age = mean(age))
+```
+
+```{r, echo = TRUE, eval=FALSE}
+df_2 <- group_by(raw_data, region, sex)
+summarise(df_2, n_records = length(sex), mean_age = mean(age))
+```
+
+```{r, echo = FALSE, eval=TRUE}
+df_2 <- group_by(raw_data, region, sex)
+head(summarise(df_2, n_records = length(sex), mean_age = mean(age)),5)
+```
+
+<!----------------------------------------------------------------------------->
+## Add new columns using ``mutate()`` {.smaller}
+
+``mutate()`` adds new columns that are functions of existing variables
+
+<br>
+<b>E.g. Add a new column stating human or animal:</b>
+
+```{r, eval = T, echo = T}
+head(mutate(raw_data, animal_type = ifelse(species == "human", "human", "animal")))
+```
+
+<!----------------------------------------------------------------------------->
+## Combining multiple operations {.smaller}
+
+We can carry out multiple operations, using the stored object from the previous operation...  
+
+```{r, eval = T, echo = T}
+pwani_df <- filter(raw_data, region == "Pwani")
+
+pwani_non_human <- filter(pwani_df, species != "human")
+
+pwani_non_human <- mutate(pwani_non_human, 
+                          "animal_type" = ifelse(species  %in% c("dog", "cat"), "domestic", "wild"))
+
+pwani_grouped <- group_by(pwani_non_human, animal_type)
+
+pwani_summarised <- summarise(pwani_grouped, n())
+
+pwani_summarised
+```
+      
+<!----------------------------------------------------------------------------->
+## Combining multiple operations
+
+... Or we can use the piping function ``%>%`` to join them together into 1 output
+
+```{r, eval = T, echo = T}
+pwani_summarised <-  raw_data %>% 
+  filter(region == "Pwani", species != "human") %>% 
+  mutate("animal_type" = ifelse(species %in% c("dog", "cat"), 
+                                "domestic", "wild")) %>% 
+  group_by(animal_type) %>% 
+  summarise(n())
+
+pwani_summarised
+```
+
+<!----------------------------------------------------------------------------->
+## Your Turn
+
+Complete section 1.2c of the worksheet
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2c
+
+<b class="blue">What do each of these lines of code add as a new column?</b>
+
+```{r, echo = T}
+raw_data <- mutate(raw_data, "new_col_1" = substr(date, 1, 4))
+```
+
+```{r, echo = T}
+raw_data <- mutate(raw_data, "new_col_2" = ifelse(density >= 500,"High", "Low"))
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2c
+
+<b class="blue">What do each of these lines of code add as a new column?</b>
+
+```{r, echo = T, class.source="hl1-background"}
+raw_data <- mutate(raw_data, "new_col_1" = substr(date, 1, 4))
+```
+
+```{r, echo = T, class.source="hl2-background"}
+raw_data <- mutate(raw_data, "new_col_2" = ifelse(density >= 500,"High", "Low"))
+```
+<br>
+```{r, echo = F}
+rd_top <- head(raw_data)
+kable_styling(kable(rd_top, align="c", digits=4), 
+              full_width=TRUE, font_size=16,
+              bootstrap_options="bordered") %>%
+  column_spec(c(1,3,5,10,11), width="2cm") %>%
+  column_spec(c(4,6,7,8,9), width="3cm") %>%
+  column_spec(2, width = "4cm", include_thead=TRUE, background = "#fcf0cd") %>%
+  column_spec(10, include_thead=TRUE, background = "#fcf0cd") %>%
+  column_spec(c(8,11), include_thead=TRUE, background = "#dfecfc")
+```
+
+```{r, echo=FALSE}
+raw_data$new_col_1 <- NULL
+raw_data$new_col_2 <- NULL
+```
+
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2c
+
+<b class="blue">Fill in the blanks for the following lines of code in your R script</b>
+
+Subset for only records with wildlife (i.e. jackal, lion)
+```{r, echo=T, eval=FALSE}
 raw_data %>%
-  filter(species == "dog") #filter
+  ___(____________)
 ```
 
-```{r, eval = F, echo = T}
-# Subset for humans, and summarise the mean age per region
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2c
+
+<b class="blue">Fill in the blanks for the following lines of code in your R script</b>
+
+Subset for only records with wildlife (i.e. jackal, lion)
+```{r, echo=T, eval=FALSE}
 raw_data %>%
-  filter(species == "human") %>% #filter
-  group_by(region) %>% #region
-  summarise(mean_age = mean(age)) #summarise, mean()
+  filter(species %in% c("jackal", "lion"))
 ```
 
-
-# Making exploratory plots
-
-## Loading some new packages
-
-```{r, eval = F, echo = T}
-
-install.packages("ggplot2", "lubridate", "leaflet")
-
-library(ggplot2)
-library(lubridate)
-library(leaflet)
-
+```{r, echo=F}
+head(raw_data %>% filter(species %in% c("jackal", "lion")))
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2c
 
-```{r, echo = FALSE}
-library(ggplot2)
-library(lubridate)
-library(leaflet)
+Subset for humans, and summarise the mean age per region
+```{r, echo=T, eval=FALSE}
+raw_data %>%
+  ___(____________) %>%
+  ___(region) %>%
+  ___(mean_age = ________)
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.2c {.smaller}
+
+Subset for humans, and summarise the mean age per region
+```{r, echo=T, eval=TRUE}
+raw_data %>%
+  filter(species=="human") %>%
+  group_by(region) %>%
+  summarise(mean_age = mean(age))
+```
+
+<!----------------------------------------------------------------------------->
+## Day 1
+
+<ul>
+<li> 1.1 Getting to know your data </li>
+<li> 1.2 Data subsetting and summarising </li>
+<li><b class="blue"> 1.3 Building exploratory plots </b></li>
+<li> 1.4 Building an interactive plot in RShiny </li>
+</ul>
+
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot
 
 The basic structure:  
@@ -488,6 +695,7 @@ The basic structure:
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;geom_bar(data=raw_data, aes(x=sex))
 
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot - plots
 
 First we need to specify a plot
@@ -495,14 +703,13 @@ First we need to specify a plot
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(data=raw_data, aes(x=sex))
 
-
-
   - ggplot has several plot types:
     - <b style="color:red;">geom_bar</b>: **barplot**
     - <b style="color:red;">geom_hist</b>: **histogram**
     - <b style="color:red;">geom_point</b>: **scatterplot/points**
     - <b style="color:red;">geom_line</b>: **line plot**
 
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot - data
 
 Second we need to supply our data
@@ -510,57 +717,58 @@ Second we need to supply our data
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, aes(x=sex))
 
-
 The data can also be specified here:
 
 ggplot(<b style="color:blue;">data=raw_data</b>) + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(aes(x=sex))
 
-
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot - aesthetics
-
 
 Third, we specify the variables we want to plot using aesthetics, or aes().
 
 ggplot() + <br>
 &nbsp;&nbsp;&nbsp;<b style="color:red;">geom_bar</b>(<b style="color:blue;">data=raw_data</b>, <b style="color:green;">aes(x=sex)</b>)
 
-  
 Different plots take different arguments in aes()
 
 ggplot() + <br>
-&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_point</b> takes <b style="color:green;">aes(x=sex, y = age)</b>
+&nbsp;&nbsp;&nbsp;<b style="color:red;">geom_point</b>(<b style="color:blue;">data=raw_data</b>), <b style="color:green;">aes(x=sex, y = age)</b>
 
+<!----------------------------------------------------------------------------->
 ## Barplot
 
-```{r, echo = T, out.width = "100%"}
+```{r, echo = T, fig.height = 4.5, fig.align = "center"}
 ggplot() + 
   geom_bar(data=raw_data, aes(x=sex))
 ```
 
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot - aesthetics
 
 Change the colour in aesthetics
 
-```{r, echo = T, out.width = "80%"}
+```{r, echo = T, fig.height = 4, fig.align = "center"}
 ggplot() +  
   geom_bar(data=raw_data, aes(x=sex, fill = "red"))  
 ```
 
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot - aesthetics
 
 Change the colour in aesthetics by variable
 
-```{r, echo = T, out.width = "80%"}
+```{r, echo = T, fig.height = 4, fig.align = "center"}
 ggplot() +
   geom_bar(data=raw_data, aes(x=sex, fill = sex))
 ``` 
 
+<!----------------------------------------------------------------------------->
 ## Introducing ggplot - additional features
 
 Adding **labels**, **titles**, and **themes**
 
-```{r, eval = F, echo = T, out.width = "80%"}
+```{r, echo = T, fig.height = 3, fig.align = "center"}
 ggplot() + 
   geom_bar(data=raw_data, aes(x=sex, fill=sex))+ 
   xlab("Sex") + # Label for the X axis
@@ -569,10 +777,15 @@ ggplot() +
   theme_classic() # Plot theme for background etc.
 ``` 
 
+<!----------------------------------------------------------------------------->
+## Your Turn
 
-## Your turn - 1.3.1 and 1.3.2
+Complete section 1.3a of the worksheet
 
-Create a barplot of species and colour by species. 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.3a
+
+<b class="blue">Create a barplot of species and colour by species.</b><br>
 
 ```{r, eval = F, echo = T}
 ggplot() + 
@@ -580,41 +793,40 @@ ggplot() +
   theme_classic()
 ```
 
-Add labels to your plot
-```{r, eval = F, echo = T}
-ggplot() + 
-  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
-  _________ +
-  _________ +
-  _________ +
-  theme_classic()
-```
+<!----------------------------------------------------------------------------->
+## Summary - section 1.3a
 
+<b class="blue">Create a barplot of species and colour by species.</b><br>
 
-## Your turn - Results 1.3.1, 1.3.2
-
-```{r, eval = F, echo = T}
+```{r, echo = T, fig.height = 3.5, fig.align = "center"}
 ggplot() + 
   geom_bar(data=raw_data, aes(x=species, fill = species)) + 
   theme_classic()
 ```
 
+<!----------------------------------------------------------------------------->
+## Summary - section 1.3a
+
+<b class="blue">Add a title, x and y axis labels to the barplot of species.</b><br>
+
 ```{r, eval = F, echo = T}
 ggplot() + 
-  geom_bar(data=raw_data, aes(x=species, fill = species))+ 
-  xlab("Sex") +
-  ylab("Cases") +
-  ggtitle("Disease cases by Species") +
+  geom_bar(data=raw_data, aes(x=________, fill = ________)) + 
+  _________ +
+  _________ +
+  _________ +
   theme_classic()
 ```
 
-## Your turn - Results 1.3.1, 1.3.2
+<!----------------------------------------------------------------------------->
+## Summary - section 1.3a
 
+<b class="blue">Add a title, x and y axis labels to the barplot of species.</b><br>
 
-```{r, eval = T, echo = F}
+```{r, echo = T, fig.height = 3, fig.align = "center"}
 ggplot() + 
   geom_bar(data=raw_data, aes(x=species, fill = species))+ 
-  xlab("Sex") +
+  xlab("Species") +
   ylab("Cases") +
   ggtitle("Disease cases by Species") +
   theme_classic()
