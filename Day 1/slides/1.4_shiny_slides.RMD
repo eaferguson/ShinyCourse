@@ -120,7 +120,7 @@ Whenever we show example code, <span class="ui-background">ui code will have a y
 <!----------------------------------------------------------------------------->
 ## Inputs  
 
-- To make the app interactive, you need an input that the user can change  
+- To make the app interactive, you need an **input** that the user can change  
 - Shiny includes a selection of functions for this called <b>widgets</b>.
 - These are used in the <b>ui</b> to set the options for the user to interact with. 
 
@@ -141,7 +141,7 @@ kable_styling(kable(widgets), font_size=16, bootstrap_options="condensed") %>%
 <!----------------------------------------------------------------------------->
 ## Outputs  
 
-- An output is required to show the user the effects of their input  
+- An **output** is required to show the user the effects of their **input**  
 - ``render()`` is used in the <b>server</b> to generate the output
 - ``output()`` is used in the <b>ui</b> to display the output to the user
 
@@ -498,7 +498,9 @@ output$output_text <- renderPrint({
     })
 ```
 
-- If we want to process the data based on user input (e.g. filter, summarise), we need wrap the code within a **reactive function**.  
+
+## Making your code 'reactive' contd 
+- If we want to process the data based on user input (e.g. filter, summarise), we need to wrap the code within a **reactive function**.  
   
 - ``reactive()``  
 - ``eventReactive()``
@@ -974,7 +976,7 @@ shinyApp(
 
 - The input can be set as any of the widgets in your app, but it works well with ``actionButton()``
 
-- ``eventReactive()`` returns ``NULL`` util the button is pressed, which means any outputs that rely on it are hidden until the button is pressed...
+- ``eventReactive()`` returns ``NULL`` until the button is pressed, which means any outputs that rely on it are hidden until the button is pressed...
 
 <!----------------------------------------------------------------------------->
 ## An example with the ``eventReactive()`` function 
@@ -1076,12 +1078,14 @@ but still show an output to start with? </h2>
 
 - The ``observeEvent()`` function is very similar to the ``eventReactive()`` function - it is used to carry out a process in response to a specific user input.
 
-- The difference is that it does not produce an output - it works by updating existing outputs
+- The difference is ``observeEvent()`` **does not produce an output** - instead it works by **updating existing outputs**
 
 <!----------------------------------------------------------------------------->
 ## The ``reactiveValues()`` function
 
-- The ``reactiveValues()`` function produce an object that acts like a list: you can store multiple values or objects to <em>slots</em>, that are accessed with the ``$`` symbol
+- The ``reactiveValues()`` function produces an object that acts like a list. 
+      - you can store multiple values or objects to <em>slots</em>
+      - <em>slots</em> can be accessed from the object with the ``$`` symbol
 
 - The ``reactiveValues`` object can be created with values, or values can be added after  
 
