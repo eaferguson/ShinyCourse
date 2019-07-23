@@ -1,0 +1,390 @@
+---
+title: "Data Visualisation using RShiny: Day 1"
+author: "Building exploratory plots"
+date: "1.3 Guide"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+---
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+library(rgdal)
+library(kableExtra)
+
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+
+region_shp$id <- rownames(region_shp@data)
+region_shp_df <- fortify(region_shp, region = "id")
+region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
+
+summary_data <- raw_data %>%
+  group_by(month, sex) %>%
+  summarise(mean_age = mean(age),
+            mean_density = mean(density)) %>%
+  arrange(-mean_age)
+
+summary_data2 <- raw_data %>%
+  group_by(sex) %>%
+  summarise(mean_age = mean(age),
+            mean_density = mean(density))
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+```
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.question {font-weight: bold; color: #4E23B8;}
+.blue {color: #4E23B8;}
+hr {border: 2px solid black;}
+a.title:link {color: white; text-decoration: none;}
+a.title:visited {color: white; text-decoration: none;}
+a.title:hover {color: #c9bde9; text-decoration: none;}
+a.title:active {color: white; text-decoration: none;}
+a.main:link {color: #4E23B8;}
+a.main:visited {color: #4E23B8;}
+a.main:hover {color: #4E23B8; font-weight: bold;}
+a.main:active {color: #4E23B8;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Aims section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+<ul>
+<li><a class="title" href="#1">The ggplot2 package</a></li>
+<li><a class="title" href="#2">Setting up a basic plot</a></li>
+<li><a class="title" href="#3">Customising plot appearence</a></li>
+<li><a class="title" href="#4">Plot type examples</a></li>
+<li><a class="title" href="#5">More Information</a></li>
+</ul>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1. The ggplot2 package -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1">The ggplot2 package</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+The ggplot2 package has a range of functions to allow easy and buildable plotting. It is designed so that all plotting functions take similar arguments, allowing users to quickly and easily build quite complicated plots.   
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2. Setting up a basic plot -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2">Setting up a basic plot</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Plots in ggplot2 follow a simple basic structure. Here is an example using a barplot:  
+<br>
+<h4>Step 1: Begin the plot</h4>
+<b class="blue">ggplot() + </b>  
+<br>
+
+<h4>Step 2: add a plot type</h4>
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b class="blue">geom_bar</b>()  
+<br>
+
+<h4>Step 3: add the data</h4> 
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; geom_bar(<b class="blue">data = raw_data</b>)  
+<b>or</b>
+<br>
+ggplot(<b class="blue">data = raw_data</b>) + <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; geom_bar()  
+<br>
+
+<h4>Step 4: specify the variables you want mapped</h4>
+Here, we enclose mapping variables within the ``aes()`` function. This tells the plot what to show on the x-axis, y-axis etc.
+ggplot() + <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; geom_bar(data = raw_data, <b class="blue">aes(x = species)</b>)  
+<br>
+
+<h4>Complete code:</h4> 
+
+```{r, echo = T, fig.height = 3}
+ggplot() + 
+  geom_bar(data = raw_data, aes(x = species))
+```
+<br><br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3. Customising plot appearence -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3">Customising plot appearence</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4> Changing plot colour </h4>
+<ul>
+<li>You can change the overall colour with a named colour or a hex colour (<em>e.g. "#4E23B8"</em>)</li>
+<li>This can be ``fill`` or ``color`` depending on the plot type:
+<br>
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species), fill = "blue")  
+```
+</li>
+<br>
+<li>Or you can set the fill colour to change with a variable:
+<br>
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species, fill = species))  
+```
+</li>
+<br>
+<li>The variable colour can be different to what is plotted on the x-axis:
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species, fill = sex))  
+```
+</li>
+</ul>
+<br>
+
+<h4> Setting the plot colours that are mapped to variables </h4>
+<ul>
+<li>To set the plot colour, you have to use either ``scale_fill_...`` or ``scale_color_...`` depending on the plot type:
+<li>The RColorBrewer package contains a <a class="main" href="https://www.r-graph-gallery.com/38-rcolorbrewers-palettes/">list</a> of freely available palettes you can use:
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species, fill = sex)) + 
+  scale_fill_brewer(palette = "Set1")
+```
+</li>
+<br>
+<li>Alternatively, you can provide a vector of your own colour choices:
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species, fill = sex)) + 
+  scale_fill_manual(values = c("blue", "red"))
+```
+</li>
+</ul>
+<br><br>
+
+<h4> Adding axis labels </h4>
+<ul>
+<li>You can add axis labels easily with the ``xlab()``, ``ylab()`` or ``labs()`` functions: 
+
+```{r, echo = T, eval = F}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species), fill = "blue") + 
+  xlab("Species") + 
+  ylab("Cases")
+```
+<b>or</b>
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species), fill = "blue") + 
+  labs(x = "Species", y = "Cases")
+```
+</li>
+</ul>
+<br>
+<h4> Adding a plot title </h4>
+<ul>
+<li>You can add a plot title and/or subtitle as part of the ``labs()`` function:
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species), fill = "blue") + 
+  labs(x = "Species", y = "Cases",
+       title = "Number of cases observed by species", subtitle = "Cases observed in Tanzania")
+```
+</li>
+</ul>
+<br>
+<h4> Adding a theme </h4>
+<ul>
+<li>Themes can be a quick way to alter the appearence of your plot - our favourite is ``theme_classic()``:
+```{r, echo = T, fig.height = 3}
+ggplot() +  
+  geom_bar(data = raw_data, aes(x = species), fill = "blue") + 
+  labs(x = "Species", y = "Cases",
+       title = "Number of cases observed by species", subtitle = "Cases observed in Tanzania") + 
+  theme_classic()
+```
+</li>
+</ul>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 4. Plot type examples -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="4">Plot type examples</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li>ggplot2 has individual functions for each type of plot, and additional plotting features such as lines and error bars.</li>
+<li>This allows the user to layer multiple types of plot e.g. bars and lines.</li>
+<li>We have provided some examples of different plots below:</li>
+</ul>
+<br>
+
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_bar</h4>
+Barplot, ggplot2 automatically counts totals provides by x<br>
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_bar(data=raw_data, 
+           aes(x=species)) + 
+  theme_classic()
+```
+</div>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_col</h4>
+Barplot, the user provides summary data for x and y <br>
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_col(data=summary_data2, 
+           aes(x=sex, y=mean_age)) + 
+  theme_classic()
+```
+</div>
+</div>
+
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_histogram</h4>
+Histogram, ggplot2 automatically counts totals along a continuous gradient <br>
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_histogram(data=raw_data, 
+                 aes(x=month)) + 
+  theme_classic()
+```
+</div>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_point</h4>
+Point/scatter, user provides x and y variables <br>
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_point(data=raw_data, 
+             aes(x=x, y=y, color=species)) + 
+  theme_classic()
+```
+</div>
+</div>
+
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_line</h4>
+Lineplot, connects observations in the order they appear on the x-axis
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_line(data=summary_data, 
+            aes(x=month, y=mean_age, color=sex),
+            size=1) + 
+  theme_classic()
+```
+</div>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_path</h4>
+Lineplot, connects observation in the order they appear in the data
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_path(data=summary_data, 
+            aes(x=month, y=mean_age, color=sex),
+            size=1) + 
+  theme_classic()
+```
+</div>
+</div>
+
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_boxplot</h4>
+Boxplot, draws boxes and outliers, user sets x and y
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_boxplot(data=raw_data, 
+             aes(x=species, y=age)) + 
+  theme_classic()
+```
+</div>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_polygon</h4>
+Spatial polygons, data must be formatted as a data frame
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_polygon(data=region_shp_df, 
+               aes(x=long, y=lat, group=group), 
+               fill="white", color="black") + 
+  theme_classic() + coord_equal()
+```
+</div>
+</div>
+
+``` {r, echo=FALSE}
+plot_types <- data.frame("1"=rep("Additional features", 3),
+                      "function name"=c("``geom_abline()``, ``geom_hline()``, ``geom_vline()``", 
+                                        "``geom_errorbar()``",
+                                        "``geom_text()``, ``geom_label()``"),
+                      "description"=c("reference lines (diagonal, horizontal, vertical)", 
+                                      "error bars",
+                                      "text mapped to plot location (no background, white background)"))
+
+kable_styling(kable(plot_types, col.names=c("", "function name", "description")), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed")) %>%
+  column_spec(1, bold = T) %>%
+  collapse_rows(columns = 1)
+```
+
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 5. More Information -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="5">More Information</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+There is <b>MUCH</b> more to ggplot2 than we have desccribed here!  
+For more information on plot types and formatting plot appearence, see <a class="main"  href="https://ggplot2.tidyverse.org/reference/" target="_blank">here</a>.
+<br><br>

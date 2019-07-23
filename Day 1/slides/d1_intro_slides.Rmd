@@ -165,7 +165,7 @@ We have several tools to get to know our data
 - ``View()``: allows us to view the dataframe as a spreadsheet.
 - ``nrow()``: tells us the number of rows in our data frame.
 - ``names()``: give us the names of the columns in our data frame.
-- ``dim()``: tells us the dimensions of our dataframes. 
+- ``dim()``: tells us the dimensions of our data frame. 
 - ``summary()``: give us summary statistics (counts, min, median, mean, max).
 - ``head()``: gives us the first 6 elements of the data.
 - ``tail()``: gives us the last 6 elements of the data.
@@ -705,7 +705,7 @@ ggplot() + <br>
 
   - ggplot has several plot types:
     - <b style="color:red;">geom_bar</b>: **barplot**
-    - <b style="color:red;">geom_hist</b>: **histogram**
+    - <b style="color:red;">geom_histogram</b>: **histogram**
     - <b style="color:red;">geom_point</b>: **scatterplot/points**
     - <b style="color:red;">geom_line</b>: **line plot**
 

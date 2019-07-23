@@ -135,8 +135,8 @@ kable_styling(kable(widgets), font_size=14, full_width=FALSE, position="left", b
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-render is used in the <b>server</b> to generate the output, and saved to an object as ``output$___``.
-output is used in the <b>ui</b> to display the output to the user. <br><br>
+render functions are used in the <b>server</b> to generate the output, and saved to an object as ``output$___``.  
+output functions are used in the <b>ui</b> to display the output to the user. <br><br>
 ``` {r, echo=FALSE}
 outputs <- data.frame("render"=c("``renderImage()``", "``renderPlot()``", "``renderPrint()``",
 "``renderTable()``", "``DT::renderDataTable()``", "``renderText()``",

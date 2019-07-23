@@ -279,7 +279,7 @@ $(document).ready(function() {
 <li><code>View()</code>: allows us to view the dataframe as a spreadsheet.</li>
 <li><code>nrow()</code>: tells us the number of rows in our data frame.</li>
 <li><code>names()</code>: give us the names of the columns in our data frame.</li>
-<li><code>dim()</code>: tells us the dimensions of our dataframes.</li>
+<li><code>dim()</code>: tells us the dimensions of our data frame.</li>
 <li><code>summary()</code>: give us summary statistics (counts, min, median, mean, max).</li>
 <li><code>head()</code>: gives us the first 6 elements of the data.</li>
 <li><code>tail()</code>: gives us the last 6 elements of the data.</li>
@@ -506,8 +506,8 @@ $(document).ready(function() {
 <p>The <code>dplyr</code> package allows us to filter and select different elements using <strong>verbs</strong>:</p>
 
 <ul class = 'build'>
-<li><code>select()</code> picks variables based on their column name.</li>
-<li><code>filter()</code> picks rows based on their values.</li>
+<li><code>select()</code> subsets columns based on their names.</li>
+<li><code>filter()</code> subsets rows based on their values.</li>
 <li><code>summarise()</code> calculates summary statistics.</li>
 <li><code>group_by()</code> groups variables for summarising.</li>
 <li><code>mutate()</code> adds new columns that are functions of existing variables.</li>
@@ -519,7 +519,7 @@ $(document).ready(function() {
 
 </article></slide><slide class=""><hgroup><h2>Subsetting columns using <code>select()</code></h2></hgroup><article  id="subsetting-columns-using-select" class="smaller">
 
-<p><code>select()</code> picks variables based on their column name.</p>
+<p><code>select()</code> subsets columns based on their names.</p>
 
 <p><b>E.g. Subset for the species column:</b></p>
 
@@ -545,7 +545,7 @@ head(species_df3, 3)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Subsetting rows using <code>filter()</code></h2></hgroup><article  id="subsetting-rows-using-filter">
 
-<p><code>filter()</code> picks rows based on their values.</p>
+<p><code>filter()</code> subsets rows based on their values.</p>
 
 <p>To select the observations you want it is useful to know some comparison operators:</p>
 

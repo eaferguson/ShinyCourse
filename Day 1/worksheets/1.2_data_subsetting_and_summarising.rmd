@@ -1,0 +1,242 @@
+---
+title: "Data Visualisation using RShiny: Day 1"
+author: "Data subsetting and summarising"
+date: "1.2 Guide"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+---
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+library(rgdal)
+library(kableExtra)
+
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+```
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.question {font-weight: bold; color: #4E23B8;}
+hr {border: 2px solid black;}
+a:link {color: white; text-decoration: none;}
+a:visited {color: white; text-decoration: none;}
+a:hover {color: #c9bde9; text-decoration: none;}
+a:active {color: white; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Aims section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+<ul>
+<li><a href="#1">The dplyr package</a></li>
+<li><a href="#2">Subsetting</a></li>
+<li><a href="#3">Summarising</a></li>
+<li><a href="#4">Adding new variables</a></li>
+<li><a href="#5">The ``%`` (pipe) function</a></li>
+</ul>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1. The dplyr package -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1">The dplyr package</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+The dplyr package contains some very helpful functions to manipulate data, including subsetting and summarising:  
+<br>
+``` {r, echo=FALSE}
+explore <- data.frame("function name"=c("``select()``", "``filter()``", "``summarise()``", "``group_by()``", "``mutate()``"),
+                      "description"=c("subsets columns based on their names",
+                                      "subsets rows based on their values",
+                                      "calculates summary statistics",
+                                      "groups variables for summarising",
+                                      "adds new columns that are functions of existing variables"))
+kable_styling(kable(explore, col.names=c("function name", "description")), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed"))
+```
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2. Subsetting -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2">Subsetting</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4>``select()``</h4>
+<ul>
+<li>The `` select()`` function is used to select columns of data by their column name.</li>  
+</ul>
+<em>E.g.</em>
+```{r, eval=FALSE}
+select(raw_data, date, region, x, y, species, density)
+```
+
+``` {r, echo=FALSE}
+select_1 <- data.frame(select(raw_data, date, region, x, y, species, density))
+kable_styling(kable(select_1), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed")) %>%
+  scroll_box(height="200px")
+```
+
+<br><br>
+<h4>``filter()``</h4>
+<ul>
+<li>The `` filter()`` function is used to select rows based on their values.</li>
+<li>To select the observations you want, it is useful to know some comparison operators:</li>
+</ul>
+``` {r, echo=FALSE}
+explore <- data.frame("operator"=c(">", ">=", "!=", "==", "&", 
+                                   "|", "!", "``%in% c(...)``"),
+                      "description"=c("greater than", "greater than or equal to", "not equal",
+                                      "equal", "and", "or", "not", "one in a list of elements"))
+kable_styling(kable(explore, escape=FALSE), 
+              font_size=14, full_width=FALSE, position="left", 
+              bootstrap_options=c("bordered", "condensed"), protect_latex = TRUE)
+```
+
+<em>E.g.</em>
+```{r, eval=FALSE}
+filter(raw_data, region == "Mara" & age <= 5)
+```
+
+``` {r, echo=FALSE}
+filter_1 <- data.frame(filter(raw_data, region == "Mara" & age <= 5))
+kable_styling(kable(filter_1), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed")) %>%
+  scroll_box(height="200px")
+```
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3. Summarising -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3">Summarising</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4> ``summarise()``</h4>
+<ul>
+<li>The `` summarise()`` function is used to calculate summaries of variables in your data.</li>
+</ul>
+<em>E.g.</em>
+```{r, eval=FALSE}
+summarise(raw_data, total_cases = n(), mean_age = mean(age))
+```
+
+``` {r, echo=FALSE}
+summarise_1 <- data.frame(summarise(raw_data, total_cases = n(), mean_age = mean(age)))
+kable_styling(kable(summarise_1), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed"))
+```
+
+<br>
+<h4> ``group_by()``</h4>
+<ul>
+<li>The `` group_by `` function is used to group variables before summarising.</li>
+</ul>
+<em>E.g.</em>
+```{r, eval=FALSE}
+grouped_data <- group_by(raw_data, species)
+summarise(grouped_data, total_cases = n(), mean_age = mean(age))
+```
+
+``` {r, echo=FALSE}
+grouped_1 <- group_by(raw_data, species)
+summarise_2 <- data.frame(summarise(grouped_1, total_cases = n(), mean_age = mean(age)))
+kable_styling(kable(summarise_2), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed"))
+```
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 4. Adding new variables -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="4">Adding new variables</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<h4>``mutate()``</h4>
+<ul>
+<li>The ``mutate()`` function adds new columns that are functions of existing variables.</li>
+</ul>
+<em>E.g.</em>
+```{r, eval=FALSE}
+raw_data <- mutate(raw_data, animal_type = ifelse(species == "human", "human", "animal"))
+```
+
+``` {r, echo=FALSE}
+mutate_1 <- mutate(raw_data, animal_type = ifelse(species == "human", "human", "animal"))
+kable_styling(kable(mutate_1), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed")) %>%
+  scroll_box(height="200px")
+```
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 5. The ``%`` (pipe) function -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="5">The ``%`` (pipe) function</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li>dplyr functions can be used individually, or can be 'stacked' using the ``%`` (pipe) function:
+<br>
+
+```{r, eval=FALSE}
+df_filtered <- filter(raw_data, species != "human") 
+df_grouped <- group_by(df_filtered, animal_type)
+df_summarised <- summarise(df_grouped, n())
+
+df_summarised <-  raw_data %>% 
+  filter(species != "human") %>% 
+  group_by(animal_type) %>% 
+  summarise(n())
+```
+</li>
+<li>Using the pipe function makes the computing more efficient as it passes the output of one function directly into the next.</li>
+<li>This reduces the number of objects you save to the global environment.</li>
+</ul>
+<br>

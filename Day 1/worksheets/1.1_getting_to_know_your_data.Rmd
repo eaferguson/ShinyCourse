@@ -1,0 +1,139 @@
+---
+title: "Data Visualisation using RShiny: Day 1"
+author: "Getting to know your data"
+date: "1.1 Guide"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+---
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(leaflet)
+library(rgdal)
+library(RColorBrewer)
+library(kableExtra)
+
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
+```
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.question {font-weight: bold; color: #4E23B8;}
+hr {border: 2px solid black;}
+a:link {color: white; text-decoration: none;}
+a:visited {color: white; text-decoration: none;}
+a:hover {color: #c9bde9; text-decoration: none;}
+a:active {color: white; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Aims section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+<ul>
+<li><a href="#1">Loading in packages</a></li>
+<li><a href="#2">Loading in data</a></li>
+<li><a href="#3">Exploring data</a></li>
+</ul>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1. Loading in packages -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1">Loading in packages</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li>At the very beginning of any R script, you should load in any packages you plan on using.<.li>
+<li>Packages contain functions to complete a <em>very</em> broad range of processes. </li>
+<li>To load in your packages, we can use the ``library()`` function:</li>
+
+``` {r, eval=FALSE}
+library(dplyr)
+```
+</ul>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2. Loading in data -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2">Loading in data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li>As with packages, you should load in any data you want to use at the beginning on your R script.</li>
+<li>This allows you to easily see what data is being loaded, rather than having to search through your code.</li>
+<li>There are multiple functions to load in your data - we will only be using a <em>comma-seperated values</em> spreadsheet, so we need the ``read.csv()`` function:
+
+``` {r, eval=FALSE}
+raw_data <- read.csv("data/raw_data.csv") 
+```
+</ul>
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 3. Exploring data -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="3">Exploring data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<ul>
+<li>We have several functions to get to know the data: 
+<br>
+
+``` {r, echo=FALSE}
+explore <- data.frame("function name"=c("``View()``", "``nrow()``", "``names()``", "``dim()``", 
+                                   "``summary()``", "``head()``", "``tail()``", "``str()``",
+                                   "``unique()``", "``table()``", "``?``", "``??``"),
+                      "description"=c("view the dataframe as a spreadsheet",
+                                      "report the number of rows in the data frame",
+                                      "report the column name in the data frame",
+                                      "report the dimensions of the data frame",
+                                      "report the summary statistics (counts, min, median, mean, max)",
+                                      "print the first 6 rows of the data",
+                                      "print the last 6 rows of the data",
+                                      "report the variable type in each column (e.g. Factor, num (number), int (integer))",
+                                      "report the unique elements of a variable",
+                                      "calculate the count number for variables in the column(s) specified",
+                                      "open the helpfile for a function contained in a loaded package",
+                                      "open the helpfile for a function contained in an package that isn't loaded"))
+kable_styling(kable(explore, col.names=c("function name", "description")), 
+              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed"))
+```
+
+</li>
+</ul>
+<br><br>
