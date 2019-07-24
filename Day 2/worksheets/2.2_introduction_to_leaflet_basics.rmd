@@ -85,15 +85,8 @@ leaflet_data <- raw_data %>%
 We use ``leaflet()`` to create a leaflet widget and can pipe this into a function such as ``addCircles()`` to get a basic plot of the data in space.
 <br>
 ``` {r, echo=T}
-# Create a new column specifying domestic vs. wildlife vs. human
-raw_data$species_type[which(raw_data$species=="dog" | raw_data$species=="cat")] <- "Domestic"
-raw_data$species_type[which(raw_data$species=="jackal" | raw_data$species=="lion")] <- "Wildlife"
-raw_data$species_type[which(raw_data$species=="human")] <- "Human"
-
-# Use only one year
-leaflet_data <- raw_data %>% 
-  mutate(year = substr(date, 1,4)) %>% 
-  filter(year == 2014)
+m <- leaflet() %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y)
 ```
 <br>
 
@@ -109,6 +102,23 @@ leaflet_data <- raw_data %>%
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
+The default open street map tiles are added to a leaflet widget using ``addTiles()`` while third party tiles can be added using ``addProviderTiles()``
+
+``` {r, eval = F, echo=T}
+m <- leaflet() %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y)
+m %>% addTiles()
+
+m %>% addProviderTiles(provider = "Stamen.Terrain")
+# or alternatively
+m %>% addProviderTiles(provider = providers$Stamen.Terrain)
+
+# some other third party tile examples
+m %>% addProviderTiles(provider = providers$Wikimedia)
+m %>% addProviderTiles(provider = providers$Esri.NatGeoWorldMap)
+m %>% addProviderTiles(provider = providers$Esri.WorldImagery)
+m %>% addProviderTiles(provider = providers$OpenTopoMap)
+```
 
 <!--- ---------------------------------------------------------------------- -->
 <!--- 3. Options for plotting point data -->
