@@ -1120,7 +1120,7 @@ output$chosen_species <- renderPlot({
 ```
 
 <!----------------------------------------------------------------------------->
-## ``reactiveValues()`` & ``eventReactive()``
+## ``observeEvent()`` and ``reactiveValues()``
 
 ```{r, echo=FALSE}
 shinyApp(
