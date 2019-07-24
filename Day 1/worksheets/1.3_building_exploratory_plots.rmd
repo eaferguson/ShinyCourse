@@ -15,24 +15,36 @@ library(lubridate)
 library(leaflet)
 library(rgdal)
 library(kableExtra)
+library(stats)
 
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
 region_shp <- readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+mara_shp <- region_shp[which(region_shp$Region_Nam=="Mara"),]
 
 region_shp$id <- rownames(region_shp@data)
 region_shp_df <- fortify(region_shp, region = "id")
 region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
 
+mara_shp$id <- rownames(mara_shp@data)
+mara_shp_df <- fortify(mara_shp, region = "id")
+mara_shp_df <- left_join(mara_shp_df, mara_shp@data, by = "id")
+
 summary_data <- raw_data %>%
-  group_by(month, sex) %>%
+  filter(species=="human") %>%
+  group_by(month, date, sex) %>%
   summarise(mean_age = mean(age),
             mean_density = mean(density)) %>%
   arrange(-mean_age)
 
-summary_data2 <- raw_data %>%
-  group_by(sex) %>%
-  summarise(mean_age = mean(age),
-            mean_density = mean(density))
+summary_data_means <- raw_data %>%
+  group_by(species) %>%
+  summarise(mean_age = round(mean(age), digits=1),
+            sd_age = round(sd(age), digits=1))
+
+movement <- raw_data %>%
+  group_by(month, species, region) %>%
+  select(region, month, x,y) %>%
+  filter(species == "dog" & region=="Mara")
 
 # Create a colour palette
 col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
@@ -252,12 +264,14 @@ ggplot() +
 </div> <!--- End grid -->
 
 <ul>
-<li>ggplot2 has individual functions for each type of plot, and additional plotting features such as lines and error bars.</li>
-<li>This allows the user to layer multiple types of plot e.g. bars and lines.</li>
+<li>ggplot2 has individual functions for each type of plot</li>
+<li>There are also functions for additional plotting features such as lines, error bars and text.</li>
+<li>This allows the user to layer multiple plots easily e.g. bars and lines.</li>
 <li>We have provided some examples of different plots below:</li>
 </ul>
 <br>
 
+<h3 class = "blue">Common plots</h3>
 <div class = "row">
 <div class = "col-md-6">
 <h4>geom_bar</h4>
@@ -275,8 +289,8 @@ ggplot() +
 Barplot, the user provides summary data for x and y <br>
 ```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
 ggplot() + 
-  geom_col(data=summary_data2, 
-           aes(x=sex, y=mean_age)) + 
+  geom_col(data=summary_data_means, 
+           aes(x=species, y=mean_age)) + 
   theme_classic()
 ```
 </div>
@@ -299,8 +313,7 @@ ggplot() +
 Point/scatter, user provides x and y variables <br>
 ```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
 ggplot() + 
-  geom_point(data=raw_data, 
-             aes(x=x, y=y, color=species)) + 
+  geom_point(data=raw_data, aes(x=x, y=density)) +
   theme_classic()
 ```
 </div>
@@ -309,29 +322,30 @@ ggplot() +
 <div class = "row">
 <div class = "col-md-6">
 <h4>geom_line</h4>
-Lineplot, connects observations in the order they appear on the x-axis
+Lineplot, connects observations in the order they appear on the x-axis (e.g. over time)
 ```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
 ggplot() + 
   geom_line(data=summary_data, 
-            aes(x=month, y=mean_age, color=sex),
-            size=1) + 
+            aes(x=month, y=mean_age, color=sex)) + 
   theme_classic()
 ```
 </div>
 <div class = "row">
 <div class = "col-md-6">
 <h4>geom_path</h4>
-Lineplot, connects observation in the order they appear in the data
+Lineplot, connects observation in the order they appear in the data (e.g. observation number)
 ```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
 ggplot() + 
-  geom_path(data=summary_data, 
-            aes(x=month, y=mean_age, color=sex),
-            size=1) + 
-  theme_classic()
+  geom_path(data=movement, 
+            aes(x=x, y=y), color="red") + 
+  labs(x="Longitude", y="Latitude") + 
+  theme_classic() 
 ```
 </div>
 </div>
 
+<br>
+<h3 class = "blue">Additional plots</h3>
 <div class = "row">
 <div class = "col-md-6">
 <h4>geom_boxplot</h4>
@@ -357,20 +371,73 @@ ggplot() +
 </div>
 </div>
 
-``` {r, echo=FALSE}
-plot_types <- data.frame("1"=rep("Additional features", 3),
-                      "function name"=c("``geom_abline()``, ``geom_hline()``, ``geom_vline()``", 
-                                        "``geom_errorbar()``",
-                                        "``geom_text()``, ``geom_label()``"),
-                      "description"=c("reference lines (diagonal, horizontal, vertical)", 
-                                      "error bars",
-                                      "text mapped to plot location (no background, white background)"))
-
-kable_styling(kable(plot_types, col.names=c("", "function name", "description")), 
-              font_size=14, full_width=FALSE, position="left", bootstrap_options=c("bordered", "condensed")) %>%
-  column_spec(1, bold = T) %>%
-  collapse_rows(columns = 1)
+<br>
+<h3 class = "blue">Layering plots</h3>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_polygon + geom_path</h4>
+To layer multiple plots to one output, simply join with a ``+`` symbol
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot() + 
+  geom_polygon(data=mara_shp_df, 
+               aes(x=long, y=lat, group=group), 
+               fill="white", color="black") + 
+  geom_path(data=movement, 
+            aes(x=x, y=y), color="red") + 
+  theme_classic() + coord_equal()
 ```
+</div>
+</div>
+
+<br>
+<h3 class = "blue">Additional features</h3>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_abline, geom_hline and geom_vline</h4>
+Diagonal, horizontal and vertical line plotting
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+coef(lm(density~x, data=raw_data))
+ggplot() + 
+  geom_point(data=raw_data, aes(x=x, y=density)) + 
+  geom_abline(intercept=-5800, slope=190, 
+              color="red", size=1) + 
+  geom_hline(yintercept=9000, linetype="dashed") +
+  geom_vline(xintercept=35, color="blue", size=1.5) +
+  theme_classic()
+```
+</div>
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_errorbar</h4>
+Error bars matched to plot variables
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot(data=summary_data_means) + 
+  geom_col(aes(x=species, y=mean_age, fill=species)) + 
+  geom_errorbar(aes(x=species, 
+                    ymin=mean_age-sd_age,
+                    ymax=mean_age+sd_age),
+                width=0.2) + 
+  theme_classic()
+```
+</div>
+</div>
+
+<div class = "row">
+<div class = "col-md-6">
+<h4>geom_text and geom_label</h4>
+Plot text from data frame with (geom_label) or without (geom_text) white background
+```{r echo = TRUE, message = FALSE, warning = FALSE, fig.height = 3}
+ggplot(data=summary_data_means) + 
+  geom_col(aes(x=species, y=mean_age)) + 
+  geom_text(aes(x=species, y=mean_age+5, 
+                label=paste0("sd ", sd_age))) + 
+  geom_label(aes(x=species, y=mean_age+10, 
+                label=paste0("mean ", mean_age))) + 
+  theme_classic() + 
+  theme(panel.background = element_rect(fill="#fcf0cd"))
+```
+</div>
+</div>
 
 <br>
 
