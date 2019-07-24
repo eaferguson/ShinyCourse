@@ -315,21 +315,67 @@ e.g. When using the tiles provider$CartoDB.Positron:<br>
 ```
 
 <!----------------------------------------------------------------------------->
-## Editing data icons {.smaller}
+## Popups {.smaller}
+
+Interactive way for user to explore dataset
 
 ```{r, eval = T, echo = T}
-?addCircles
+# We can create an object which has everything we want to display
+popupInfo <- paste("Date: ", leaflet_data$date, "<br>",
+                   "Species: ", leaflet_data$species, "<br>",
+                   "Age: ", leaflet_data$age, "<br>",
+                   sep = " ")
+```
+
+Then, refer to ``popupInfo`` when using ``addCircles()``, ``addCircleMarkers()`` etc.
+
+```{r, eval = T, echo = T}
+m <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(data=leaflet_data, lng=~x, lat=~y, popup = popupInfo)
+  
 ```
 
 <!----------------------------------------------------------------------------->
-## Using colour palettes in leaflet
+## Popups {.smaller}
+
+**An interactive way for the user to explore a dataset**
+
+Easier to first store what we want to display as an object ``popupInfo``
+```{r, eval = T, echo = T}
+popupInfo <- paste("Date: ", leaflet_data$date, "<br>",
+                   "Species: ", leaflet_data$species, "<br>",
+                   "Age: ", leaflet_data$age, "<br>",
+                   sep = " ")
+```
+
+Then, refer to ``popupInfo`` when using ``addCircles()``, ``addCircleMarkers()`` etc.
+
+```{r, eval = T, echo = T}
+m <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircleMarkers(data=leaflet_data, lng=~x, lat=~y, popup = popupInfo)
+```
+
+
+<!----------------------------------------------------------------------------->
+## Popups {.smaller}
+
+**An interactive way for the user to explore a dataset**
+
+```{r, eval = T, echo = T}
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Introducing colour palettes in leaflet
 
 **Using the ``colorFactor()`` and ``colorNumeric()`` functions**
 
 <!----------------------------------------------------------------------------->
-## Discrete variable - colour by species type
+## Discrete variable - colour by species type {.smaller}
 
-Regenerate ``m`` without the coloured circles we made earlier
+Create a fresh version of ``m``:
 ```{r, eval = T, echo = T}
 m <- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron)
@@ -345,7 +391,7 @@ myPal <- colorFactor(colour_pal,
 ```
 
 <!----------------------------------------------------------------------------->
-## Discrete variable - colour by species type
+## Discrete variable - colour by species type {.smaller}
 
 ```{r, eval = T, echo = T, fig.height = 4}
 # myPal() takes species type variable as argument
@@ -355,7 +401,7 @@ m
 ```
 
 <!----------------------------------------------------------------------------->
-## Adding a legend
+## Adding a legend {.smaller}
 
 ```{r, eval = T, echo = T, fig.height = 4}
 m <-  m %>% addLegend(position = "topright", title = "Species<br>type", pal = myPal,
@@ -364,7 +410,7 @@ m
 ```
 
 <!----------------------------------------------------------------------------->
-## Your turn
+## Your turn {.smaller}
 
 Adapt below code to produce a map with:<br>1) tiles showing elevation<br>2) circles coloured by species (instead of species type)<br>3) a legend for colour<br>4) a scale bar showing distance in kilometers (hint: ?addScaleBar).
 
@@ -381,17 +427,18 @@ m
 ```
 
 <!----------------------------------------------------------------------------->
-## Solution
+## Solution {.smaller}
 
 Part 1) tiles showing elevation
 ```{r, eval = T, echo = T}
 m <- leaflet() %>%
   addProviderTiles(providers$OpenTopoMap)
+m
   
 ```
 
 <!----------------------------------------------------------------------------->
-## Solution
+## Solution {.smaller}
 
 Part 2) circles coloured by species (instead of species type)
 ```{r, eval = T, echo = T}
@@ -401,8 +448,8 @@ m <- m %>% addCircles(data = leaflet_data, lng = ~x, lat = ~y,
                       color = myPal(leaflet_data$species), opacity = 0.9)
 ```
 
-
-## Solution
+<!----------------------------------------------------------------------------->
+## Solution {.smaller}
 
 Part 3) a legend for colour
 
@@ -411,15 +458,9 @@ m <- m %>% addLegend(position = "topright", title = "Species", pal = myPal,
                      values = leaflet_data$species, opacity = 0.5)
 ```
 
-<!----------------------------------------------------------------------------->
-## Solution
-
-```{r, eval = T}
-m
-```
 
 <!----------------------------------------------------------------------------->
-## Solution
+## Solution {.smaller}
 
 Part 4) a scale bar showing distance in kilometers
 
@@ -431,7 +472,7 @@ m
 ```
 
 <!----------------------------------------------------------------------------->
-## Solution
+## Solution {.smaller}
 
 ```{r, eval = T}
 m
@@ -439,7 +480,7 @@ m
 
 
 <!----------------------------------------------------------------------------->
-## Continuous variable - colour by date
+## Continuous variable - colour by date {.smaller}
 
 First, need to convert date variable to a numeric value
 ```{r, eval = T, echo = T, fig.height = 4}
@@ -451,7 +492,7 @@ leaflet_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(leaflet_data
 ```
 
 <!----------------------------------------------------------------------------->
-## Continuous variable - colour by date
+## Continuous variable - colour by date {.smaller}
 
 First, need to convert date variable to a numeric value
 ```{r, eval = T, echo = T, fig.height = 4}
@@ -463,7 +504,7 @@ is.numeric(leaflet_data$date_decimal)
 ```
 
 <!----------------------------------------------------------------------------->
-## Continuous variable - colour by date
+## Continuous variable - colour by date {.smaller}
 
 ```{r, eval = T, echo = T, fig.height = 4}
 dateRange <- c(2014, 2015)
@@ -480,8 +521,128 @@ m <- leaflet() %>%
 ```
 
 <!----------------------------------------------------------------------------->
-## Continuous variable - colour by date
+## Continuous variable - colour by date {.smaller}
 
 ```{r, eval = T, echo = T, fig.height = 4}
+m
+```
+
+<!----------------------------------------------------------------------------->
+# Using leaflet and shape file data in raster format
+
+
+<!----------------------------------------------------------------------------->
+# Using leaflet and environmental data in raster format
+
+<!----------------------------------------------------------------------------->
+## Loading raster data {.smaller}
+
+Load data using raster() from the raster package
+
+```{r, eval = T, echo = T, fig.height = 4}
+density <- raster::raster("../../Day 1/data/HumanPopulation.grd")
+density
+```
+
+<!----------------------------------------------------------------------------->
+## Loading raster data {.smaller}
+
+Load data using raster() from the raster package
+
+```{r, eval = T, echo = T, fig.height = 4}
+density <- raster::raster("../../Day 1/data/HumanPopulation.grd")
+plot(density)
+```
+
+<!----------------------------------------------------------------------------->
+## Loading raster data {.smaller}
+
+Load data using raster() from the raster package
+
+```{r, eval = T, echo = T, fig.height = 4}
+density <- raster::raster("../../Day 1/data/HumanPopulation.grd")
+plot(log(density))
+```
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+We use ``colorNumeric()`` again, as we did to colour by date earlier
+
+```{r, eval = T, echo = T, fig.height = 4}
+colour_pal <- c("#FFFFCC", "#41B6C4", "#0C2C84")
+raster::values(density) %>% range(na.rm = T)
+myPal <- colorNumeric(palette = colour_pal, domain = c(0, 30000), na.color = "red")
+
+m <- leaflet() %>%
+  addRasterImage(x = density, colors = myPal, opacity = 0.8)
+```
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+```{r, eval = T, echo = F, fig.height = 4}
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+Let's log density as we did before
+
+```{r, eval = T, echo = T, fig.height = 3.5}
+raster::values(density) %>% range(na.rm = T) %>% log
+myPal <- colorNumeric(palette = colour_pal, domain = c(-1.5, 11),
+                      na.color = "transparent")
+```
+
+We have to exclude some data, as there are 0 density polygons and log(0) gives -infinity
+
+```{r, eval = T, echo = T, fig.height = 3.5}
+sum(raster::values(density) > exp(-1.5), na.rm = T) /
+  sum(raster::values(density) >= 0, na.rm = T)
+```
+
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+
+Plot the logged raster data with some tiles and a legend for the colour scheme.
+
+```{r, eval = T, echo = T, fig.height = 3.5}
+m <- leaflet() %>%
+  addProviderTiles(provider = providers$CartoDB.Positron) %>%
+  addRasterImage(x = log(density), colors = myPal, opacity = 0.8) %>%
+  addLegend(pal = myPal, values = c(-1.5, 11), opacity = 0.8,
+            title = "Human<br>population<br>density")
+```
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+```{r, eval = T, echo = F, fig.height = 4}
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+
+We order things here so that the raster data is on top of the background tiles (``providers$CartoDB.PositronNoLabels``), and then plot only the labels (``providers$CartoDB.PositronOnlyLabels``) on top of the raster data.
+
+```{r, eval = T, echo = T, fig.height = 3.5}
+m <- leaflet() %>%
+  addProviderTiles(provider = providers$CartoDB.PositronNoLabels) %>%
+  addRasterImage(x = log(density), colors = myPal, opacity = 0.8) %>%
+  addProviderTiles(provider = providers$CartoDB.PositronOnlyLabels) %>%
+  addLegend(pal = myPal, values = c(-1.5, 11), opacity = 0.8,
+            title = "Human<br>population<br>density")
+```
+
+<!----------------------------------------------------------------------------->
+## Plotting raster data with leaflet {.smaller}
+
+```{r, eval = T, echo = F, fig.height = 4}
 m
 ```
