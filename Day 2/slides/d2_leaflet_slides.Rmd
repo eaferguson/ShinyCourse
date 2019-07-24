@@ -1,0 +1,487 @@
+---
+title: "Data Visualisation using RShiny"
+author: "Laurie Baker, Elaine Ferguson, Will Harvey, and Rachel Steenson"
+date: "**Tanzania**, August, 2019"
+output: 
+  ioslides_presentation:
+    incremental: true
+    widescreen: true
+---
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+
+library(ggplot2)
+library(leaflet)
+library(rgdal)
+raw_data <- read.csv("../../Day 1/data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- readOGR("../../Day 1/data/TZ_Region_2012", "TZ_Region_2012")
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<style>
+div.footnotes {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  width: 80%;
+  font-size: 0.6em;
+}
+.blue {color: #4E23B8;}
+.hl1-background {background-color: #fcf0cd;}
+.hl2-background {background-color: #dfecfc;}
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
+
+  $('footnote').each(function(index) {
+    var text  = $(this).html();
+    var fnNum = (index+1).toString();
+    $(this).html(fnNum.sup());
+
+    var footnote   = fnNum + '. ' + text + '<br/>';
+    var oldContent = $(this).parents('slide').children('div.footnotes').html();
+    var newContent = oldContent + footnote;
+    $(this).parents('slide').children('div.footnotes').html(newContent);
+  });
+});
+</script>
+
+<!----------------------------------------------------------------------------->
+## Introduction to leaflet
+
+### **What is leaflet?**
+
+> - "Leaflet is a widely used open source JavaScript library used to build web mapping applications."
+
+### **Why leaflet?**
+
+> - Great way to explore datasets with geographic component
+> - Communicate your results with interactive maps
+> - Combine with shiny to produce even more interactive maps
+
+<!----------------------------------------------------------------------------->
+## Course Overview {.smaller}
+
+### **Day 1:**
+> - Getting to know your data
+> - Data subsetting, summarising
+> - Building exploratory plots
+> - Building an interactive plot in RShiny
+
+### **Day 2:**
+> - Introduction to leaflet
+> - Building a leaflet map in R
+> - Building an interactive map in RShiny
+
+### **Day 3:**
+> - Review
+> - Build your own apps!
+
+
+<!----------------------------------------------------------------------------->
+## Getting Help
+
+```{r, out.width = "500px", out.height = "500px"}
+library(png)
+# knitr::include_graphics("figures/sticky notes.jpg")
+ 
+```
+
+<!----------------------------------------------------------------------------->
+## Deadly virus spreads through Tanzania!
+
+```{r, out.width = "760px", out.height = "380px"}
+library(png)
+# knitr::include_graphics("figures/headline.png")
+ 
+```
+
+**Your mission**
+Visualise the disease advance and save the wildlife and citizens of Tanzania!!
+
+<!----------------------------------------------------------------------------->
+## Day 2
+
+<ul>
+<li> <b class="blue">1.1 Introduction to leaflet </b></li>
+<li> 1.2 Building a leaflet map in R </li>
+<li> 1.3 Building an interactive map in RShiny </li>
+</ul>
+
+<!----------------------------------------------------------------------------->
+## Day 2
+
+<ul>
+<li> <b class="blue">1.1 Introduction to leaflet </b></li>
+<li> 1.2 Building an interactive leaflet map in R </li>
+<li> 1.3 Building an *even more* interactive map in RShiny </li>
+</ul>
+
+<!----------------------------------------------------------------------------->
+## Getting to know the data
+
+Step 1: Set the working directory
+
+```{r, echo = T}
+# Set your working directory by clicking on the top menu:
+# Session > Set Working Directory > To Source File Location
+```
+
+Step 2: Load packages
+
+```{r, echo = T, eval = FALSE}
+library("dplyr")
+```
+
+Step 3: Read in the data
+```{r, echo = T, eval = F}
+raw_data <- read.csv("../../Day 1/data/raw_data.csv")
+```
+
+<!----------------------------------------------------------------------------->
+## Getting to know the data {.smaller}
+
+We have several tools to get to know our data
+
+- ``View()``: allows us to view the dataframe as a spreadsheet.
+- ``nrow()``: tells us the number of rows in our data frame.
+- ``names()``: give us the names of the columns in our data frame.
+- ``dim()``: tells us the dimensions of our dataframes. 
+- ``summary()``: give us summary statistics (counts, min, median, mean, max).
+- ``head()``: gives us the first 6 elements of the data.
+- ``tail()``: gives us the last 6 elements of the data.
+- ``str()``: tells us the variable type (e.g. Factor, num (number), int (integer)).
+- ``unique()``: tells us the unique elements of a variable. 
+- ``table()``: gives us count number for the columns specified.
+- ``?`` and ``??`` accesses the help file for a function.
+
+<!----------------------------------------------------------------------------->
+## Your Turn
+
+> - Navigate to Day 1/worksheets, and open <b>1.0_worksheet.html</b>
+
+> - All the activities we'll guide you to are in this file.
+
+> - The contents table is interactive - you can click to move to the activity.
+
+<br>
+
+Complete section 1.1a of the worksheet
+
+<!----------------------------------------------------------------------------->
+## Map Basics
+
+<b class="blue">How many entries does the data frame have?</b>
+
+```{r, echo = TRUE}
+# create variable for type of species
+raw_data$species_type[which(raw_data$species=="dog" | raw_data$species=="cat")] <- "Domestic"
+raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
+raw_data$species_type[which(raw_data$species=="human")] <- "Human"
+
+# Use only one year
+leaflet_data <- raw_data %>% 
+  dplyr::mutate(year = substr(date, 1,4)) %>% 
+  dplyr::filter(year == 2014)
+
+```
+
+
+<!----------------------------------------------------------------------------->
+## Getting started with our map {.smaller}
+
+<b>We'll create a leaflet object ``m`` and add features, one step at a time.</b>
+
+To start, we can create a default widget using ``leaflet()``:
+```{r, eval = T, echo = T}
+m <- leaflet()
+```
+
+Next, add circles for our data points using ``addCircles()``:
+```{r, eval = T, echo = T}
+m <- m %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y)
+
+m <- addCircles(m, data=leaflet_data, lng=~x, lat=~y)
+m <- addCircles(m, data=leaflet_data, lng=~x, lat=~y)
+```
+
+<!----------------------------------------------------------------------------->
+## Using tiles to put data in geographic context{.smaller}
+
+```{r, eval = T, echo = T}
+# use the pipe operator to feed m into addTiles():
+m %>% addTiles()
+```
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+
+<b>Allows us to use third party tiles (e.g. Terrain tiles from Stamen Design).</b>
+
+```{r, eval = T, echo = T}
+# m created using code from previous slides
+m <- leaflet() %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y)
+```
+
+<b>Code options</b>
+```{r, eval = F, echo = T}
+addProviderTiles(map = m, provider = "Stamen.Terrain")
+
+addProviderTiles(map = m, provider = providers$Stamen.Terrain)
+
+m %>% addProviderTiles(provider = providers$Stamen.Terrain)
+```
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+```{r, eval = T, echo = T}
+m %>% addProviderTiles(providers$Stamen.Terrain)
+```
+
+<!----------------------------------------------------------------------------->
+## Your turn
+
+Try out a couple of the options for provider tiles.
+
+Hint: Use tab completion with the cursor placed after the ``$`` in ``addProviderTiles(providers$)``
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+
+```{r, eval = T, echo = T}
+m %>% addProviderTiles(providers$Esri.NatGeoWorldMap)
+```
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+```{r, eval = T, echo = T}
+m %>% addProviderTiles(providers$Wikimedia)
+```
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+
+```{r, eval = T, echo = T}
+m %>% addProviderTiles(providers$Esri.WorldTopoMap)
+```
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+```{r, eval = T, echo = T}
+m %>% addProviderTiles(providers$Esri.WorldImagery)
+```
+
+<!----------------------------------------------------------------------------->
+## Alternative tiles using ``addProviderTiles()`` {.smaller}
+```{r, eval = T, echo = T}
+m <- m %>% addProviderTiles(providers$CartoDB.Positron)
+m
+```
+
+
+<!----------------------------------------------------------------------------->
+## More info on  ``addProviderTiles()`` {.smaller}
+
+https://github.com/leaflet-extras/leaflet-providers
+<br><br><br>
+<b>Full list of free-to-use tiles with previews:</b> <br />
+http://leaflet-extras.github.io/leaflet-providers/preview/index.html
+<br><br><br>
+<b>Tile servers based on OpenStreetMap data with info on how to cite:</b> <br />
+https://wiki.openstreetmap.org/wiki/Tile_servers
+<br><br><br>
+
+e.g. When using the tiles provider$CartoDB.Positron:<br>
+*Figure 1. Map of Tanzanian dataset. Cases coloured blue. Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.*
+
+<!----------------------------------------------------------------------------->
+## Editing data icons {.smaller}
+
+```{r, eval = T, echo = T}
+?addCircles
+```
+
+<!----------------------------------------------------------------------------->
+## Editing data icons {.smaller}
+
+```{r, eval = T, echo = T}
+?addCircles
+```
+
+<!----------------------------------------------------------------------------->
+## Using colour palettes in leaflet
+
+**Using the ``colorFactor()`` and ``colorNumeric()`` functions**
+
+<!----------------------------------------------------------------------------->
+## Discrete variable - colour by species type
+
+Regenerate ``m`` without the coloured circles we made earlier
+```{r, eval = T, echo = T}
+m <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron)
+```
+
+``leaflet::colourFactor()`` creates a function (we're going to call it ``myPal``) that is used as an argument when we use ``addCircles()``
+
+```{r, eval = T, echo = T}
+# Choose 3 colours for our 3 groups  
+colour_pal <- c("gold", "forestgreen", "cornflowerblue")
+myPal <- colorFactor(colour_pal,
+                     domain = c("Human", "Domestic", "Wildlife"))
+```
+
+<!----------------------------------------------------------------------------->
+## Discrete variable - colour by species type
+
+```{r, eval = T, echo = T, fig.height = 4}
+# myPal() takes species type variable as argument
+m <- m %>% addCircles(data=leaflet_data, lng=~x, lat=~y,
+                      color = myPal(leaflet_data$species_type), opacity = 0.9)
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Adding a legend
+
+```{r, eval = T, echo = T, fig.height = 4}
+m <-  m %>% addLegend(position = "topright", title = "Species<br>type", pal = myPal,
+                      values = leaflet_data$species_type, opacity = 0.5)
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Your turn
+
+Adapt below code to produce a map with:<br>1) tiles showing elevation<br>2) circles coloured by species (instead of species type)<br>3) a legend for colour<br>4) a scale bar showing distance in kilometers (hint: ?addScaleBar).
+
+```{r, eval = F, echo = T}
+colour_pal <- c("gold", "forestgreen", "cornflowerblue")
+myPal <- colorFactor(colour_pal, domain = c("Human", "Domestic", "Wildlife"))
+m <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y,
+             color = myPal(leaflet_data$species_type), opacity = 0.9) %>%
+  addLegend(position = "topright", title = "Species<br>type", pal = myPal,
+            values = leaflet_data$species_type, opacity = 0.5)
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Solution
+
+Part 1) tiles showing elevation
+```{r, eval = T, echo = T}
+m <- leaflet() %>%
+  addProviderTiles(providers$OpenTopoMap)
+  
+```
+
+<!----------------------------------------------------------------------------->
+## Solution
+
+Part 2) circles coloured by species (instead of species type)
+```{r, eval = T, echo = T}
+colour_pal <- c("gold", "forestgreen", "cornflowerblue", "red", "magenta")
+myPal <- colorFactor(colour_pal, domain = unique(leaflet_data$species))
+m <- m %>% addCircles(data = leaflet_data, lng = ~x, lat = ~y,
+                      color = myPal(leaflet_data$species), opacity = 0.9)
+```
+
+
+## Solution
+
+Part 3) a legend for colour
+
+```{r, eval = T, echo = T}
+m <- m %>% addLegend(position = "topright", title = "Species", pal = myPal,
+                     values = leaflet_data$species, opacity = 0.5)
+```
+
+<!----------------------------------------------------------------------------->
+## Solution
+
+```{r, eval = T}
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Solution
+
+Part 4) a scale bar showing distance in kilometers
+
+```{r, eval = T, echo = T, fig.height= 3.2}
+m <- m %>% addScaleBar(position = "bottomleft",
+                       options = scaleBarOptions(maxWidth = 200, # default = 100
+                                                 imperial = FALSE))
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Solution
+
+```{r, eval = T}
+m
+```
+
+
+<!----------------------------------------------------------------------------->
+## Continuous variable - colour by date
+
+First, need to convert date variable to a numeric value
+```{r, eval = T, echo = T, fig.height = 4}
+head(leaflet_data$date, 5)
+is.character(leaflet_data$date)
+
+# Use 2 functions from lubridate for conversion
+leaflet_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(leaflet_data$date))
+```
+
+<!----------------------------------------------------------------------------->
+## Continuous variable - colour by date
+
+First, need to convert date variable to a numeric value
+```{r, eval = T, echo = T, fig.height = 4}
+# Use 2 functions from lubridate for conversion
+leaflet_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(leaflet_data$date))
+
+head(leaflet_data$date_decimal)
+is.numeric(leaflet_data$date_decimal)
+```
+
+<!----------------------------------------------------------------------------->
+## Continuous variable - colour by date
+
+```{r, eval = T, echo = T, fig.height = 4}
+dateRange <- c(2014, 2015)
+myPal <- leaflet::colorNumeric(col_palette, dateRange)
+m <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addCircles(data=leaflet_data, lng=~x, lat=~y,
+             color = myPal(leaflet_data$date_decimal), opacity = 0.9) %>%
+  addLegend(position = "topright", title = "Date",
+                pal = myPal, values = dateRange,
+                labFormat = labelFormat(big.mark = ""))  %>% # remove comma from 2,014)
+  addScaleBar(position = "bottomleft",
+              options = scaleBarOptions(maxWidth = 200))
+```
+
+<!----------------------------------------------------------------------------->
+## Continuous variable - colour by date
+
+```{r, eval = T, echo = T, fig.height = 4}
+m
+```
