@@ -316,15 +316,8 @@ leaflet_data &lt;-<span class="st"> </span>raw_data <span class="op">%&gt;%</spa
 <span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2014</span>)</code></pre></div>
 <p><br></p>
 <p>We use <code>leaflet()</code> to create a leaflet widget and can pipe this into a function such as <code>addCircles()</code> to get a basic plot of the data in space. <br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a new column specifying domestic vs. wildlife vs. human</span>
-raw_data<span class="op">$</span>species_type[<span class="kw">which</span>(raw_data<span class="op">$</span>species<span class="op">==</span><span class="st">&quot;dog&quot;</span> <span class="op">|</span><span class="st"> </span>raw_data<span class="op">$</span>species<span class="op">==</span><span class="st">&quot;cat&quot;</span>)] &lt;-<span class="st"> &quot;Domestic&quot;</span>
-raw_data<span class="op">$</span>species_type[<span class="kw">which</span>(raw_data<span class="op">$</span>species<span class="op">==</span><span class="st">&quot;jackal&quot;</span> <span class="op">|</span><span class="st"> </span>raw_data<span class="op">$</span>species<span class="op">==</span><span class="st">&quot;lion&quot;</span>)] &lt;-<span class="st"> &quot;Wildlife&quot;</span>
-raw_data<span class="op">$</span>species_type[<span class="kw">which</span>(raw_data<span class="op">$</span>species<span class="op">==</span><span class="st">&quot;human&quot;</span>)] &lt;-<span class="st"> &quot;Human&quot;</span>
-
-<span class="co"># Use only one year</span>
-leaflet_data &lt;-<span class="st"> </span>raw_data <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">substr</span>(date, <span class="dv">1</span>,<span class="dv">4</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2014</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw">leaflet</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">addCircles</span>(<span class="dt">data=</span>leaflet_data, <span class="dt">lng=</span><span class="op">~</span>x, <span class="dt">lat=</span><span class="op">~</span>y)</code></pre></div>
 <p><br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 2. Options for tiles -->
@@ -343,6 +336,20 @@ Options for tiles
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
+<p>The default open street map tiles are added to a leaflet widget using <code>addTiles()</code> while third party tiles can be added using <code>addProviderTiles()</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw">leaflet</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">addCircles</span>(<span class="dt">data=</span>leaflet_data, <span class="dt">lng=</span><span class="op">~</span>x, <span class="dt">lat=</span><span class="op">~</span>y)
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addTiles</span>()
+
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addProviderTiles</span>(<span class="dt">provider =</span> <span class="st">&quot;Stamen.Terrain&quot;</span>)
+<span class="co"># or alternatively</span>
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addProviderTiles</span>(<span class="dt">provider =</span> providers<span class="op">$</span>Stamen.Terrain)
+
+<span class="co"># some other third party tile examples</span>
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addProviderTiles</span>(<span class="dt">provider =</span> providers<span class="op">$</span>Wikimedia)
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addProviderTiles</span>(<span class="dt">provider =</span> providers<span class="op">$</span>Esri.NatGeoWorldMap)
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addProviderTiles</span>(<span class="dt">provider =</span> providers<span class="op">$</span>Esri.WorldImagery)
+m <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">addProviderTiles</span>(<span class="dt">provider =</span> providers<span class="op">$</span>OpenTopoMap)</code></pre></div>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 3. Options for plotting point data -->
 <div class="row">
