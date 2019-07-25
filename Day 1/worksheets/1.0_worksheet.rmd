@@ -144,7 +144,7 @@ What types of species do we have in the data?
 Which species has the most cases?  
 <br>
 <li>``?names()``</li>
-What is the first argument for the function names?  
+What is the first argument for the function ``names()``?  
 </ol>
 
 <!--- ---------------------------------------------------------------------- -->
