@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - barplot_2 Master App
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4C  barplot_2    MASTER
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
@@ -15,7 +15,7 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 col_palette <- brewer.pal(name="Dark2", n=8)
 
 #------------------------------------------------------------------------------#
-# Define server logic required to draw a histogram
+# Begin server section
 shinyServer(function(input, output) {
 
   # Produce plot

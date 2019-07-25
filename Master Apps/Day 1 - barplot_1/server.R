@@ -1,26 +1,28 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - barplot_1 Master App
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4b  barplot_1    MASTER
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
+# Load in the libraries
 library(shiny)
 library(ggplot2)
 
+# Load in the data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
 # Create a colour palette
 col_palette <- brewer.pal(name="Dark2", n=8)
 
 #------------------------------------------------------------------------------#
-# Define server logic required to draw a histogram
+# Begin server section
 shinyServer(function(input, output) {
 
   # Produce plot
   output$barPlot <- renderPlot({
    ggplot() +
       geom_bar(data=raw_data, aes(x=raw_data[[input$xaxis]]), fill=col_palette[1]) +
-      labs(x=paste0("\n", input$xaxis), y="Number of records\n") +
+      labs(x=input$xaxis, y="Number of records") +
       # Extra plotting code to control appearence
       theme_classic() +
       theme(axis.text = element_text(size=14),
@@ -28,6 +30,7 @@ shinyServer(function(input, output) {
             plot.title = element_text(size=20),
             legend.title = element_text(size=18),
             legend.text = element_text(size=14))
-  })
 
-})
+  }) # Close the renderPlot
+
+}) # Close the shinyServer

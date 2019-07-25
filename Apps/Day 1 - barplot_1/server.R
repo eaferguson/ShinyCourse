@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - barplot_1
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4b   barplot_1
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
@@ -17,7 +17,7 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 col_palette <- brewer.pal(name="Dark2", n=8)
 
 #------------------------------------------------------------------------------#
-# Open the shiny section
+# Begin server section
 shinyServer(function(input, output) {
 
   # Produce plot

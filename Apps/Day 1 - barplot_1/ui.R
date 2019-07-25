@@ -1,13 +1,14 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - barplot_1
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4b   barplot_1
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries
 library(shiny)
 
-# Open the ui section
+#------------------------------------------------------------------------------#
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title

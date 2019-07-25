@@ -1202,9 +1202,6 @@ start_df <- summary_data %>%
   filter(region=="All regions" | region=="All data") %>%
   group_by(month, region, species) %>%
   summarise(n = sum(n))
-
-min_age <- min(raw_data$age)
-max_age <- max(raw_data$age)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -1310,7 +1307,7 @@ observeEvent(input$reset_button, {
 </li>
 <li>Reset the app
 <ul style="list-style-type:none;">
-<li>replace any user choices with base values</li>
+<li>replace any user choices with default values</li>
 </ul>
 </li>
 </ul>

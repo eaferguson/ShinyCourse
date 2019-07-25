@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_3 Master App
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4f  timeseries_3    MASTER
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
@@ -31,19 +31,19 @@ overall_summary <- raw_data %>%
   mutate(region="All data",
          species="All data")
 
-# Summarise for 'all' sexes, divided by region data
+# Summarise for 'all' species, divided by region data
 region_allspecies_summary <- raw_data %>%
   group_by(month, region, age) %>%
   summarise(n = length(month)) %>%
   mutate(species="All species")
 
-# Summarise for 'all' region, divided by sex data
+# Summarise for 'all' region, divided by species data
 species_allregions_summary <- raw_data %>%
   group_by(month, species, age) %>%
   summarise(n = length(month)) %>%
   mutate(region="All Regions")
 
-# Summarise region and sex data
+# Summarise region and species data
 region_species_summary <- raw_data %>%
   group_by(month, region, species, age) %>%
   summarise(n = length(month))
@@ -52,10 +52,10 @@ region_species_summary <- raw_data %>%
 summary_data <- bind_rows(overall_summary, region_allspecies_summary, species_allregions_summary, region_species_summary)
 
 #------------------------------------------------------------------------------#
-# Define server logic required to draw a histogram
+# Begin server section
 shinyServer(function(input, output) {
 
-  # Subset for the chosen region and sexes
+  # Subset for the chosen region and species
   data_subset <- reactive({
 
     # Subset for region

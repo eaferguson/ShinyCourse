@@ -1,12 +1,13 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - barplot_2
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4c   barplot_2
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 library(shiny)
 
-# Define UI for application that draws a histogram
+#------------------------------------------------------------------------------#
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title
@@ -22,7 +23,7 @@ shinyUI(fluidPage(
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Add sidebar layout
   sidebarLayout(
     sidebarPanel(
 

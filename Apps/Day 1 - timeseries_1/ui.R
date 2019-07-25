@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_1
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4d   timeseries_1
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries
@@ -12,11 +12,11 @@ library(ggplot2)
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 
-# Collect a list of regions for the dropdown menu
+# Collect a list of species for the dropdown menu
 species_list <- c("All Species", sort(unique(raw_data$species)))
 
 #------------------------------------------------------------------------------#
-# Define UI for application that draws a histogram
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title
@@ -32,7 +32,7 @@ shinyUI(fluidPage(
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Add a sidebarLayout
   sidebarLayout(
     sidebarPanel(
       selectInput("select_species", label = h3("Select a Species:"),

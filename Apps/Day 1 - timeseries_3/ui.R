@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_3
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4f   timeseries_3
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries
@@ -20,7 +20,7 @@ min_age <- min(raw_data$age)
 max_age <- max(raw_data$age)
 
 #------------------------------------------------------------------------------#
-# Define UI for application that draws a histogram
+# Begin UI section
 shinyUI(fluidPage(
 
   # Application title
@@ -31,12 +31,12 @@ shinyUI(fluidPage(
 
   # Add text section
   h4("This app is identical to the last, with a new widget: sliderInput"),
-  h4("Using these widgets together, we can change the region, the sex and the maximum age we want to view on the plot. The line showing 'all data' will always be visible!"),
+  h4("Using these widgets together, we can change the region, the species and the maximum age we want to view on the plot. The line showing 'all data' will always be visible!"),
 
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Add a sidebarLayout
   sidebarLayout(
     sidebarPanel(
 
@@ -58,7 +58,7 @@ shinyUI(fluidPage(
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("tsPlot", height=700)
     )

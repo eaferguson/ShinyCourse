@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_4
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4g  timeseries_4
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
@@ -31,19 +31,19 @@ overall_summary <- raw_data %>%
   mutate(region="All data",
          species="All data")
 
-# Summarise for 'all' sexes, divided by region data
+# Summarise for 'all' species, divided by region data
 region_allspecies_summary <- raw_data %>%
   group_by(month, region, age) %>%
   summarise(n = length(month)) %>%
   mutate(species="All species")
 
-# Summarise for 'all' region, divided by sex data
+# Summarise for 'all' region, divided by species data
 species_allregions_summary <- raw_data %>%
   group_by(month, species, age) %>%
   summarise(n = length(month)) %>%
   mutate(region="All regions")
 
-# Summarise region and sex data
+# Summarise region and species data
 region_species_summary <- raw_data %>%
   group_by(month, region, species, age) %>%
   summarise(n = length(month))
@@ -51,7 +51,7 @@ region_species_summary <- raw_data %>%
 # Join summary data together
 summary_data <- bind_rows(overall_summary, region_allspecies_summary, species_allregions_summary, region_species_summary)
 
-# Create a dataframe that matches the
+# Create a dataframe that matches the end summary step in the reactive function below
 start_df <- summary_data %>%
   filter(region=="All regions" | region=="All data") %>%
   group_by(month, region, species) %>%
@@ -62,13 +62,13 @@ min_age <- min(raw_data$age)
 max_age <- max(raw_data$age)
 
 #------------------------------------------------------------------------------#
-# Define server logic required to draw a histogram
+# Begin server section
 shinyServer(function(input, output, session) {
 
   # Setup reactiveValues object that can be updated reactively
   data_subset <- reactiveValues(data = start_df)
 
-  # Subset for the chosen region and sexes
+  # Subset for the chosen region and species
   observeEvent(input$action_button, {
 
     # Subset for region

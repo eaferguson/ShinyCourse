@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_1 Master App
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4d  timeseries_1    MASTER
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries
@@ -16,7 +16,7 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 region_list <- c("All Regions", sort(unique(raw_data$region)))
 
 #------------------------------------------------------------------------------#
-# Define UI for application that draws a histogram
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title
@@ -27,12 +27,12 @@ shinyUI(fluidPage(
 
   # Add text section
   h4("This app is a little more complicated than the first one."),
-  h4("There is still only 1 widget (selectInput), but this time we are changing the region we want to view on the plot."),
+  h4("There is still only 1 dropdown menu, but this time we are changing the region we want to view on the plot."),
 
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Add a sidebarLayout
   sidebarLayout(
     sidebarPanel(
       selectInput("select_region", label = h3("Select a Region:"),
@@ -41,7 +41,7 @@ shinyUI(fluidPage(
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("tsPlot", height=700)
     )

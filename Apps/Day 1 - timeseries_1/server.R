@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_1
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4d   timeseries_1
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
@@ -38,10 +38,10 @@ species_summary <- raw_data %>%
 summary_data <- bind_rows(overall_summary, species_summary)
 
 #------------------------------------------------------------------------------#
-# Define server logic required to draw a histogram
+# Begin server section
 shinyServer(function(input, output) {
 
-  # Subset for the chosen region
+  # Subset for the chosen species
   data_subset <- reactive({
       data_sub = summary_data %>%
         filter(species==input$select_species | species=="All Species")

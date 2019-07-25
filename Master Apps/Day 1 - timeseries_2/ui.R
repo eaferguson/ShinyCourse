@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_2 Master App
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4e  timeseries_2    MASTER
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries
@@ -15,7 +15,8 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 # Collect a list of regions for the dropdown menu
 region_list <- c("All Regions", sort(unique(raw_data$region)))
 
-# Define UI for application that draws a histogram
+#------------------------------------------------------------------------------#
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title
@@ -26,12 +27,12 @@ shinyUI(fluidPage(
 
   # Add text section
   h4("This app is identical to the last, with a new widget: checkboxGroupInput"),
-  h4("Using these widgets, we can change the region and the sex we want to view on the plot. The line showing 'all data' will always be visible!"),
+  h4("Using these widgets, we can change the region and the species we want to view on the plot. The line showing 'all data' will always be visible!"),
 
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Add a sidebarLayout
   sidebarLayout(
     sidebarPanel(
 

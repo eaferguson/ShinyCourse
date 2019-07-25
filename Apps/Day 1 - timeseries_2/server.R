@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_2
-# This is the server logic of a Shiny web application. You can run the
+# ACTIVITY 1.4e   timeseries_2
+# This is the server script for a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
@@ -52,7 +52,7 @@ region_sexes_summary <- raw_data %>%
 summary_data <- bind_rows(overall_summary, region_allsexes_summary, sex_allregions_summary, region_sexes_summary)
 
 #------------------------------------------------------------------------------#
-# Define server logic required to draw a histogram
+# Begin server section
 shinyServer(function(input, output) {
 
   # Subset for the chosen region and sexes

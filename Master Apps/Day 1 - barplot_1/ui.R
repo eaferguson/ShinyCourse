@@ -1,12 +1,13 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - barplot_1 Master App
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4b  barplot_1    MASTER
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 library(shiny)
 
-# Define UI for application that draws a histogram
+#------------------------------------------------------------------------------#
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title
@@ -22,8 +23,10 @@ shinyUI(fluidPage(
   # Add a line break
   br(),
 
-  # Sidebar with a slider input for number of bins
+  # Create a sidebar layout
   sidebarLayout(
+
+    # Add content to the sidebar
     sidebarPanel(
 
       # Add a dropdown menu
@@ -33,10 +36,12 @@ shinyUI(fluidPage(
 
     ),
 
-    # Show a plot of the generated distribution
+    # Show plot
     mainPanel(
       plotOutput("barPlot", height=700)
-    )
-  )
 
-))
+    ) # Close the main panel
+
+  )# Close the sidebarLayout
+
+)) # Close the fluidPage and shinyUI

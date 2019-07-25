@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
-# Day 1 - timeseries_4
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
+# ACTIVITY 1.4g  timeseries_4   MASTER
+# This is the ui script for a Shiny web application. You can run the
+# application by clicking 'Run App' above.
 # ---------------------------------------------------------------------------- #
 
 # Load in libraries
@@ -20,7 +20,7 @@ min_age <- min(raw_data$age)
 max_age <- max(raw_data$age)
 
 #------------------------------------------------------------------------------#
-# Define UI for application that draws a histogram
+# Begin ui section
 shinyUI(fluidPage(
 
   # Application title
@@ -31,7 +31,7 @@ shinyUI(fluidPage(
 
   # Add text section
   h4("This app is identical to the last, with a new widget: actionButton"),
-  h4("The action button triggers the plot update after the user has set the other widget values"),
+  h4("One action button triggers the plot update after the user has set the other widget values, the other resets the plot and widget values to the default."),
 
   # Add a line break
   br(),
