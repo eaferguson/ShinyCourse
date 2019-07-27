@@ -26,14 +26,13 @@ all_species <- unique(leaflet_data$species)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Interactive map"),
+  titlePanel("Day 2 - Map_1"),
   
   # Add a line break
   br(),
   
   # Add text section
-  h4("This app allows spatial exploration of the data."),
-  h4("The widgets allow selection of the data points we want to view on the map, and colouring of the points based on different variables."),
+  h4("A simple map app, where we can select the variable to colour points by"),
   
   # Add a line break
   br(),

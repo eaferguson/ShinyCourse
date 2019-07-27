@@ -44,11 +44,11 @@ shinyServer(function(input, output) {
   
   # Get point colours based on chosen variable
   pal <- reactive({
-    colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
-    if(is.character(leaflet_data[,colourby])){ # species or sex
-      colorFactor(palette, domain = sort(unique(leaflet_data[,colourby])))  
-    }else{ # date or age
-      colorNumeric(palette, range(leaflet_data[,colourby]))
+    colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+    if(input$colourby %in% c("species","sex")){ 
+      colorFactor(palette, domain = sort(unique(leaflet_data[,colourby_col])))  
+    }else if(input$colourby %in% c("date","age")){
+      colorNumeric(palette, range(leaflet_data[,colourby_col]))
     }
   })
   
@@ -68,13 +68,13 @@ shinyServer(function(input, output) {
                   label=regions$Region_Nam, weight=1, fillOpacity=0.7)
     
     ## Add coloured points and legend
-    colourby <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+    colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
     m %>% 
       addCircles(data=leaflet_data,lng=~leaflet_data$x,lat=~leaflet_data$y,
-                 color = pal()(leaflet_data[,colourby]),
+                 color = pal()(leaflet_data[,colourby_col]),
                  opacity=1, fillOpacity=1, popup = popupInfo) %>%
       addLegend(position = "bottomright", title = input$colourby,
-                pal = pal(), values = leaflet_data[,colourby], opacity=1,
+                pal = pal(), values = leaflet_data[,colourby_col], opacity=1,
                 labFormat = labelFormat(big.mark = "")) 
     
   })
