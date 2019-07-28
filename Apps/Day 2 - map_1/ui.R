@@ -17,8 +17,6 @@ raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
 # Tranform dates from characters to date objects
 leaflet_data <- raw_data %>% mutate(date=ymd(date)) 
 
-# Get the unique names of the species for the drop down menu
-all_species <- unique(leaflet_data$species)
 
 
 #------------------------------------------------------------------------------#
