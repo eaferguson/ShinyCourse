@@ -14,6 +14,7 @@ library(lubridate)
 library(dplyr)
 library(rgdal)
 library(rgeos)
+library(shinyWidgets)
 
 # Load in the raw data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
@@ -27,6 +28,10 @@ palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 
 ## Load region shapefile
 regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
+
+# Get the unique names of the species for the drop down menu
+all_species <- unique(leaflet_data$species)
+
 
 ```
 
@@ -101,7 +106,7 @@ We can use many of the same widgets used to interact with regular plots to inter
 
 <!----------------------------------------------------------------------------->
 
-## Creating a basic map to build from
+## A simple leaflet map to be made interactive
 
 ``` {r, echo=TRUE}
 
@@ -119,7 +124,7 @@ m
 
 <!----------------------------------------------------------------------------->
 
-## Creating a basic map to build from
+## A simple leaflet map to be made interactive
 
 ``` {r, echo=TRUE, eval=TRUE}
 
@@ -134,7 +139,7 @@ m
 
 <!----------------------------------------------------------------------------->
 
-## Creating a basic map to build from
+## A simple leaflet map to be made interactive
 
 ``` {r, echo=FALSE, eval=TRUE}
 
@@ -171,14 +176,191 @@ m %>%
 
 ## What widgets could we add to make the map more interactive?
 
-<li> <b>selectInput</b> to select alternative variables to colour points by </li><p>
-<li> <b>sliderInput</b> to choose date range of plotted points </li><p>
-<li> <b>checkboxGroupInput</b> to select which background polygon layers to display </li><p>
-<li> <b>pickerInput</b> to choose a subset of the species to plot </li><p>
-<li> ... </li>
+- ``selectInput()`` to select alternative variables to colour points by 
+- ``sliderInput()`` to choose date range of plotted points 
+- ``checkboxGroupInput`` to select which background polygon layers to display 
+- ``pickerInput()`` to choose a subset of the species to plot (from the <b>shinyWidgets</b> package) 
+- ... 
 
 
 <!----------------------------------------------------------------------------->
 
+## Outputting a leaflet map in Shiny
+
+- ``renderLeaflet()`` is used in the <b>server</b> to create the leaflet map 
+- ``leafletOutput()`` is used in the <b>ui</b> to diplay the map
+
+
+<!----------------------------------------------------------------------------->
+
+## Create a map app with choice of variable to colour by
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+selectInput(inputId="colourby", label="Colour Cases By:",
+            choices = c("species","date"), selected="species")
+
+```
+
+<b>shinyUI Main Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+leafletOutput("mymap",width=1000,height=700)
+
+```
+
+<!----------------------------------------------------------------------------->
+## Create a map app with choice of variable to colour by
+
+<b>shinyServer ``reactive`` section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+
+pal <- reactive({
+  colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+  if(input$colourby == "species"){ 
+    colorFactor(palette, domain = sort(unique(leaflet_data[,colourby_col])))  
+  }else if(input$colourby == "date"){
+    colorNumeric(palette, range(leaflet_data[,colourby_col]))
+  }
+})
+  
+```
+
+
+<!----------------------------------------------------------------------------->
+## Create a map app with choice of variable to colour by {.smaller}
+
+<b>shinyServer ``renderLeaflet()`` section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+output$mymap <- renderLeaflet({
+
+  colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+
+  leaflet() %>% 
+    addProviderTiles("Stamen.Terrain") %>%
+    setView(c(gCentroid(regions)@coords)[1], c(gCentroid(regions)@coords)[2], zoom = 6) %>% 
+    addPolygons(data=regions,color="black",fillColor = "white",
+                label=regions$Region_Nam, weight=1, fillOpacity=0.7) %>%
+    addCircles(data=leaflet_data,lng=~leaflet_data$x,lat=~leaflet_data$y,
+               color = pal()(leaflet_data[,colourby_col]),
+               opacity=1, fillOpacity=1, popup = popupInfo) %>%
+    addLegend(position = "bottomright", title = input$colourby,
+              pal = pal(), values = leaflet_data[,colourby_col], opacity=1,
+              labFormat = labelFormat(big.mark = "")) 
+})
+
+
+```
+
+<!----------------------------------------------------------------------------->
+## Create a map app with choice of variable to colour by {.smaller}
+
+```{r, echo=FALSE}
+
+shinyApp(
+  
+  ui=shinyUI(fluidPage(
+    
+    sidebarLayout(
+      
+      # Sidebar containing the widgets
+      sidebarPanel(
+        
+        # Drop down menu to choose variable by which points will be coloured
+        selectInput(inputId="colourby", label="Colour Cases By:",
+                    choices = c("species","date"), selected="species")
+        
+      ),
+      
+      
+      # Show a plot of the map
+      mainPanel(
+        leafletOutput("mymap",width=580,height=450)
+      )
+      
+    )
+    
+  
+  )),
+  
+  server = shinyServer(function(input, output) {
+  
+  
+    # Get point colours based on chosen variable
+    pal <- reactive({
+      colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+      if(input$colourby == "species"){ 
+        colorFactor(palette, domain = sort(unique(leaflet_data[,colourby_col])))  
+      }else if(input$colourby == "date"){
+        colorNumeric(palette, range(leaflet_data[,colourby_col]))
+      }
+    })
+    
+    
+    ## Render map
+    output$mymap <- renderLeaflet({
+      
+      ## Initialise map with tile. Set central point of viewing window and initial amount of zoom.
+      m <- leaflet() %>% 
+        addProviderTiles("Stamen.Terrain") %>%
+        setView(c(gCentroid(regions)@coords)[1], c(gCentroid(regions)@coords)[2], zoom = 5)
+      
+      
+      ## Add region shapefile
+      m <- m %>% 
+        addPolygons(data=regions,color="black",fillColor = "white",
+                    label=regions$Region_Nam, weight=1, fillOpacity=0.7)
+      
+      ## Add coloured points and legend
+      colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+      m %>% 
+        addCircles(data=leaflet_data,lng=~leaflet_data$x,lat=~leaflet_data$y,
+                   color = pal()(leaflet_data[,colourby_col]),
+                   opacity=1, fillOpacity=1, popup = popupInfo) %>%
+        addLegend(position = "bottomright", title = input$colourby,
+                  pal = pal(), values = leaflet_data[,colourby_col], opacity=1,
+                  labFormat = labelFormat(big.mark = "")) 
+      
+    })
+    
+  })
+
+  
+)
+
+
+```
+
+<!----------------------------------------------------------------------------->
+## Your turn  
+
+Complete section 2.3a of the handout.<br><br>
+<center><img src="figures/Day2_map_1.png" style="width: 90%;" /></center>
+
+
+<!----------------------------------------------------------------------------->
+## Summary - section 2.3a  
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+selectInput(inputId="colourby", label="Colour Cases By:",
+            choices = c("species","date","sex","age"),
+            selected="species")
+
+```
+
+
+<b>shinyServer ``reactive`` section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+
+pal <- reactive({
+  colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+  if(input$colourby %in% c("species","sex")){ 
+    colorFactor(palette, domain = sort(unique(leaflet_data[,colourby_col])))  
+  }else if(input$colourby %in% c("date","age")){
+    colorNumeric(palette, range(leaflet_data[,colourby_col]))
+  }
+})
+  
+```
 
 
