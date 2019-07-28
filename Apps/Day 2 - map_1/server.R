@@ -25,7 +25,7 @@ palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 ## Load region shapefile
 regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
 
-## Create text pop-up information for each point in subsetted data
+## Create text pop-up information for each point in leaflet_data
 popupInfo <- 
   paste("Date: ", leaflet_data$date, "<br>",
         "Species: ", leaflet_data$species, "<br>",
