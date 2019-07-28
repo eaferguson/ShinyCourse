@@ -81,8 +81,8 @@ shinyServer(function(input, output) {
                     label=regions$Region_Nam, weight=1, fillOpacity=0.7)}
     if("protected areas" %in% input$shapefiles){
       m <- m %>% 
-        addPolygons(data=PAs,color="transparent",fillColor = "sienna",
-                    weight=1, fillOpacity=0.6)}
+        addPolygons(data=PAs,color="transparent",fillColor = "tomato",
+                    weight=1, fillOpacity=0.7)}
     
     ## Add coloured points and legend
     colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")

@@ -49,7 +49,7 @@ shinyUI(fluidPage(
     
     # Show a plot of the map
     mainPanel(
-      leafletOutput("mymap",width=1000,height=700)
+      leafletOutput("mymap",width=800,height=500)
     )
     
   )
