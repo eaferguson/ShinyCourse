@@ -59,9 +59,8 @@ shinyUI(fluidPage(
       br(),
       
       # Menu for selecting which species to display
-      
       pickerInput(inputId = "species", label = "Species:",
-                  sort(all_species), selected= sort(all_species), # Use sort to get names in alphabetical order
+                  sort(all_species), selected= all_species, # Use sort to get names in alphabetical order
                   options = list(`actions-box` = TRUE), multiple = T),
       
       br(),
@@ -77,7 +76,7 @@ shinyUI(fluidPage(
     
     # Show a plot of the map
     mainPanel(
-      leafletOutput("mymap",width=1000,height=700)
+      leafletOutput("mymap",width=800,height=500)
     )
     
     
