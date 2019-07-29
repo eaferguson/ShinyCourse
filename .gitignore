@@ -1,3 +1,6 @@
 # Don't push starterScript.html file
 starterScript/starterScript_report.html
 .Rhistory
+*.Rhistory
+.png
+*.png
