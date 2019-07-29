@@ -334,12 +334,8 @@ shinyApp(
 ## Your turn  
 
 Complete section 2.3a of the handout.<br><br>
+<center><img src="figures/Day2_map_1.png" style="width: 90%;" /></center>
 
-```{r, out.width = "400px", out.height = "300px"}
-library(png)
-knitr::include_graphics("D:/Dropbox/ShinyCourse/Day 2/figures/Day2_map_1.png")
- 
-```
 
 
 <!----------------------------------------------------------------------------->
