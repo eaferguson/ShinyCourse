@@ -1,24 +1,26 @@
 ---
-title: "Shiny Workshop: Day 2"
+title: "Data Visualisation using RShiny: Day 2"
+author: "2.1 - 2.3 Worksheet"
 output: 
   html_document:
     theme: yeti
     highlight: tango
 
 ---
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-library(dplyr)
-```
+---
 
 <style>
 h1, h2, h3, h4 {font-weight: bold;}
-.question {font-weight: bold; color: #4E23B8;}
+.blue {color: #4E23B8;}
 hr {border: 2px solid black;}
-a:link {color: white; text-decoration: none;}
-a:visited {color: white; text-decoration: none;}
-a:hover {color: #c9bde9; text-decoration: none;}
-a:active {color: white; text-decoration: none;}
+a.title:link {color: white; text-decoration: none;}
+a.title:visited {color: white; text-decoration: none;}
+a.title:hover {color: #c9bde9; text-decoration: none;}
+a.title:active {color: white; text-decoration: none;}
+a.main:link {color: #4E23B8; text-decoration: none;}
+a.main:visited {color: #4E23B8; text-decoration: none;}
+a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
+a.main:active {color: #4E23B8; text-decoration: none;}
 .panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
 .panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
 </style>
@@ -108,7 +110,31 @@ Click to view a specific section of the document.
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-
+Please navigate to the <b class="blue">Apps/Day 2 - map_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This is an app that displays a leaflet map with a background tile, the region shapefile, and the locations of our data points.
+<br>
+There is only 1 widget - ``selectInput()`` - to show a Dropdown menu that selects a variable by which the data points should be coloured.
+<br><br>
+Please take a moment to have a look at the server and ui scripts, then run the app.
+<br><br>
+<h4 class="blue">Questions: </h4>
+<ol>
+<li>What does the ``selected="species"`` argument in the ``selectInput()`` function do?</li>
+<li>What differences do you see in the map legends displayed for species and date.  What is the reason for these differences?</li>
+</ol>
+<br>
+<h4 class="blue">Activity: Add age and sex as options to colour the points by</h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>Think about what type of variables age and sex are.  Are they factors or numeric?</li>
+<li>You can use the operators | or %in% to make the necessary changes to the server</li>
+</ul>
+</em>
+<br>
 
 
 <!--- ---------------------------------------------------------------------- -->
