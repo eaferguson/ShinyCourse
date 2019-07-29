@@ -58,7 +58,7 @@ shinyUI(fluidPage(
       
       br(),
       
-      # Checkbox for choosing shapefiles to be displayed 
+      # Checkbox for selecting whether region shapefile should be displayed 
       checkboxInput("shapefile", label = "Region shapefile:", value = TRUE)
       
       
