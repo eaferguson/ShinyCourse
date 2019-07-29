@@ -715,3 +715,37 @@ server = shinyServer(function(input, output) {
 
 ```
 
+<!----------------------------------------------------------------------------->
+## Your turn  
+
+Complete section 2.3c of the handout.<br><br>
+
+
+<!----------------------------------------------------------------------------->
+## Summary - section 2.3c {.smaller}
+
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+checkboxGroupInput("shapefiles", label = "Select background polygons:",
+                   choices =  c("regions", "protected areas"),
+                   selected = c("regions"))
+```
+
+<b>above shinyServer</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+PAs <- readOGR("data/TZprotected_areas","TZprotected_areas")
+```
+
+<b>shinyServer leaflet changes</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+if("regions" %in% input$shapefiles){
+  m <- m %>% 
+    addPolygons(data=regions,color="black",fillColor = "white",
+                label=regions$Region_Nam, weight=1, fillOpacity=0.7)}
+if("protected areas" %in% input$shapefiles){
+  m <- m %>% 
+    addPolygons(data=PAs,color="transparent",fillColor = "tomato",
+                weight=1, fillOpacity=0.7)}
+
+```
