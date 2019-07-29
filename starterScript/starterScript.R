@@ -48,7 +48,14 @@ update.packages(checkBuilt=TRUE, ask=FALSE)
 # If you are asked to use a personal library, say "No".
 
 #------------------------------------------------------------------------------#
-# Step 4: INSTALL NEW R PACKAGES
+# Step 4: INSTALL RTOOLS
+
+# Please click on this link (https://cran.r-project.org/bin/windows/Rtools/),
+# download and install Rtools35.exe (recommended). This will help install
+# R packages in the next step.
+
+#------------------------------------------------------------------------------#
+# Step 5: INSTALL NEW R PACKAGES
 
 # For the R shiny workshop, there are a series of packages we need you to
 # install.
@@ -70,7 +77,7 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 if(length(new.packages)) install.packages(new.packages, quiet=TRUE)
 
 #------------------------------------------------------------------------------#
-# Step 5: GENERATE REPORT TO CHECK PACKAGE INSTALLATION
+# Step 6: GENERATE REPORT TO CHECK PACKAGE INSTALLATION
 
 # We have created a report that will check for us how the package installation
 # has gone for you. The next line of code will generate a .html file called
