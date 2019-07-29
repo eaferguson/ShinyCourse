@@ -407,7 +407,6 @@ shinyApp(
 leaflet_data_sub<- reactive({
   leaflet_data %>% 
     filter(species %in% input$species)
-  
 })
 
 ## Create text pop-up information for each point in subsetted data
@@ -535,4 +534,35 @@ shinyApp(
 })
 )
 
+```
+
+
+<!----------------------------------------------------------------------------->
+## Your turn  
+
+Complete section 2.3b of the handout.<br><br>
+
+
+<!----------------------------------------------------------------------------->
+
+## Summary - section 2.3b  
+
+<b>Above shinyUI</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+all_regions <- unique(leaflet_data$region)
+```
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+pickerInput(inputId = "region", label = "Region:",
+            sort(all_regions), selected= all_regions, 
+            options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T)
+```
+
+<b>shinyServer ``reactive`` section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+leaflet_data_sub<- reactive({
+  leaflet_data %>% 
+    filter(region %in% input$region)
+})
 ```
