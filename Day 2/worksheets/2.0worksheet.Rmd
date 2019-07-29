@@ -32,8 +32,8 @@ a:active {color: white; text-decoration: none;}
 <div class="panel panel-aims"> <!--- Begin panel -->
 <h3>Aims</h3>
 <ul>
-<li><a href="#2.1">Review Day 1</a></li>
-<li><a href="#2.2">Introduction to leaflet basics</a></li>
+<li><a href="#2.1">Recap day 1 and mapping basics</a></li>
+<li><a href="#2.2">Introduction to leaflet</a></li>
 <li><a href="#2.3">Working in leaflet with shape and raster files</a></li>
 <li><a href="#2.4">Build an app with a map</a></li>
 <li><a href="#2.5">Build an app with multiple tabs</a></li>
