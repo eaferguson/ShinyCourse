@@ -1,7 +1,6 @@
 ---
 title: "Data Visualisation using RShiny: Day 1"
-author: "Building an interactive plot in RShiny"
-date: "1.1 - 1.4 Worksheet"
+author: "1.1 - 1.4 Worksheet"
 output: 
   html_document:
     theme: yeti
@@ -472,7 +471,7 @@ Please take a moment to have a look at the server and ui scripts, then run the a
 <h4 class="blue">Questions: </h4>
 <ol>
 <li>What function is used to subset in the ``reactive()`` function?</li>
-<li>What does the ``|``mean in the ``reactive()`` function?</li>
+<li>What does the ``|`` mean in the ``reactive()`` function?</li>
 </ol>
 <br>
 <h4 class="blue">Activity: Change the dropdown from Species to Region  </h4>
