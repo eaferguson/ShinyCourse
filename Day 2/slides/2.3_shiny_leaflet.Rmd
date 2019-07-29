@@ -252,7 +252,7 @@ output$mymap <- renderLeaflet({
 ```
 
 <!----------------------------------------------------------------------------->
-## Create a map app with choice of variable to colour by {.smaller}
+## Create a map app with choice of variable to colour by 
 
 ```{r, echo=FALSE}
 
@@ -334,7 +334,6 @@ shinyApp(
 ## Your turn  
 
 Complete section 2.3a of the handout.<br><br>
-<center><img src="figures/Day2_map_1.png" style="width: 90%;" /></center>
 
 
 
@@ -395,11 +394,175 @@ shinyApp(
   
 )
 
+```
+
+  
+<!----------------------------------------------------------------------------->
+## Subsetting the data to be displayed
+
+<b>shinyServer new ``reactive`` sections</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+
+## Subset data based on inputs
+leaflet_data_sub<- reactive({
+  leaflet_data %>% 
+    filter(species %in% input$species)
+})
+
+## Create text pop-up information for each point in subsetted data
+popupInfo <- reactive({
+  paste("Date: ", leaflet_data_sub()$date, "<br>",
+        "Species: ", leaflet_data_sub()$species, "<br>",
+        "Age: ", leaflet_data_sub()$age, "<br>",
+        "Sex: ", leaflet_data_sub()$sex, "<br>",
+        sep = " ")
+})
+
+```
   
 
+<!----------------------------------------------------------------------------->
+## Subsetting the data to be displayed
+
+<b>shinyServer ``renderLeaflet()`` changes</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_data_sub()$y,
+           color = pal()(leaflet_data_sub()[,colourby_col]),
+           opacity=1, fillOpacity=1, popup = popupInfo()) %>%
+addLegend(position = "bottomright", title = input$colourby,
+          pal = pal(), values = leaflet_data_sub()[,colourby_col], opacity=1,
+          labFormat = labelFormat(big.mark = "")) 
+})
 
 
+```
+
+<!----------------------------------------------------------------------------->
+## Subsetting the data to be displayed
+
+```{r, echo=FALSE,eval=TRUE, class.source="server-background"}
+
+shinyApp(
+  ui = shinyUI(fluidPage(
+  
+  sidebarLayout(
+    
+    # Sidebar containing the widgets
+    sidebarPanel(
+      
+      # Drop down menu to choose variable by which points will be coloured
+      selectInput(inputId="colourby", label="Colour Cases By:",
+                  choices = c("species","date","sex","age"),
+                  selected="species"),
+      
+      br(),
+      
+      # Menu for selecting which species to display
+      pickerInput(inputId = "species", label = "Species:",
+                  sort(all_species), selected= all_species, # Use sort to get names in alphabetical order
+                  options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T)
+      
+      
+    ),
+    
+    
+    # Show a plot of the map
+    mainPanel(
+      leafletOutput("mymap",width=620,height=490)
+    )
+    
+  )
+  
+
+))
+,
+  server=shinyServer(function(input, output) {
+  
+  ## Subset data based on inputs
+  leaflet_data_sub<- reactive({
+    leaflet_data %>% 
+      filter(species %in% input$species)
+    
+  })
+  
+  ## Create text pop-up information for each point in subsetted data
+  popupInfo <- reactive({
+    paste("Date: ", leaflet_data_sub()$date, "<br>",
+          "Species: ", leaflet_data_sub()$species, "<br>",
+          "Age: ", leaflet_data_sub()$age, "<br>",
+          "Sex: ", leaflet_data_sub()$sex, "<br>",
+          sep = " ")
+  })
+  
+  # Get point colours based on chosen variable
+  pal <- reactive({
+    colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+    if(input$colourby %in% c("species","sex")){ 
+      colorFactor(palette, domain = sort(unique(leaflet_data[,colourby_col])))  
+    }else if(input$colourby %in% c("date","age")){
+      colorNumeric(palette, range(leaflet_data[,colourby_col]))
+    }
+  })
+  
+  
+  ## Render map
+  output$mymap <- renderLeaflet({
+    
+    ## Initialise map with tile. Set central point of viewing window and initial amount of zoom.
+    m <- leaflet() %>% 
+      addProviderTiles("Stamen.Terrain") %>%
+      setView(c(gCentroid(regions)@coords)[1], c(gCentroid(regions)@coords)[2], zoom = 6)
+    
+    
+    ## Add region shapefile
+    m <- m %>% 
+      addPolygons(data=regions,color="black",fillColor = "white",
+                  label=regions$Region_Nam, weight=1, fillOpacity=0.7)
+    
+    ## Add coloured points and legend
+    colourby_col <- ifelse(input$colourby!="date",input$colourby,"date_decimal")
+    m %>% 
+      addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_data_sub()$y,
+                 color = pal()(leaflet_data_sub()[,colourby_col]),
+                 opacity=1, fillOpacity=1, popup = popupInfo()) %>%
+      addLegend(position = "bottomright", title = input$colourby,
+                pal = pal(), values = leaflet_data_sub()[,colourby_col], opacity=1,
+                labFormat = labelFormat(big.mark = "")) 
+    
+  })
+  
+})
+)
+
+```
 
 
+<!----------------------------------------------------------------------------->
+## Your turn  
+
+Complete section 2.3b of the handout.<br><br>
 
 
+<!----------------------------------------------------------------------------->
+
+## Summary - section 2.3b  
+
+<b>Above shinyUI</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+all_regions <- unique(leaflet_data$region)
+```
+
+<b>shinyUI Side Panel</b>
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+pickerInput(inputId = "region", label = "Region:",
+            sort(all_regions), selected= all_regions, 
+            options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T)
+```
+
+<b>shinyServer ``reactive`` section</b>
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+leaflet_data_sub<- reactive({
+  leaflet_data %>% 
+    filter(region %in% input$region)
+})
+```

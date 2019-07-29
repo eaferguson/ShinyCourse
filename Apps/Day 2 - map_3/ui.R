@@ -54,11 +54,11 @@ shinyUI(fluidPage(
       # Menu for selecting which species to display
       pickerInput(inputId = "species", label = "Species:",
                   sort(all_species), selected= all_species, # Use sort to get names in alphabetical order
-                  options = list(`actions-box` = TRUE), multiple = T),
+                  options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T),
       
       br(),
       
-      # Checkbox for choosing shapefiles to be displayed 
+      # Checkbox for selecting whether region shapefile should be displayed 
       checkboxInput("shapefile", label = "Region shapefile:", value = TRUE)
       
       

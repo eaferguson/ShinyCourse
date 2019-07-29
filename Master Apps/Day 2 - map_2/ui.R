@@ -51,10 +51,10 @@ shinyUI(fluidPage(
       
       br(),
       
-      # Menu for selecting which species to display
+      # Menu for selecting which region to display
       pickerInput(inputId = "region", label = "Region:",
                   sort(all_regions), selected= all_regions, # Use sort to get names in alphabetical order
-                  options = list(`actions-box` = TRUE), multiple = T)
+                  options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T)
       
       
     ),
