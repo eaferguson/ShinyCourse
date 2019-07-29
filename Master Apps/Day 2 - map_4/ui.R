@@ -62,7 +62,7 @@ shinyUI(fluidPage(
       # Menu for selecting which species to display
       pickerInput(inputId = "species", label = "Species:",
                   sort(all_species), selected= all_species, # Use sort to get names in alphabetical order
-                  options = list(`actions-box` = TRUE), multiple = T),
+                  options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T),
       
       br(),
       
