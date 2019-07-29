@@ -30,101 +30,118 @@ a:active {color: white; text-decoration: none;}
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-aims"> <!--- Begin panel -->
-<h3>Aims</h3>
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+
+<b>2.1 &nbsp; </b>
 <ul>
-<li><a href="#2.1">Recap day 1 and mapping basics</a></li>
-<li><a href="#2.2">Introduction to leaflet</a></li>
-<li><a href="#2.3">Working in leaflet with shape and raster files</a></li>
-<li><a href="#2.4">Build an app with a map</a></li>
-<li><a href="#2.5">Build an app with multiple tabs</a></li>
 </ul>
 <br>
-If you'd like to view a specific section of the document, click on the aim above.  
+
+<b>2.2 &nbsp; </b>
+<ul>
+</ul>
+<br>
+
+<b>2.3 &nbsp; Build an interactive map in RShiny</b>
+<ul>
+<li><a class="title" href="#2.3a">2.3a Colouring points by a selected variable</a></li>
+<li><a class="title" href="#2.3b">2.3b Displaying a subset of points using pickerInput</a></li>
+<li><a class="title" href="#2.3c">2.3c Selectable map layers</a></li>
+<li><a class="title" href="#2.3d">2.3d Adding a slider to choose the date range of points displayed</a></li>
+</ul>
+<br>
+
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
+
 <!--- ---------------------------------------------------------------------- -->
-<!--- 2.1. Review Day 1 -->
+<!--- 2.1 -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>2.1 &nbsp; </h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.2 -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>2.2 &nbsp; </h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.3 Build an interactive map -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>2.3 &nbsp; Build an interactive map</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.3a. Colouring points by a selected variable -->
 
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="2.1">2.1 &nbsp; Review Day 1</h3>
+<h3 id="2.3a">2.3a &nbsp; Colouring points by a selected variable</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-<br>
+
+
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 2.2. Introduction to leaflet basics -->
+<!--- 2.3b. Displaying a subset of points using pickerInput -->
 
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="2.2">2.2 &nbsp; Introduction to leaflet basics</h3>
+<h3 id="2.3b">2.3b &nbsp; Displaying a subset of points using pickerInput</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-<ul>
-<li>Initialising leaflet widget with point data</li>
-<li>Options for displaying data</li>
-<li>Discrete and continuous colour schemes</li>
-<li>Legends and scale bars</li>
-</ul>
-<br>
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 2.3. Working in leaflet with shape and raster files -->
+<!--- 2.3c. Selectable map layers -->
 
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="2.3">2.3 &nbsp; Working in leaflet with shape and raster files</h3>
+<h3 id="2.3c">2.3c &nbsp; Selectable map layers</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-<ul>
-<li>Read in data from shape files and plot with leaflet</li>
-<li>Read in data on human population denisty in from raster file</li>
-<li>Transform and plot data on human population density using leaflet</li>
-</ul>
-<br>
-
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 2.4. Build an app with a map -->
+<!--- 2.3d. Adding a slider to choose the date range of points -->
 
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="2.3">2.3 &nbsp; Build an app with a map</h3>
+<h3 id="2.3d">2.3d &nbsp; Adding a slider to choose the date range of points</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
-
-<ul>
-<li>Provide template for tabbed layout</li>
-<li>Combine code for plots from other apps OR if participant is doing well, create new plots</li>
-</ul>
-<br>
-
-<!--- ---------------------------------------------------------------------- -->
-<!--- 2.4. Build an app with multiple tabs -->
-
-<div class="row"> <!--- Setup grid for layout -->
-<div class="col-md-12"> <!--- Begin column set -->
-<div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="2.3">2.3 &nbsp; Build an app with multiple tabs</h3>
-</div> <!--- End panel -->
-</div> <!--- End column set -->
-</div> <!--- End grid -->
-
-<ul>
-<li>Provide template for tabbed layout</li>
-<li>Combine code for plots from other apps OR if participant is doing well, create new plots</li>
-</ul>
-<br>
