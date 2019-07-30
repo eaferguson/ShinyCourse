@@ -20,7 +20,7 @@ list.of.packages <- c("dplyr", "ggplot2", "htmltools", "rmarkdown", "knitr",
                       "leaflet", "lubridate", "magrittr", "mapview", "pillar",
                       "plotly", "png", "raster", "RColorBrewer", "rgdal", "rgeos",
                       "rlang", "kableExtra", "sf", "shiny", "shinydashboard",
-                      "shinyWidgets", "tidyverse", "vctrs", "Xmisc")
+                      "shinyWidgets", "tidyverse", "vctrs", "Xmisc", "devtools")
 
 # Print if package will load in correctly
 for(i in list.of.packages){

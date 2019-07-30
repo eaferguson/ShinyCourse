@@ -68,7 +68,7 @@ list.of.packages <- c("dplyr", "ggplot2", "htmltools", "kableExtra", "knitr",
                       "leaflet", "lubridate", "magrittr", "mapview", "pillar",
                       "plotly", "png", "raster", "RColorBrewer", "rgdal", "rgeos",
                       "rlang", "rmarkdown", "sf", "shiny", "shinydashboard",
-                      "shinyWidgets", "tidyverse", "vctrs", "Xmisc")
+                      "shinyWidgets", "tidyverse", "vctrs", "Xmisc", "devtools")
 
 # Check if packages are already installed, and remove from the list if present
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
