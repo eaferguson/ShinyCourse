@@ -35,7 +35,7 @@ PAs <- readOGR("data/TZprotected_areas","TZprotected_areas")
 shinyServer(function(input, output) {
   
   
-  ## Subset data based on date and species
+  ## Subset data based on inputs
   leaflet_data_sub<- reactive({
     leaflet_data %>% 
       filter(date>input$date[1] & date<input$date[2] & species %in% input$species)
