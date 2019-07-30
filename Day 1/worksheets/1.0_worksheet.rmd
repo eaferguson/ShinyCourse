@@ -393,7 +393,7 @@ ggplot() +
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-Please navigate to the <b class="blue">Apps/barplot_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+Please navigate to the <b class="blue">Apps/Day 1 - barplot_1</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
 <br><br>
 This is a simple app that uses our dataset to show a barplot.
 <br>
@@ -425,7 +425,7 @@ Hints:
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
-Please navigate to the <b class="blue">Apps/barplot_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+Please navigate to the <b class="blue">Apps/Day 1 - barplot_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
 <br><br>
 This is the same simple barplot app as before, but with a new ``verbatimtextOutput()`` below.
 <br>
