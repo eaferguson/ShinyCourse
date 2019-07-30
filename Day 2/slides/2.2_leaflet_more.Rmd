@@ -14,10 +14,22 @@ library(ggplot2)
 library(leaflet)
 library(rgdal)
 raw_data <- read.csv("../../Day 1/data/raw_data.csv", stringsAsFactors = FALSE)
-region_shp <- readOGR("../../Day 1/data/TZ_Region_2012", "TZ_Region_2012")
-
+raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
+raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic"
+raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
+map_data <- raw_data %>% 
+  dplyr::mutate(year = substr(date, 1,4)) %>% 
+  dplyr::filter(year == 2014)
 # Create a colour palette
 col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
+
+# extract mean density from data in each region
+mean_density <- data.frame(tapply(X = raw_data$density,
+                                  INDEX = list(raw_data$region),
+                                  FUN = mean))
+names(mean_density) <- c("density")
+mean_density$region <- row.names(mean_density)
+head(mean_density)
 ```
 
 
@@ -57,134 +69,6 @@ $(document).ready(function() {
 });
 </script>
 
-
-<!----------------------------------------------------------------------------->
-## Course Overview {.smaller}
-
-### **Day 1:**
-> - Getting to know your data
-> - Data subsetting, summarising
-> - Building exploratory plots
-> - Building an interactive plot in RShiny
-
-### **Day 2:**
-> - <b class="blue"> Introduction to leaflet </b></li>
-> - <b class="blue"> Building a leaflet map in R </b></li>
-> - Building an interactive map in RShiny
-
-### **Day 3:**
-> - Review
-> - Build your own apps!
-
-<!----------------------------------------------------------------------------->
-## Course Overview {.smaller}
-
-### **Day 1:**
-> - Getting to know your data
-> - Data subsetting, summarising
-> - Building exploratory plots
-> - Building an interactive plot in RShiny
-
-### **Day 2:**
-> - <b class="blue"> Introduction to leaflet </b></li>
-> - <b class="blue"> Building *an interactive* leaflet map in R </b></li>
-> - Building an **even more** interactive map in RShiny
-
-### **Day 3:**
-> - Review
-> - Build your own apps!
-
-<!----------------------------------------------------------------------------->
-## Day 2
-
-<ul>
-<li> <b class="blue">1.1 Introduction to leaflet </b></li>
-<li> 1.2 Building a leaflet map in R </li>
-<li> 1.3 Building an interactive map in RShiny </li>
-</ul>
-
-<!----------------------------------------------------------------------------->
-## Day 2
-
-<ul>
-<li> <b class="blue">1.1 Introduction to leaflet </b></li>
-<li> 1.2 Building an interactive leaflet map in R </li>
-<li> 1.3 Building an *even more* interactive map in RShiny </li>
-</ul>
-
-<!----------------------------------------------------------------------------->
-## Recap day 1 {.smaller}
-
-Remind ourselves what was in the data
-
-```{r, echo = T}
-# Set your working directory by clicking on the top menu:
-# Session > Set Working Directory > To Source File Location
-raw_data <- read.csv("data/raw_data.csv")
-```
-
-<!----------------------------------------------------------------------------->
-## Recap day 1 {.smaller}
-
-Reading in data from shape file
-
-```{r, echo = T}
-region_shp <- rgdal::readOGR("data/TZ_Region_2012", "TZ_Region_2012")
-region_shp$id <- rownames(region_shp@data)
-region_shp_df <- fortify(region_shp, region = "id")
-region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
-```
-
-<!----------------------------------------------------------------------------->
-## Your Turn
-
-> - Navigate to Day 2/worksheets, and open <b>1.0_worksheet.html</b>
-
-> - All the activities we'll guide you to are in this file.
-
-> - The contents table is interactive - you can click to move to the activity.
-
-<br>
-
-Complete section 2.1a of the worksheet
-
-<!----------------------------------------------------------------------------->
-## Map Basics {.smaller}
-
-<b class="blue">How many entries does the data frame have?</b>
-
-```{r, echo = TRUE}
-# create variable for type of species
-raw_data$species_type[which(raw_data$species=="dog" | raw_data$species=="cat")] <- "Domestic"
-raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
-raw_data$species_type[which(raw_data$species=="human")] <- "Human"
-
-# Use only one year
-map_data <- raw_data %>% 
-  dplyr::mutate(year = substr(date, 1,4)) %>% 
-  dplyr::filter(year == 2014)
-```
-
-<!----------------------------------------------------------------------------->
-## Map Basics {.smaller}
-
-The simplest map of this data using base ``plot()``
-
-```{r, echo = TRUE}
-plot(map_data$y ~ map_data$x, asp = 1)
-```
-
-<!----------------------------------------------------------------------------->
-## Map Basics {.smaller}
-
-A simple verion using ``ggplot()`` with points coloured by human population density
-
-```{r, echo = TRUE, fig.height = 4}
-ggplot(data = map_data, aes(x = x, y = y, col = density)) +
-  geom_point(alpha = 0.4) + # makes points transparent
-  coord_equal() # sets aspect ratio 1:1
-```
-
 <!----------------------------------------------------------------------------->
 # Using leaflet and shape file data
 
@@ -192,7 +76,8 @@ ggplot(data = map_data, aes(x = x, y = y, col = density)) +
 ## Shape file data {.smaller}
  
 ```{r, eval = T, echo = T, message = F, fig.height = 4}
-region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012")
+region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012_small")
+names(region_shp)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -200,20 +85,33 @@ region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012")
 
 Use ``addPolygons()`` to add to leaflet map. ``label = `` determines what will be shown when cursor hovers above area.
 
-```{r, eval = T, echo = T, message = F, fig.height = 4}
-leaflet() %>%
+```{r, eval = T, echo = T, message = F, fig.height = 3.5}
+leaflet() %>% addProviderTiles(provider = providers$Esri.WorldShadedRelief) %>% 
   addPolygons(data = region_shp, label = region_shp$Region_Nam,
-              color = "grey", weight = 1, fillOpacity = 0.3)
+              color = "black", weight = 1, fillOpacity = 0.3, opacity = 0.6)
 ```
 
 <!----------------------------------------------------------------------------->
-## Shape file data
+## Shape file data {.smaller}
 
-Use ``addPolylines()`` to add outlines only to leaflet map.
+Use ``highlightOptions()`` to highlight shapes when cursor hovers above. ``bringToFront = TRUE`` avoids potential problems with order in which shapes are coded in shape file.
+
+```{r, eval = T, echo = T, message = F, fig.height = 3.5}
+leaflet() %>% addProviderTiles(provider = providers$Esri.WorldShadedRelief) %>% 
+  addPolygons(data = region_shp, label = region_shp$Region_Nam, fillColor = "gold",
+              color = "black", weight = 1, fillOpacity = 0.3, opacity = 0.6,
+              highlightOptions = highlightOptions(color = "white", weight = 3,
+                                                  bringToFront = TRUE, opacity = 1))
+```
+
+<!----------------------------------------------------------------------------->
+## Shape file data {.smaller}
+
+Possible to use ``addPolylines()`` to add outlines only to leaflet map.
 
 ```{r, eval = T, echo = T, message = F, fig.height = 4}
-leaflet() %>%
-  addPolylines(data = region_shp, color = "red",  weight = 1)
+leaflet() %>% addProviderTiles(provider = providers$Esri.WorldShadedRelief) %>% 
+  addPolylines(data = region_shp, color = "red",  weight = 2)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -225,6 +123,19 @@ Produce a leaflet map using ``addPolygons()`` and ``addPolylines()`` with tiles 
 colour_pal <- RColorBrewer::brewer.pal(11, "Spectral")
 range(map_data$density)
 myPal <- leaflet::colorNumeric(palette = colour_pal, domain = log(map_data$density))
+
+region_shp$density <- NA
+for (i in 1:length(region_shp$density)) {
+  region_shp$density[i] <- mean_density$density[mean_density$region == region_shp$Region_Nam[i]]
+}
+
+labels <- sprintf("<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+                  region_shp$Region_Nam, region_shp$density) %>% lapply(htmltools::HTML)
+
+pal <- colorQuantile("YlOrRd", domain = region_shp$density)
+m %>% addPolygons(data = region_shp, fillColor = pal(region_shp$density),
+                  label = labels, weight = 2, opacity = 1, color = "white",
+                  fillOpacity = 0.7)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -233,13 +144,25 @@ myPal <- leaflet::colorNumeric(palette = colour_pal, domain = log(map_data$densi
 ```{r, eval = T, echo = T, message = F, fig.height = 4}
 leaflet() %>%
   addProviderTiles(provider = providers$Esri.WorldTopoMap) %>%
+  addPolylines(data = region_shp, color = "black",  weight = 2) %>% 
   addPolygons(data = region_shp, label = region_shp$Region_Nam,
-              color = "grey", weight = 1, fillOpacity = 0.3) %>% 
-  addPolylines(data = region_shp, color = "black",  weight = 1) %>% 
+              color = "grey", weight = 1, fillOpacity = 0.3,
+              highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                  bringToFront = F)) %>%
   addCircleMarkers(data = map_data, lng = ~x, lat = ~y,
                    radius = 5, fillColor = myPal(log(map_data$density)), fillOpacity = 0.8,
                    weight = 2, color = "grey", opacity = 0.9) %>% 
   addLegend(pal = myPal, values = log(map_data$density), title = "Human<br>population<br>density")
+```
+
+<!----------------------------------------------------------------------------->
+## Chloropleth
+
+Colour shapes for each region by some value. First we add a value for each region to the shape file object.
+
+```{r, eval = T, echo = T, fig.height = 4}
+head(mean_density)
+
 ```
 
 <!----------------------------------------------------------------------------->
