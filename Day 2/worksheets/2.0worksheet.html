@@ -528,7 +528,7 @@ What differences do you see in the map legends displayed for species and date. W
 </ol>
 <br>
 <h4 class="blue">
-Activity: Add age and sex as options to colour the points by
+Activity: Add age and sex as options to colour the points by.
 </h4>
 <br> <em> Hints:
 <ul>
@@ -539,7 +539,7 @@ You will need to change both files
 Think about what type of variables age and sex are. Are they factors or numeric?
 </li>
 <li>
-You can use the operators | or %in% to make the necessary changes to the server
+The operators | or %in% will help you make the necessary changes to the server
 </li>
 </ul>
 <p></em> <br></p>
@@ -560,6 +560,32 @@ You can use the operators | or %in% to make the necessary changes to the server
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
+Please navigate to the <b class="blue">Apps/Day 2 - map_2</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio. <br><br> This is the same map app as before, but with a new <code>pickerInput</code> menu for selecting which species to display on the map. <br><br> Please take a moment to have a look at the server and ui scripts, then run the app. Try out the new <code>pickerInput</code> menu. <br><br>
+<h4 class="blue">
+Questions:
+</h4>
+<ol>
+<li>
+What other widgets could we have used to allow selection of the species to display?
+</li>
+<li>
+When do you think the live-search and Select All/Deselect All abilities of <code>pickerInput</code> would be particularly useful?
+</li>
+<li>
+In the previous version of the app, <code>popUpInfo</code> was created in the section above the server. Why does it now need to be a <code>reactive</code> function within the server?
+</li>
+</ol>
+<br>
+<h4 class="blue">
+Activity: Change the app so that <code>pickerInput</code> subsets the points based on region instead of species
+</h4>
+<br> <em> Hint:
+<ul>
+<li>
+You will need to change both files
+</li>
+</ul>
+<p></em> <br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 2.3c. Selectable map layers -->
 <div class="row">
