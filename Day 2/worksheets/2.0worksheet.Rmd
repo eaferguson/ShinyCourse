@@ -222,3 +222,22 @@ Hints:
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
+
+
+Please navigate to the <b class="blue">Apps/Day 2 - map_4</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio.
+<br><br>
+This map app includes all the features we have already developed.  
+<br>
+Now it's your turn to add a new widget!
+<br><br>
+<h4 class="blue">Activity: Add a ``sliderInput`` that subsets the points to a selected date range.</h4>
+<br>
+<em>
+Hints:
+<ul>
+<li>You will need to change both files</li>
+<li>You can use ``?sliderInput`` or your code from the Day 1 task 1.4f to help you identify the arguments needed by the ``sliderInput`` function</li>
+<li>In the server, the points are already being subsetted by species - try adding your code for subsetting by date to the same section</li>
+</ul>
+</em>
+<br>
