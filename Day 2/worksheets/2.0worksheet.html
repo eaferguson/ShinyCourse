@@ -603,6 +603,40 @@ You will need to change both files
 <p><!--- End column set --></p>
 </div>
 <p><!--- End grid --></p>
+Please navigate to the <b class="blue">Apps/Day 2 - map_3</b> folder and open up the <b class="blue">ui.R</b> and <b class="blue">server.R</b> scripts in R Studio. <br><br> This map app has a new third widget; a checkbox that allows the user to select whether to display the region shapefile. <br><br> Please take a moment to have a look at the server and ui scripts, then run the app.<br />
+<br><br>
+<h4 class="blue">
+Questions:
+</h4>
+Have a look at the <code>checkboxInput()</code> code. Compare with the <code>checkboxGroupInput()</code> code from Day 1.
+<ol>
+<li>
+What arguments do the two functions share?
+</li>
+<li>
+By which arguments do they differ?
+</li>
+</ol>
+<br>
+<h4 class="blue">
+Activity: Change the <code>checkboxInput</code> widget to a <code>checkboxGroupInput</code> widget, with selectable region and protected areas shapefiles
+</h4>
+<br> <em> Hints:
+<ul>
+<li>
+You will need to change both files
+</li>
+<li>
+The protected areas shapefile can be found in the app’s ‘data’ folder - you will need to read it into the server
+</li>
+<li>
+Remember that the server input from <code>checkboxGroupInput</code> is a vector of choices, not a logical value
+</li>
+<li>
+You will need to add an extra <code>if()</code> statement to the leaflet code
+</li>
+</ul>
+<p></em> <br></p>
 <!--- ---------------------------------------------------------------------- -->
 <!--- 2.3d. Adding a slider to choose the date range of points -->
 <div class="row">
