@@ -174,7 +174,7 @@ verbatimTextOutput("chosen_number")
 ```
 
 <b>server</b>
-```{r, echo=TRUE, eval=FALSE, class.source=".server-background"}
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
 # Render
 output$chosen_number <- renderPrint({
   input$radio 
