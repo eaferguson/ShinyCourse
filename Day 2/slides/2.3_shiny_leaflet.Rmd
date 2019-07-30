@@ -32,6 +32,10 @@ regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
 # Get the unique names of the species for the drop down menu
 all_species <- unique(leaflet_data$species)
 
+## Load protected areas shapefile
+PAs <- readOGR("data/TZprotected_areas","TZprotected_areas")
+
+
 
 ```
 
@@ -209,7 +213,7 @@ leafletOutput("mymap",width=1000,height=700)
 ```
 
 <!----------------------------------------------------------------------------->
-## Create a map app with choice of variable to colour by
+## Create a map app with choice of variable to colour by {.smaller}
 
 <b>shinyServer ``reactive`` section</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
@@ -224,6 +228,10 @@ pal <- reactive({
 })
   
 ```
+
+- in an ``if(){}`` statement, the code inside the curly brackets is only evaluated if the conditions in the round bracket are met
+- an ``else if(){}`` (or ``else{}``) statement is only evaluated if the preceding ``if(){}`` statement is not
+
 
 
 <!----------------------------------------------------------------------------->
@@ -582,7 +590,7 @@ checkboxInput("shapefile", label = "Region shapefile:", value = TRUE)
 
 <!----------------------------------------------------------------------------->
 
-## Changing the displayed map layers {.smaller}
+## Changing the displayed map layers 
 <b>shinyServer ``leaflet`` code</b>
 ```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
 
@@ -605,7 +613,6 @@ m %>% addCircles(data=leaflet_data_sub(),lng=~leaflet_data_sub()$x,lat=~leaflet_
                 labFormat = labelFormat(big.mark = "")) 
 ```
 
-- in an ``if(){}`` statement, the code inside the curly brackets is only evaluated if the conditions in the round bracket are met
 
 
 <!----------------------------------------------------------------------------->
