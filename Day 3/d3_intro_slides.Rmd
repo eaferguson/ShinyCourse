@@ -1,0 +1,47 @@
+---
+title: "Data Visualisation using RShiny"
+author: "Laurie Baker, Elaine Ferguson, Will Harvey, and Rachel Steenson"
+date: "**Tanzania**, August, 2019"
+output: 
+  ioslides_presentation:
+widescreen: true
+---
+
+## Recap
+  
+### **Day 1:**
+  
+  - Getting to know your data
+  - Data subsetting, summarising
+  - Building exploratory plots
+  - Building an interactive plot in RShiny
+
+### **Day 2:**
+  - Introduction to leaflet
+  - Building a leaflet map in R
+  - Building an interactive map in RShiny
+
+## Your Turn: Discuss
+
+In groups of 2-3 people, discuss
+
+### **What is your research about?**
+
+  - What part of your research would you like to visualise?
+  - What plots would you use?
+  - What parts would you make interactive?
+
+### **What ways might you change the current apps?**
+
+  - Can you think of different ways to visualise the data?
+  - Other parts of the app you would make interactive?
+
+## Build your own App
+
+<center><img src="figures/day1_timeseries_4.png" style="width: 60%;" /></center>
+
+ - Draw your app or the changes you would make
+ - Start with making the static plots.
+ - Make a simple change then check the app is running.
+
+

@@ -1,0 +1,200 @@
+---
+title: "Data Visualisation using RShiny"
+author: "Laurie Baker, Elaine Ferguson, Will Harvey, and Rachel Steenson"
+date: "**Tanzania**, August, 2019"
+output: 
+  ioslides_presentation:
+    incremental: true
+    widescreen: true
+---
+
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(leaflet)
+library(rgdal)
+
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+region_shp <- rgdal::readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+
+# Create a colour palette
+col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<style>
+div.footnotes {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  width: 80%;
+  font-size: 0.6em;
+}
+.blue {color: #4E23B8;}
+.hl1-background {background-color: #fcf0cd;}
+.hl2-background {background-color: #dfecfc;}
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
+
+  $('footnote').each(function(index) {
+    var text  = $(this).html();
+    var fnNum = (index+1).toString();
+    $(this).html(fnNum.sup());
+
+    var footnote   = fnNum + '. ' + text + '<br/>';
+    var oldContent = $(this).parents('slide').children('div.footnotes').html();
+    var newContent = oldContent + footnote;
+    $(this).parents('slide').children('div.footnotes').html(newContent);
+  });
+});
+</script>
+
+
+<!----------------------------------------------------------------------------->
+## Course Overview {.smaller}
+
+### **Day 1:**
+> - Getting to know your data
+> - Data subsetting, summarising
+> - Building exploratory plots
+> - Building an interactive plot in RShiny
+
+### **Day 2:**
+> - <b class="blue"> Day 1 recap and intro to mapping in R </b></li>
+> - <b class="blue"> Building a leaflet map in R </b></li>
+> - Building an interactive map in RShiny
+
+### **Day 3:**
+> - Review
+> - Build your own apps!
+
+<!----------------------------------------------------------------------------->
+## Course Overview {.smaller}
+
+### **Day 1:**
+> - Getting to know your data
+> - Data subsetting, summarising
+> - Building exploratory plots
+> - Building an interactive plot in RShiny
+
+### **Day 2:**
+> - <b class="blue"> Day 1 recap and intro to mapping in R </b></li>
+> - <b class="blue"> Building *an interactive* leaflet map in R </b></li>
+> - Building an **even more** interactive map in RShiny
+
+### **Day 3:**
+> - Review
+> - Build your own apps!
+
+
+<!----------------------------------------------------------------------------->
+## Recap day 1 {.smaller}
+
+Let's remind ourselves what the data looked like
+
+```{r, echo = T}
+raw_data <- read.csv("data/raw_data.csv")
+
+# str() gives the structure of the data
+str(raw_data)
+```
+
+<!----------------------------------------------------------------------------->
+## Recap day 1
+
+Reading in data from shape file and converting to a dataframe
+
+```{r, echo = T}
+region_shp <- rgdal::readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+region_shp$id <- rownames(region_shp@data)
+region_shp_df <- fortify(region_shp, region = "id")
+region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
+```
+
+<!----------------------------------------------------------------------------->
+## Your Turn 2.1a
+
+> - Navigate to Day 2/worksheets, and open <b>dat2_leaflet_intro.R</b>
+<br><br>
+> - Load libraries and datasets repeating code from previous slides
+<br><br>
+> - Follow code to create to:
+
+1) create a new column/variable 'species type' (Human, Domestic or Wildlife)
+
+2) create ``map_data`` --- a dataframe consisting of 2014 data only
+
+<!----------------------------------------------------------------------------->
+## Data preparation
+
+Before we think about plotting, let's create a variable for 'species type'
+
+```{r, echo = TRUE}
+# create variable for type of species
+raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
+raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic"
+raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
+
+table(raw_data$species, raw_data$species_type)
+```
+
+
+<!----------------------------------------------------------------------------->
+## Data preparation
+
+Subsetting to only include 2014
+
+```{r, echo = TRUE}
+raw_data$date[1]
+raw_data$date[1] %>% substr(1, 4)
+
+map_data <- raw_data %>% 
+  dplyr::mutate(year = substr(date, 1,4)) %>% 
+  dplyr::filter(year == 2014)
+```
+
+<!----------------------------------------------------------------------------->
+# Simple static maps
+
+<!----------------------------------------------------------------------------->
+## Map Basics
+
+The simplest map of this data using base ``plot()``
+
+```{r, echo = TRUE}
+plot(map_data$y ~ map_data$x, asp = 1)
+```
+
+<!----------------------------------------------------------------------------->
+## Map Basics
+
+A simple verion using ``ggplot()`` with points coloured by human population density
+
+```{r, echo = TRUE, fig.height = 4}
+ggplot(data = map_data, aes(x = x, y = y, col = density)) +
+  geom_point(alpha = 0.4) + # makes points transparent
+  coord_equal() # sets aspect ratio 1:1
+```
+
+<!----------------------------------------------------------------------------->
+## Map Basics {.smaller}
+
+Combine previous plot with shape file data on regions
+
+```{r, eval = F, echo = TRUE, fig.height = 3.5}
+ggplot() +
+  geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group), 
+               fill = "white", color = "black") +
+  geom_point(data = map_data, aes(x = x, y = y, col = density)) +
+  coord_equal() # sets aspect ratio 1:1
+```
+
