@@ -139,9 +139,11 @@ Visualise the disease advance and save the wildlife and citizens of Tanzania!!
 <!----------------------------------------------------------------------------->
 ## Getting to know the data
 
+Open the file **Day1_intro.R** in Day1 > scripts in RStudio
 Step 1: Set the working directory
 
 ```{r, echo = T}
+# Open the file
 # Set your working directory by clicking on the top menu:
 # Session > Set Working Directory > To Source File Location
 ```
