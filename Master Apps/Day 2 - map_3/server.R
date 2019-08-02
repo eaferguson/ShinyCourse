@@ -71,7 +71,7 @@ shinyServer(function(input, output) {
       setView(c(gCentroid(regions)@coords)[1], c(gCentroid(regions)@coords)[2], zoom = 6)
     
     
-    ## Add region shapefile if box is checked
+    ## Add shapefiles for which boxes are checked
     if("regions" %in% input$shapefiles){
       m <- m %>% 
         addPolygons(data=regions,color="black",fillColor = "white",
