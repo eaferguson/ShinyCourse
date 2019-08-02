@@ -36,13 +36,19 @@ a.main:active {color: #4E23B8; text-decoration: none;}
 Click to view a specific section of the document.  
 <br>
 
-<b>2.1 &nbsp; </b>
+<b>2.1 &nbsp; </b> Recap Day 1 and intro to mapping in R
 <ul>
+<li><a class="title" href="#2.1a">2.1a Load libraries and data, prepare for mapping</a></li>
 </ul>
 <br>
 
-<b>2.2 &nbsp; </b>
+<b>2.2 &nbsp; </b> Build a leaflet map in R
 <ul>
+<li><a class="title" href="#2.2a">2.2a Try some options for provider tiles</a></li>
+<li><a class="title" href="#2.2b">2.2b Add circles coloured by species with legend and scale bar</a></li>
+<li><a class="title" href="#2.2c">2.2c Colour points by density with a continuous colour scale</a></li>
+<li><a class="title" href="#2.2d">2.2d Build choropleth with circles for point data</a></li>
+<li><a class="title" href="#2.2e">2.2e Build map showing raster and shape data</a></li>
 </ul>
 <br>
 
@@ -61,30 +67,135 @@ Click to view a specific section of the document.
 
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 2.1 -->
+<!--- 2.1 Recap Day 1 and intro to mapping in R -->
 
 <br>
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-aims"> <!--- Begin panel -->
-<h3>2.1 &nbsp; </h3>
+<h3>2.1 &nbsp; Recap Day 1 and intro to mapping in R</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.1a. Try some options for provider tiles -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2.1a">2.1a &nbsp; Load libraries and data, prepare for mapping</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Navigate to Day 2/worksheets, and copy <b>dat2_leaflet_intro.R</b> to create a personal version of this R script to edit. This script has some code to help you get started. There are various bits of code in here that we'll invite you to edit as we move through the slides together. Feel free to add in any code from the slides and to try out other functions in the packages we'll work with that we don't have time to cover.
+
+Open your version and follow the code to load libraries and data required. Then, follow code to create to:
+<br>1) create a new column/variable 'species type' (Human, Domestic or Wildlife)
+<br>2) create ``map_data`` --- a dataframe consisting of 2014 data only
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.2 Build a leaflet map in R-->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>2.2 &nbsp; Build a leaflet map in R</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 2.2 -->
+<!--- 2.2a. Try some options for provider tiles -->
 
-<br>
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
-<div class="panel panel-aims"> <!--- Begin panel -->
-<h3>2.2 &nbsp; </h3>
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2.2a">2.2a &nbsp; Try some options for provider tiles</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
 
+Within your version of <b class="blue">day2_leaflet_intro.R</b>, initialise map using ``leaflet()`` with datapoints added using ``addCircles()``. Try some options for provider tiles using ``addProviderTiles(providers$___)``.
+
+Hint: use tab completion to access list of options (some options require registration etc. so won't be instantly available).
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.2b. Add circles coloured by species with legend and scale bar -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2.2b">2.2b &nbsp; Add circles coloured by species with legend and scale bar</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Within your version of <b class="blue">day2_leaflet_intro.R</b>, navigate to *"Your turn 2.2b"* and adapt the example code.
+
+The aim is to produce a map with:
+<br>1) tiles showing topography
+<br>2) circles coloured by species (instead of species type)
+<br>3) a colour legend
+<br>4) a scale bar showing distance in kilometers 
+
+Hint: ?addScaleBar
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.2c. Colour points by density using a continuous colour scale -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2.2c">2.2c &nbsp; Colour points by density using a continuous colour scale</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Within your version of <b class="blue">day2_leaflet_intro.R</b>, navigate to *"Your turn 2.2c"* and adapt the example code.
+
+Adapt the example code there to produce a map with:
+<br>1) Circles coloured by population density using the viridis palette
+<br>2) a legend and scale bar
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.2d. Build choropleth with circles for point data -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2.2d">2.2d &nbsp; Build choropleth with circles for point data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Within your version of <b class="blue">day2_leaflet_intro.R</b>, navigate to *"Your turn 2.2d"* and adapt the example code.
+
+The aim is to adapt the code for plotting a choropleth with:
+<br>1) ``colorQuantile()`` instead of ``colorNumeric()`` for the choropleth
+<br>2) and with circles coloured by date for human cases within ``map_data``.
+
+Hint: to colour circles by date, create ``myPal2`` using ``colorNumeric()``
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 2.2e. Build map showing raster and shape data -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="2.2e">2.2e &nbsp; Build map showing raster and shape data</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Within your version of <b class="blue">day2_leaflet_intro.R</b>, navigate to *"Your turn 2.2e"* and adapt the example code.
+
+The aim is to produce a version of the map showing the raster data for human population density with an additional layer showing region borders. When the cursor hovers over a region on the map, labels should show up and the region's border should appear highlighted.
+
+Hint: Could ``addPolygons()``'s ``fillOpacity =`` argument help visualisation of the raster layer?
 
 <!--- ---------------------------------------------------------------------- -->
 <!--- 2.3 Build an interactive map -->
