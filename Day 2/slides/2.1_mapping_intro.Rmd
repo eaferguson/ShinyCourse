@@ -10,12 +10,14 @@ output:
 
 ```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(dplyr)
+library(magrittr)
 library(ggplot2)
+library(ggmap)
 library(leaflet)
 library(rgdal)
 
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
-region_shp <- rgdal::readOGR("data/TZ_Region_2012", "TZ_Region_2012")
+region_shp <- rgdal::readOGR("data/TZ_Region_2012_small/")
 
 # Create a colour palette
 col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
@@ -190,7 +192,7 @@ ggplot(data = map_data, aes(x = x, y = y, col = density)) +
 
 Combine previous plot with shape file data on regions
 
-```{r, eval = F, echo = TRUE, fig.height = 3.5}
+```{r, eval = T, echo = TRUE, fig.height = 3.5}
 ggplot() +
   geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group), 
                fill = "white", color = "black") +
@@ -198,3 +200,20 @@ ggplot() +
   coord_equal() # sets aspect ratio 1:1
 ```
 
+<!----------------------------------------------------------------------------->
+## **ggmap** and ``qmplot()`` {.smaller}
+
+``qmplot()`` is the ggmap package's version of **ggplot2**'s ``ggplot()``
+
+Using ``I()`` prevents the plotting of a legend beside the map
+
+```{r, fig.height = 3.5, message=F}
+qmplot(data = map_data, x = x, y = y, colour = I("red"),
+       size = I(2), darken = .2, zoom = 5)
+```
+
+
+```{r, fig.height = 3.5, message=F}
+qmplot(data = map_data, x = x, y = y, colour = I("red"),
+       size = I(2), darken = .2, zoom = 5)
+```

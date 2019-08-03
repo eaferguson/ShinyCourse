@@ -13,6 +13,8 @@ library(dplyr)
 library(ggplot2)
 library(leaflet)
 library(rgdal)
+library(mapview)
+library(magrittr)
 raw_data <- read.csv("../../Day 1/data/raw_data.csv", stringsAsFactors = FALSE)
 raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
 raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic"
@@ -297,7 +299,7 @@ m <- leaflet() %>%
 ``myPal()`` takes species type variable as argument
 
 ```{r}
-m <- m %>% addCircles(data=map_data, lng=~x, lat=~y, 
+m <- m %>% addCircles(data = map_data, lng = ~x, lat = ~y, 
                       color = myPal(map_data$species_type),
                       opacity = 0.9, popup = popupInfo)
 m
@@ -337,8 +339,8 @@ Part 1) tiles showing topography
 
 ```{r}
 m <- leaflet() %>%
-  addProviderTiles(provider = providers$OpenTopoMap)
-m
+  addProviderTiles(provider = providers$Esri.WorldPhysical)
+m %>% setView(lat = -6.4333, lng = 38.9, zoom = 5)
   
 ```
 
@@ -349,7 +351,7 @@ Part 2) circles coloured by species (instead of species type)
 
 ```{r}
 colour_pal <- c("gold", "forestgreen", "cornflowerblue", "red", "magenta")
-myPal <- colorFactor(colour_pal, domain = unique(map_data$species))
+myPal <- colorFactor(palette = colour_pal, domain = unique(map_data$species))
 m <- m %>% addCircles(data = map_data, lng = ~x, lat = ~y,
                       color = myPal(map_data$species), opacity = 0.9)
 m
@@ -361,7 +363,7 @@ m
 Part 2) circles coloured by species (instead of species type)
 
 ```{r}
-myPal <- colorFactor("Set2", domain = unique(map_data$species))
+myPal <- colorFactor(palette = "Set2", domain = unique(map_data$species))
 m <- m %>% addCircles(data = map_data, lng = ~x, lat = ~y,
                       color = myPal(map_data$species), opacity = 0.9)
 m
@@ -454,7 +456,7 @@ Adapt the code from previous slides to produce a map with:
 <br>3) legend and scale bar
 
 Previous code to adapt:
-```{r}
+```{r, eval = F}
 dateRange <- c(2014, 2015)
 myPal <- colorNumeric(palette = "Spectral", domain = dateRange)
 m <- leaflet() %>%
@@ -470,7 +472,7 @@ m
 <!----------------------------------------------------------------------------->
 ## Solution 2.2c
 
-```{r, eval=F}
+```{r}
 densityRange <- c(0.1, 12000)
 myPal <- colorNumeric(palette = "viridis", domain = log(densityRange))
 
@@ -479,15 +481,20 @@ m <- leaflet() %>%
   addCircles(data = map_data, lng = ~x, lat = ~y,
              color = myPal(log(map_data$density)), opacity = 0.9) %>% 
   addLegend(position = "topright", title = "Human<br>density<br>(log)",
-            pal = myPal, values = log(densityRange), opacity = 0.9,
-            labFormat = labelFormat(big.mark = "")) %>% 
+            pal = myPal, values = log(densityRange), opacity = 0.9) %>% 
   addScaleBar(position = "bottomleft")
+```
+
+<!----------------------------------------------------------------------------->
+## Solution 2.2c
+
+```{r}
 m
 ```
 
 ## Continuous variable, discrete colour scale {.smaller}
 
-```{r}
+```{r, fig.height=3.2}
 myPal <- colorQuantile(palette = "viridis", domain = map_data$density)
 
 leaflet() %>%
@@ -604,15 +611,15 @@ myPal2 <- colorNumeric(palette = "viridis", domain = human_data$date_decimal)
 m %>% addPolygons(data = region_shp, label = region_shp$density,
                   fillColor = myPal(region_shp$density), fillOpacity = 0.7,
                   color = "white", opacity = 1, weight = 2) %>% 
-  addCircleMarkers(data = human_data, lat = ~y, lng = ~x,
-                   fillColor = myPal2(human_data$date_decimal), fillOpacity = 0.7, radius = 4,
-                   stroke = T, weight = 2, color = "black", opacity = 0.8)
+  addCircleMarkers(data = human_data, lat = ~y, lng = ~x, stroke = T,
+                   fillColor = myPal2(human_data$date_decimal), fillOpacity = 0.7,
+                   radius = 4, weight = 2, color = "black", opacity = 0.8)
 ```
 
 <!----------------------------------------------------------------------------->
 ## Solution 2.2d {.smaller}
 
-```{r}
+```{r, fig.height=3}
 human_data <- map_data[map_data$species == "human",]
 myPal <- colorQuantile(palette = "YlOrRd", domain = region_shp$density)
 myPal2 <- colorNumeric(palette = "viridis", domain = human_data$date_decimal)
@@ -644,7 +651,7 @@ m %>% addPolygons(data = region_shp, fillColor = myPal(region_shp$density), labe
 <!----------------------------------------------------------------------------->
 ## Loading raster data
 
-Load data using raster() from the raster package
+Load data using raster() from the **raster** package
 
 ```{r, eval = T}
 density <- raster::raster("../../Day 1/data/HumanPopulation.grd")
@@ -795,8 +802,48 @@ m <- leaflet() %>%
   
 ```
 
-## Solution 2.2e {.smaller}
+<!----------------------------------------------------------------------------->
+## Solution 2.2e
 
 ```{r, eval = T, echo = F, message = F, fig.height=4.5}
 m
+```
+
+<!----------------------------------------------------------------------------->
+# Exporting leaflet map
+
+<!----------------------------------------------------------------------------->
+## Exporting as a widget
+
+``saveWidget()`` from the **htmlwidgets** package can save the map as a .html file.
+
+You can email this to someone, add to a webpage etc.
+
+There is no need for R to be running in the background.
+
+```{r, eval=F}
+saveWidget(widget = m, file = "filename.html")
+```
+
+<!----------------------------------------------------------------------------->
+## Exporting as an image
+
+``mapshot()`` from the **mapview** package can save the map as a static image in either a .png, .pdf, or .jpeg file.
+
+```{r, eval=F}
+m <- m %>% setView(m, lat = -6.4333, lng = 38.9, zoom = 7.5)
+mapshot(m, file = "filename.png", width = 7, height = 6)
+
+```
+
+<!----------------------------------------------------------------------------->
+## Exporting as an image
+
+``mapshot()`` from the **mapview** package can save the map as a static image in either a .png, .pdf, or .jpeg file.
+
+Combine with ``setView()`` from the **leaflet** package to control where map view is centered and level of zoom
+
+```{r, eval=F}
+m <- m %>% setView(lat = -6.4333, lng = 38.9, zoom = 7.5)
+mapshot(m, file = "filename_zoom.png", width = 7, height = 6)
 ```
