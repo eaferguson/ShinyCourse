@@ -1,0 +1,75 @@
+---
+title: "Data Visualisation using RShiny: Day 2"
+author: "2.3 Guide"
+output: 
+  html_document:
+    theme: yeti
+    highlight: tango
+
+---
+---
+
+<style>
+h1, h2, h3, h4 {font-weight: bold;}
+.blue {color: #4E23B8;}
+hr {border: 2px solid black;}
+a.title:link {color: white; text-decoration: none;}
+a.title:visited {color: white; text-decoration: none;}
+a.title:hover {color: #c9bde9; text-decoration: none;}
+a.title:active {color: white; text-decoration: none;}
+a.main:link {color: #4E23B8; text-decoration: none;}
+a.main:visited {color: #4E23B8; text-decoration: none;}
+a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
+a.main:active {color: #4E23B8; text-decoration: none;}
+.panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+.panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; } 
+</style>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Contents section -->
+
+<br>
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-aims"> <!--- Begin panel -->
+<h3>Contents</h3>
+Click to view a specific section of the document.  
+<br>
+
+<ul>
+<li><a class="title" href="#1">Pre-built apps</a></li>
+<li><a class="title" href="#2">Displaying leaflet maps in RShiny</a></li>
+</ul>
+<br>
+
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 1. Pre-built apps -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="1">Pre-built apps</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+The activities in this section will again use pre-built apps from the Apps folder.  These are set up in the same way as those from section 1.4 (see associated guide). <br><br>
+
+
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- Displaying leaflet maps in RShiny -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="render&output">Displaying leaflet maps in RShiny</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
