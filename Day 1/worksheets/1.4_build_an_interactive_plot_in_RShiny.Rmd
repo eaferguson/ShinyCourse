@@ -23,6 +23,8 @@ a.main:hover {color: #4E23B8; font-weight: bold; text-decoration: none;}
 a.main:active {color: #4E23B8; text-decoration: none;}
 .panel-aims {color: white; background-color: #4E23B8; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; }
 .panel-section {color: black; background-color: #c9bde9; border-top: 3px solid black; border-bottom: 3px solid black; padding-left: 15px; padding-right: 15px; }
+.ui-background {background-color: #fcf0cd;}
+.server-background {background-color: #dfecfc;}
 </style>
 
 ```{r, echo=FALSE}
@@ -44,7 +46,9 @@ Click to view a specific section of the document.
 <li><a class="title" href="#2">Important Notes</a></li>
 <li><a class="title" href="#3">Inputs (Widgets)</a></li>
 <li><a class="title" href="#4">Outputs</a></li>
-<li><a class="title" href="#5">More Information</a></li>
+<li><a class="title" href="#5">Using inputs & Outputs together</a></li>
+<li><a class="title" href="#6">Reactive functions</a></li>
+<li><a class="title" href="#7">More Information</a></li>
 </ul>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
@@ -152,12 +156,134 @@ kable_styling(kable(outputs), font_size=14, full_width=FALSE, position="left", b
 <br>
 
 <!--- ---------------------------------------------------------------------- -->
-<!--- 5. More Information -->
+<!--- 5. Using inputs & Outputs together -->
 
 <div class="row"> <!--- Setup grid for layout -->
 <div class="col-md-12"> <!--- Begin column set -->
 <div class="panel panel-section"> <!--- Begin panel -->
-<h3 id="5">More Information</h3>
+<h3 id="5">Using inputs & Outputs together</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+Inputs and Outputs are used together to make the app interactive.  
+Below is example code of a simple app, with the <span class="ui-background">ui code in yellow</span>, <span class="server-background">server code in blue</span>, and a screenshot of the app.<br>
+
+```{r, echo=TRUE, eval=FALSE, class.source="ui-background"}
+shinyUI(
+  # Input
+  radioButtons(inputId = "radio", label = "Choose a number:", selected = 1, 
+               choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3)) 
+  
+  # Output
+  verbatimTextOutput("chosen_number")
+)
+```
+
+```{r, echo=TRUE, eval=FALSE, class.source="server-background"}
+shinyServer(function(input, output) {
+  # Render
+  output$chosen_number <- renderPrint({
+    input$radio 
+  })
+})
+```
+<br>
+<center><img style="width: 90%;" src="figures/app.jpg"/></center>
+<br>
+<!--- ---------------------------------------------------------------------- -->
+<!--- 6. Reactive functions -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="6">Reactive functions</h3>
+</div> <!--- End panel -->
+</div> <!--- End column set -->
+</div> <!--- End grid -->
+
+All code within the server must be contained within a reactive element, otherwise the app will fail to run.  
+``render()`` functions are reactive but limited to a small amount of code.  
+To process the data based on user input (e.g. filter, summarise), the code should be wrapped within a **reactive function**:  
+
+<br>
+<h4>reactive()</h4>
+<ul>
+<li> used to carry out processes immediately, such as subsetting and calculations</li>
+<li> saves to an output that can be referenced in render functions</li>
+</ul>
+<em>Example:</em> 
+```{r, eval=FALSE, echo=TRUE, class.source="server-background"}
+data_sub <- reactive({
+  data_subset = raw_data %>%
+    filter(species == input$select_species)
+  data_subset = head(data_subset)
+  data_subset
+})
+
+output$chosen_species_info <- renderTable({ 
+  data_sub()
+})
+```
+
+<br>
+<h4>eventReactive()</h4>
+<ul>
+<li> used to delay the processing by watching for a specific user input before carrying out processes</li>
+<li> saves to an output that can be referenced in render functions</li>
+<li> produces NULL until the user triggers the input, so will show an empty plot/table/text as default</li>
+</ul>
+<em>Example:</em>
+```{r, eval=FALSE, echo=TRUE, class.source="server-background"}
+data_subset <- eventReactive(input$go_button, {
+      data_sub = raw_data %>%
+        filter(species == input$select_species)
+      data_sub
+    })
+
+output$chosen_species <- renderPlot({
+      ggplot() + 
+        geom_bar(data=data_subset(), aes(x=age)) + 
+        ggtitle(unique(data_subset()$species)) 
+    })
+```
+
+<br>
+<h4>reactiveValues()</h4>
+<ul>
+<li> used to store values, vectors or dataframes that can be updated in other reactive functions (e.g. ``observeEvent()``)</li>
+<li> works as a list - 'slots' can be accessed with the ``$`` sign</li>
+</ul>
+<em>Example - see below</em>
+
+<br>
+<h4>observeEvent()</h4>
+<ul>
+<li> used to delay processing by watching for a specific user input before carrying out processes</li>
+<li> should be used alongside ``reactiveValues()`` to update existing values used in render functions - this allows a default plot/table/text to be shown, rather than an empty frame </li>
+</ul>
+```{r, eval=FALSE, echo=TRUE, class.source="server-background"}
+rv <- reactiveValues(data_sub = filter(raw_data, species=="cat"))
+
+observeEvent(input$go_button, {
+      rv$data_sub = raw_data %>%
+        filter(species == input$select_species)
+    })]
+
+output$chosen_species <- renderPlot({
+      ggplot() + geom_bar(data = rv$data_sub, aes(x=age)) + 
+        ggtitle(unique(rv$data_sub$species))
+    })
+```
+<br>
+
+<!--- ---------------------------------------------------------------------- -->
+<!--- 7. More Information -->
+
+<div class="row"> <!--- Setup grid for layout -->
+<div class="col-md-12"> <!--- Begin column set -->
+<div class="panel panel-section"> <!--- Begin panel -->
+<h3 id="7">More Information</h3>
 </div> <!--- End panel -->
 </div> <!--- End column set -->
 </div> <!--- End grid -->
