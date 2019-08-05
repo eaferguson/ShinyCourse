@@ -110,35 +110,26 @@ raw_data <- read.csv("data/raw_data.csv")
 str(raw_data)
 ```
 
-<!----------------------------------------------------------------------------->
-## Recap day 1
-
-Reading in data from shape file and converting to a dataframe
-
-```{r, echo = T}
-region_shp <- rgdal::readOGR("data/TZ_Region_2012", "TZ_Region_2012")
-region_shp$id <- rownames(region_shp@data)
-region_shp_df <- fortify(region_shp, region = "id")
-region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
-```
+x = longitude and y = latitude in decimal degrees (not degrees, minutes and seconds)
 
 <!----------------------------------------------------------------------------->
 ## Your Turn 2.1a
 
-> - Navigate to Day 2/worksheets, and open <b>dat2_leaflet_intro.R</b>
-<br><br>
-> - Load libraries and datasets repeating code from previous slides
-<br><br>
-> - Follow code to create to:
+> - Navigate to Day 2/worksheets, and make a copy of the **R** script named <b>dat2_leaflet_intro.R</b> which you can work with.
+<br><br><br>
 
-1) create a new column/variable 'species type' (Human, Domestic or Wildlife)
+Follow the code in this script to:
 
+1) Load packages we'll need (``library()``) and the data set from yesterday
+<br><br>
+1) From "species", create a new column/variable 'species type' (Human, Domestic or Wildlife)
+<br><br>
 2) create ``map_data`` --- a dataframe consisting of 2014 data only
 
 <!----------------------------------------------------------------------------->
 ## Data preparation
 
-Before we think about plotting, let's create a variable for 'species type'
+Creating a column/variable for 'species type'
 
 ```{r, echo = TRUE}
 # create variable for type of species
@@ -177,27 +168,71 @@ plot(map_data$y ~ map_data$x, asp = 1)
 ```
 
 <!----------------------------------------------------------------------------->
-## Map Basics
+## Shapefile data
 
 A simple verion using ``ggplot()`` with points coloured by human population density
 
-```{r, echo = TRUE, fig.height = 4}
+```{r, echo = TRUE, fig.height = 3.5}
 ggplot(data = map_data, aes(x = x, y = y, col = density)) +
   geom_point(alpha = 0.4) + # makes points transparent
   coord_equal() # sets aspect ratio 1:1
 ```
 
 <!----------------------------------------------------------------------------->
-## Map Basics {.smaller}
+## Shapefile data
 
-Combine previous plot with shape file data on regions
+Reading in data from shape file and using and we can plot using base plotting function
+
+```{r, echo = T, fig.height = 3.2, message = F}
+region_shp <- rgdal::readOGR("data/TZ_Region_2012_density/")
+```
+
+<!----------------------------------------------------------------------------->
+## Shapefile data
+
+Reading in data from shape file and using and we can plot using base plotting function
+
+```{r, echo = T, fig.height = 4.2, message = F}
+# x = longitude and y = latitude
+plot(region_shp)
+```
+
+<!----------------------------------------------------------------------------->
+## Combining shapefile data and ``ggplot()``
+
+``ggplot()`` requires things to be in dataframe format so we use ``fortify()`` from the **ggplot2** package to convert into a dataframe.
+
+```{r, echo = T}
+region_shp$id <- rownames(region_shp@data)
+region_shp_df <- fortify(region_shp, region = "id")
+region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
+```
+
+<!----------------------------------------------------------------------------->
+## Shapefile data with ``ggplot()`` {.smaller}
+
+Combine previous plot with shape file data outlining regions. 
 
 ```{r, eval = T, echo = TRUE, fig.height = 3.5}
 ggplot() +
-  geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group), 
+  geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group),
                fill = "white", color = "black") +
-  geom_point(data = map_data, aes(x = x, y = y, col = density)) +
-  coord_equal() # sets aspect ratio 1:1
+  geom_point(data = map_data, aes(x = x, y = y), col = "dodgerblue") +
+  coord_equal()
+```
+
+<!----------------------------------------------------------------------------->
+## Shapefile data with ``ggplot()`` {.smaller}
+
+Same plot with regions colored by human population density
+
+```{r, eval = T, echo = TRUE, fig.height = 3.5}
+ggplot() +
+  geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group, fill = log(density)),
+               color = "black") +
+  geom_point(data = map_data, aes(x = x, y = y, col = I("red")), alpha = 0.4) +
+  labs(fill = expression(paste("People per km"^2, " (log)", sep = ""))) +
+  coord_equal()
 ```
 
 <!----------------------------------------------------------------------------->
@@ -207,13 +242,7 @@ ggplot() +
 
 Using ``I()`` prevents the plotting of a legend beside the map
 
-```{r, fig.height = 3.5, message=F}
+```{r, echo = T, fig.height = 3.5, message=FALSE}
 qmplot(data = map_data, x = x, y = y, colour = I("red"),
-       size = I(2), darken = .2, zoom = 5)
-```
-
-
-```{r, fig.height = 3.5, message=F}
-qmplot(data = map_data, x = x, y = y, colour = I("red"),
-       size = I(2), darken = .2, zoom = 5)
+       size = I(2), darken = .2, zoom = 4)
 ```
