@@ -23,7 +23,7 @@ map_data <- raw_data %>%
   dplyr::mutate(year = substr(date, 1,4)) %>% 
   dplyr::filter(year == 2014)
 map_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(map_data$date))
-
+region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012_density")
 ```
 
 ```{r setup, include=FALSE}
@@ -80,9 +80,34 @@ $(document).ready(function() {
 <!----------------------------------------------------------------------------->
 ## Intro to leaflet
 
-```{r, eval = T, echo = T}
-# insert fancy example leaflet map with several components
-1 + 1
+```{r, eval = T, echo = F, fig.height=4.5}
+labels <- sprintf("<strong>%s</strong><br/>%g people / km<sup>2</sup>",
+                   region_shp$Region_Nam, round(region_shp$density, 0)) %>%
+  lapply(htmltools::HTML)
+popupInfo <- paste("Species: ", map_data$species, "<br>",
+                   "Date: ", map_data$date, "<br>",
+                   "Age: ", map_data$age, "<br>",
+                   sep = " ")
+myPal <- colorNumeric(palette = "YlOrRd", domain = log(region_shp$density))
+myPal2 <- colorFactor(palette = "viridis", domain = map_data$species_type)
+
+leaflet() %>% 
+  addProviderTiles(provider = providers$CartoDB.PositronNoLabels) %>%
+  addPolygons(data = region_shp, fillColor = myPal(log(region_shp$density)),
+              label = labels, weight = 2, opacity = 1,
+              color = "white", fillOpacity = 0.8,
+              highlightOptions = highlightOptions(color = "black", weight = 3, opacity = 1,
+                                                  bringToFront = T, sendToBack = T)) %>%
+  addCircles(data = map_data, lng = ~x, lat = ~y, opacity = 0.8,
+             color = myPal2(map_data$species_type), popup = popupInfo) %>%
+  addLegend(position = "topright", title = "Species<br>type",
+            pal = myPal2, values = map_data$species_type, opacity = 0.9,
+            labFormat = labelFormat(big.mark = "")) %>% 
+  addLegend(position = "topright", title = "Human<br>density<br>(log)",
+            pal = myPal, values = log(region_shp$density), opacity = 0.9,
+            labFormat = labelFormat(big.mark = "")) %>% 
+  addScaleBar(position = "bottomleft",
+              options = scaleBarOptions(maxWidth = 150))
 ```
 
 <!----------------------------------------------------------------------------->
