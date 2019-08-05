@@ -27,7 +27,7 @@ leaflet_data <- raw_data %>%
 palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D")
 
 ## Load region shapefile
-regions <- readOGR("data/TZ_Region_2012","TZ_Region_2012")
+regions <- readOGR("data/TZ_Region_2012_small","TZ_Region_2012.small")
 
 # Get the unique names of the species for the drop down menu
 all_species <- unique(leaflet_data$species)
