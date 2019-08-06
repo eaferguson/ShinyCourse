@@ -86,7 +86,7 @@ $(this).parents('slide').children('div.footnotes').html(newContent);
 
 <h3><b>Day 2:</b></h3>
 <ul>
-<li> 2.1 Introduction to leaflet </li>
+<li> 2.1 Introduction to mapping in R </li>
 <li> 2.2 Building a leaflet map in R </li>
 <li> <b class="blue"> 2.3 Build an interactive map in RShiny </b></li>
 </ul>
