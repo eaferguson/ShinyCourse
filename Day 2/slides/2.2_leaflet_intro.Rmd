@@ -15,13 +15,16 @@ library(leaflet)
 library(rgdal)
 library(mapview)
 library(magrittr)
-raw_data <- read.csv("../../Day 1/data/raw_data.csv", stringsAsFactors = FALSE)
+raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
+
 raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
 raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic"
 raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
+
 map_data <- raw_data %>% 
   dplyr::mutate(year = substr(date, 1,4)) %>% 
   dplyr::filter(year == 2014)
+
 map_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(map_data$date))
 region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012_density")
 ```
@@ -66,11 +69,11 @@ $(document).ready(function() {
 # Introduction to leaflet
 
 <!----------------------------------------------------------------------------->
-## Introduction to leaflet
+## Intro to leaflet
 
 ### **What is leaflet?**
 - open source JavaScript library used to build web mapping applications
-- Probably the world's premier web mapping system
+- Probably the world's most popular web mapping system
 
 ### **Why leaflet?**
 - Great way to explore datasets with geographic component
@@ -80,34 +83,38 @@ $(document).ready(function() {
 <!----------------------------------------------------------------------------->
 ## Intro to leaflet
 
-```{r, eval = T, echo = F, fig.height=4.5}
+```{r, eval = T, echo = F, fig.height=5.5, fig.width=9, fig.align="center"}
 labels <- sprintf("<strong>%s</strong><br/>%g people / km<sup>2</sup>",
                    region_shp$Region_Nam, round(region_shp$density, 0)) %>%
   lapply(htmltools::HTML)
-popupInfo <- paste("Species: ", map_data$species, "<br>",
-                   "Date: ", map_data$date, "<br>",
-                   "Age: ", map_data$age, "<br>",
-                   sep = " ")
-myPal <- colorNumeric(palette = "YlOrRd", domain = log(region_shp$density))
+popupInfo <- sprintf("<strong>Species</strong>: %s<br/><strong>Date</strong>: %s<br/><strong>Age</strong>: %g",
+                   map_data$species, map_data$date, map_data$age) %>%
+  lapply(htmltools::HTML)
+
+myPal <- colorBin(palette = "YlOrRd", bins = c(0, 100, 250, 500, 750,
+                                               1000, 5000, 10000),
+                  domain = log(region_shp$density))
 myPal2 <- colorFactor(palette = "viridis", domain = map_data$species_type)
 
 leaflet() %>% 
   addProviderTiles(provider = providers$CartoDB.PositronNoLabels) %>%
-  addPolygons(data = region_shp, fillColor = myPal(log(region_shp$density)),
+  addPolygons(data = region_shp, fillColor = myPal(region_shp$density),
               label = labels, weight = 2, opacity = 1,
               color = "white", fillOpacity = 0.8,
-              highlightOptions = highlightOptions(color = "black", weight = 3, opacity = 1,
-                                                  bringToFront = T, sendToBack = T)) %>%
+              highlightOptions = highlightOptions(color = "white", weight = 4, opacity = 1,
+                                                  bringToFront = F, sendToBack = T)) %>%
   addCircles(data = map_data, lng = ~x, lat = ~y, opacity = 0.8,
              color = myPal2(map_data$species_type), popup = popupInfo) %>%
+  addLegend(position = "topright",
+            title = "Human density<br>(people per km<sup>2</sup>)", 
+            pal = myPal, values = region_shp$density, opacity = 0.9,
+            labFormat = labelFormat(big.mark = "")) %>%
   addLegend(position = "topright", title = "Species<br>type",
             pal = myPal2, values = map_data$species_type, opacity = 0.9,
-            labFormat = labelFormat(big.mark = "")) %>% 
-  addLegend(position = "topright", title = "Human<br>density<br>(log)",
-            pal = myPal, values = log(region_shp$density), opacity = 0.9,
-            labFormat = labelFormat(big.mark = "")) %>% 
+            labFormat = labelFormat(big.mark = "")) %>%
   addScaleBar(position = "bottomleft",
-              options = scaleBarOptions(maxWidth = 150))
+              options = scaleBarOptions(maxWidth = 150)) %>% 
+  setView(lng = 34.77, lat = -6.2, zoom = 5.5)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -124,7 +131,7 @@ m
 <!----------------------------------------------------------------------------->
 ## Tiles {.smaller}
 
-Tile give our data geographic context. ``addTiles()`` uses OpenStreetMap tiles, the default for leaflet
+Tiles give our data geographic context. ``addTiles()`` uses OpenStreetMap tiles, the default for leaflet
 
 ```{r, eval = T, echo = T, fig.height = 3.5}
 m %>% addTiles()
@@ -151,18 +158,13 @@ m %>% addProviderTiles(provider = providers$Stamen.Terrain)
 ```
 
 <!----------------------------------------------------------------------------->
-## Using ``addProviderTiles()`` {.smaller}
-
-```{r, eval = T, echo = T}
-m %>% addProviderTiles(providers$Stamen.Terrain)
-```
-
-<!----------------------------------------------------------------------------->
 ## Your turn 2.2a
 
 Try some options for provider tiles.
 
-Hint: Use tab completion with ``addProviderTiles(provideer = providers$)`` to access options
+Hint: Use tab completion with ``addProviderTiles()`` to access options for arguments and available tiles.
+
+Hint: ``providers$``
 
 <!----------------------------------------------------------------------------->
 ## Using ``addProviderTiles()`` {.smaller}
@@ -208,7 +210,7 @@ https://wiki.openstreetmap.org/wiki/Tile_servers
 <br><br><br>
 
 e.g. When using the tiles provider$CartoDB.Positron:<br>
-*Figure 1. Map of Tanzanian dataset. Cases coloured blue. Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.*
+*Figure 1. Map of virus cases in Tanzania during 2014. Cases coloured blue. Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.*
 
 <!----------------------------------------------------------------------------->
 ## Popups
@@ -453,7 +455,7 @@ Either provide colours (``palette = c("darkgreen", "green", "gold""))``) or refe
 
 ```{r}
 dateRange <- c(2014, 2015)
-myPal <- leaflet::colorNumeric(palette = "Spectral", domain = dateRange)
+myPal <- colorNumeric(palette = "YlOrRd", domain = dateRange, reverse = T)
 
 # new leaflet widget
 m <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron)
@@ -476,14 +478,16 @@ m %>% addCircles(data = map_data, lng = ~x, lat = ~y,
 ## Your turn 2.2c {.smaller}
 
 Adapt the code from previous slides to produce a map with:
-<br>1) Circles coloured by population density using the viridis palette
+<br>1) Circles coloured by population density using the *Spectral* palette
 <br>2) and sized by population density (higher density = larger circles)
-<br>3) legend and scale bar
+<br>3) with colour legend and scale bar
+
+If you get the solution, try ``colorBin()`` instead of ``colourNumeric()``
 
 Previous code to adapt:
 ```{r, eval = F}
 dateRange <- c(2014, 2015)
-myPal <- colorNumeric(palette = "Spectral", domain = dateRange)
+myPal <- colorNumeric(palette = "YlOrRd", domain = dateRange)
 m <- leaflet() %>%
   addProviderTiles(provider = providers$CartoDB.Positron) %>%
   addCircles(data = map_data, lng = ~x, lat = ~y,
@@ -497,18 +501,77 @@ m
 <!----------------------------------------------------------------------------->
 ## Solution 2.2c
 
+Colouring by density:
+
 ```{r}
 densityRange <- c(0.1, 12000)
-myPal <- colorNumeric(palette = "viridis", domain = log(densityRange))
+myPal <- colorNumeric(palette = "Spectral", domain = densityRange)
 
 m <- leaflet() %>%
   addProviderTiles(provider = providers$CartoDB.Positron) %>%
-  addCircles(data = map_data, lng = ~x, lat = ~y,
-             color = myPal(log(map_data$density)), opacity = 0.9) %>% 
-  addLegend(position = "topright", title = "Human<br>density<br>(log)",
-            pal = myPal, values = log(densityRange), opacity = 0.9) %>% 
+  addCircleMarkers(data = map_data, lng = ~x, lat = ~y,  radius = 3,
+             stroke = F, fillColor = myPal(map_data$density), fillOpacity = 0.9) %>% 
+  addLegend(position = "topright", title = "People<br>per km<sup>2</sup>",
+            pal = myPal, values = densityRange, opacity = 0.9) %>% 
   addScaleBar(position = "bottomleft")
 ```
+
+<!----------------------------------------------------------------------------->
+## Solution 2.2c
+
+Colouring by density:
+
+```{r}
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Solution 2.2c
+
+and sizing by density, we add ``radius = ~log(density)``:
+
+```{r}
+densityRange <- c(0.1, 12000)
+myPal <- colorNumeric(palette = "Spectral", domain = densityRange)
+
+m <- leaflet() %>%
+  addProviderTiles(provider = providers$CartoDB.Positron) %>%
+  addCircleMarkers(data = map_data, lng = ~x, lat = ~y, radius = ~log(density),
+             stroke = F, fillColor = myPal(map_data$density), fillOpacity = 0.9) %>% 
+  addLegend(position = "topright", title = "People<br>per km<sup>2</sup>",
+            pal = myPal, values = densityRange, opacity = 0.9) %>% 
+  addScaleBar(position = "bottomleft")
+```
+
+<!----------------------------------------------------------------------------->
+## Solution 2.2c
+
+and sizing by density, we add ``radius = ~log(density)``:
+
+```{r}
+m
+```
+
+<!----------------------------------------------------------------------------->
+## Solution 2.2c with ``colorBin()``
+
+With ``colorBin()`` we provide a vector of numbers
+
+When we build up the leaflet widget, we just remove the log() functions as we no longer need to transform
+
+```{r}
+myPal <- colorBin(palette = "Spectral", domain = map_data$density,
+                  bins = c(0, 100, 250, 500, 750, 1000, 5000, Inf))
+
+m <- leaflet() %>%
+  addProviderTiles(provider = providers$CartoDB.Positron) %>%
+  addCircleMarkers(data = map_data, lng = ~x, lat = ~y, radius = ~log(density),
+             stroke = F, fillColor = myPal(map_data$density), fillOpacity = 0.9) %>% 
+  addLegend(position = "topright", title = "Human<br>density",
+            pal = myPal, values = map_data$density, opacity = 0.9) %>% 
+  addScaleBar(position = "bottomleft")
+```
+
 
 <!----------------------------------------------------------------------------->
 ## Solution 2.2c
@@ -517,15 +580,15 @@ m <- leaflet() %>%
 m
 ```
 
-## Continuous variable, discrete colour scale {.smaller}
+## ``colourQuantile()`` {.smaller}
 
 ```{r, fig.height=3.2}
-myPal <- colorQuantile(palette = "viridis", domain = map_data$density)
+myPal <- colorQuantile(palette = "Spectral", domain = map_data$density, n = 5)
 
 leaflet() %>%
   addProviderTiles(provider = providers$CartoDB.Positron) %>%
-  addCircles(data = map_data, lng = ~x, lat = ~y, radius = 10,
-             color = myPal(map_data$density), opacity = 0.9) %>% 
+  addCircleMarkers(data = map_data, lng = ~x, lat = ~y, radius = ~log(density),
+             stroke = F, fillColor = myPal(map_data$density), fillOpacity = 0.9) %>%
   addLegend(position = "topright", title = "Human<br>density",
             pal = myPal, values = map_data$density, opacity = 0.9,
             labFormat = labelFormat(big.mark = ""))
@@ -627,7 +690,7 @@ Subset using ``map_data[map_data$species == "human",]`` or alternatively ``dplyr
 
 With ``colorQuantile()``, we don't need to log density
 
-Create a second colour palette for data with ``colorNumeric()``.
+Create a second colour palette to colour cases by date using ``colorNumeric()``.
 
 ```{r, eval = F}
 human_data <- map_data[map_data$species == "human",]
@@ -679,7 +742,7 @@ m %>% addPolygons(data = region_shp, fillColor = myPal(region_shp$density), labe
 Load data using raster() from the **raster** package
 
 ```{r, eval = T}
-density <- raster::raster("../../Day 1/data/HumanPopulation.grd")
+density <- raster::raster("data/HumanDensity/HumanPopulation.grd")
 density
 ```
 

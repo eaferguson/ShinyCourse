@@ -15,24 +15,32 @@ head(raw_data)
 
 ### Some simple manipulation before we map
 # create variable for type of species
-raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
-raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic"
-raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
 
 # to simplify the maps, subset to only include data for 2014
-map_data <- raw_data %>% 
-  dplyr::mutate(year = substr(date, 1,4)) %>% 
-  dplyr::filter(year == 2014)
 
-### Introduction to leaflet
 
-# Initialise map with 
+### Day 2 - Introduction to mapping with leaflet
+
+# Initialise map with leaflet() and use setView to focus on coordinates
+m <- leaflet()
+
+m %>%
+  addTiles() %>%
+  setView(lng = 38.9, lat = -6.4333, zoom = 12)
 
 ################################
 ######## Your turn 2.2a ########
 
 # Try out a couple of the options for provider tiles.
 # Hint: Use tab completion with addProviderTiles(provider = providers$) to access options
+
+## Useful links
+## More info on  ``addProviderTiles()``
+# https://github.com/leaflet-extras/leaflet-providers
+# Full list of free-to-use tiles with previews:</b> <br />
+# http://leaflet-extras.github.io/leaflet-providers/preview/index.html
+# Tile servers based on OpenStreetMap data with info on how to cite:</b> <br />
+#  https://wiki.openstreetmap.org/wiki/Tile_servers
 
 ################################
 ######## Your turn 2.2b ########
@@ -57,13 +65,13 @@ m
 ######## Your turn 2.2c ########
 
 # Adapt the code below from previous slides to produce a map with:
-# 1) Circles coloured by population density using the viridis palette
+# 1) Circles coloured by population density using the "Spectral" palette
 # 2) and sized by population density (higher density = larger circles)
 # 3) legend and scale bar
 # Hint: Consider whether transforming density might make a more infomative plot
 
 dateRange <- c(2014, 2015)
-myPal <- colorNumeric(palette = "Spectral", domain = dateRange)
+myPal <- colorNumeric(palette = "YlOrRd", domain = dateRange)
 m <- leaflet() %>%
   addProviderTiles(provider = providers$CartoDB.Positron) %>%
   addCircles(data = map_data, lng = ~x, lat = ~y,
