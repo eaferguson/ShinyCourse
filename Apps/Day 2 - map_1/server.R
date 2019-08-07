@@ -75,7 +75,7 @@ shinyServer(function(input, output) {
                  opacity=1, fillOpacity=1, popup = popupInfo) %>%
       addLegend(position = "bottomright", title = input$colourby,
                 pal = pal(), values = leaflet_data[,colourby_col], opacity=1,
-                labFormat = labelFormat(big.mark = "")) 
+                labFormat = labelFormat(big.mark = ""),labels=pal()) 
     
   })
   
