@@ -5,7 +5,7 @@
 
 library(shiny)
 
-# Define server logic required to draw a histogram
+# Define server logic
 shinyServer(function(input, output) {
 
   # ADD SERVER SIDE CODE HERE

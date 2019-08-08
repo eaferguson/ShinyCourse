@@ -8,7 +8,7 @@
 library(shiny)
 library(shinydashboard)
 
-# Define UI for application that draws a histogram
+# Define UI for app
 shinyUI(dashboardPage(
 
   dashboardHeader(
