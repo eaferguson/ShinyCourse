@@ -19,13 +19,11 @@ library(rgdal)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
 region_shp <- rgdal::readOGR("data/TZ_Region_2012_small/")
 
-# Create a colour palette
-col_palette <- c("#231D51", "#178B8B", "#63C963", "#FFE31D") # 2:"#3E507F",
 ```
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE, fig.height = 3.5)
 ```
 
 <style>
@@ -99,9 +97,78 @@ $(document).ready(function() {
 
 
 <!----------------------------------------------------------------------------->
-## Recap day 1 {.smaller}
+# Recap day 1
 
-Let's remind ourselves what the data looked like
+<!----------------------------------------------------------------------------->
+## ``ifelse()``
+
+What will the following line of code print?
+
+```{r, eval = F}
+ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
+```
+
+<!----------------------------------------------------------------------------->
+## ``ifelse()``
+
+What will the following line of code print?
+
+```{r, eval = T}
+ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
+```
+
+<!----------------------------------------------------------------------------->
+## ``ifelse()``
+
+What will the following line of code print?
+
+```{r, eval = T}
+ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
+```
+
+How about this one?
+
+```{r, eval = F}
+ifelse(4 %in% c(1:9), "Hi", "2+2")
+```
+<!----------------------------------------------------------------------------->
+## ``ifelse()``
+
+What will the following line of code print?
+
+```{r, eval = T}
+ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
+```
+
+How about this one?
+
+```{r, eval = T}
+ifelse(3.5 %in% c(1:9), "Hi", "2+2")
+```
+<!----------------------------------------------------------------------------->
+
+
+
+## ``ifelse()``
+
+
+```{r, eval = F}
+ifelse("dog" %in% c("dog", "bird", "cat") == , "Hi", substr("Tanzania", 1, 3))
+```
+
+```{r, eval = F}
+ifelse(3.5 %in% 1:9, "Hi", 2+2)
+```
+
+```{r, eval = F}
+x <- 5
+ifelse(x < 9 & x > 6, mean(c(2, 4)), substr("Tanzania", 1, 3))
+```
+
+
+
+<!----------------------------------------------------------------------------->
+## Recap day 1
 
 ```{r, echo = T}
 raw_data <- read.csv("data/raw_data.csv")
