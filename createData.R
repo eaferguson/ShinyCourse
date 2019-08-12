@@ -143,6 +143,34 @@ points(data$x,data$y,col=match(data$species,species))
 data$density <- extract(density,data[,c("x","y")])
 data$region <- over(SpatialPoints(data[,c("x","y")],regions@proj4string),regions)$Region_Nam
 
+## Find any NAs in region column
+region_NAs <- which(is.na(data$region))
+if(length(region_NAs)>0){
+  
+  ##Get coordinates of NA points and turn into spatial points object
+  region_NA_coords <- SpatialPoints(data[region_NAs,c("x","y")],proj4string = regions@proj4string)
+  
+  ## Find the closest shape to each NA coordinate
+  for (i in 1:length(region_NAs)){
+    data$region[region_NAs[i]] <- regions$Region_Nam[which.min(gDistance(region_NA_coords[i,], 
+                                                                         regions, byid=TRUE))]
+  }
+}
+
+## Find any NAs in density column
+density_NAs <- which(is.na(data$density))
+cell_centroids <- SpatialPoints(coordinates(density)[which(!is.na(density[])),],proj4string = regions@proj4string)
+if(length(density_NAs)>0){
+  
+  ##Get coordinates of NA points and turn into spatial points object
+  density_NA_coords <- SpatialPoints(data[density_NAs,c("x","y")],proj4string = regions@proj4string)
+  
+  ## Find the closest non-NA grid cell to each NA coordinate
+  for (i in 1:length(density_NAs)){
+    data$density[density_NAs[i]] <- density[which(!is.na(density[]))][which.min(gDistance(density_NA_coords[i,], 
+                                                                         cell_centroids, byid=TRUE))]
+  }
+}
 
 
 ## Save data
