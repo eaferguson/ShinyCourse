@@ -7,7 +7,7 @@
 
 library(shiny)
 
-# Define UI for application that draws a histogram
+# Define UI for app
 shinyUI(fluidPage(
 
   navbarPage(title="Page title",

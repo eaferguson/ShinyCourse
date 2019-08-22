@@ -13,9 +13,18 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+library(shinyWidgets)
+library(leaflet)
+library(lubridate)
 
 # Load in data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
+
+# Tranform dates from characters to date objects
+leaflet_data <- raw_data %>% mutate(date=ymd(date)) 
+
+# Get the unique names of the species for the drop down menu
+all_species <- unique(leaflet_data$species)
 
 # Collect a list of regions for the dropdown menu
 options_list <- c("All regions", sort(unique(raw_data$region)))
@@ -131,7 +140,62 @@ shinyUI(fluidPage(
              # SECTION 4: ADD UI CODE FROM THE LEAFLET MAP APP                 #
              ###################################################################
 
-             "tab 2 contents")
+             # Application title
+             titlePanel("Exploratory plots: Leaflet Map"),
+             
+             # Add a line break
+             br(),
+             
+             # Add text section
+             h4("...and here is our leaflet map."),
+             
+             # Add a line break
+             br(),
+             
+             sidebarLayout(
+               
+               # Sidebar containing the widgets
+               sidebarPanel(
+                 
+                 # Slider for date selection
+                 sliderInput(inputId = "date", label = "Date:", 
+                             min = min(leaflet_data$date), max =max(leaflet_data$date),
+                             value=c(min(leaflet_data$date), max(leaflet_data$date)),
+                             timeFormat="%b %Y"),
+                 
+                 br(),
+                 
+                 # Drop down menu to choose variable by which points will be coloured
+                 selectInput(inputId="colourby", label="Colour Cases By:",
+                             choices = c("species","date","sex","age"),
+                             selected="species"),
+                 
+                 br(),
+                 
+                 # Menu for selecting which species to display
+                 pickerInput(inputId = "species", label = "Species:",
+                             sort(all_species), selected= all_species, # Use sort to get names in alphabetical order
+                             options = list(`actions-box` = TRUE,`live-search` = TRUE), multiple = T),
+                 
+                 br(),
+                 
+                 # Checkboxes for choosing shapefiles to be displayed 
+                 checkboxGroupInput("shapefiles", label = "Select background polygons:",
+                                    choices =  c("regions", "protected areas"),
+                                    selected = c("regions"))
+                 
+                 
+               ),
+               
+               
+               # Show a plot of the map
+               mainPanel(
+                 leafletOutput("map",width=800,height=500)
+               )
+               
+               
+             )
+    )
   )
 
 ))

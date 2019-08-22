@@ -94,25 +94,26 @@ $(document).ready(function() {
 ## Daily Schedule
 
 ### **Morning Session**
-> - Part 1
-> - Break: tea and coffee
-> - Part 2
+> - Part 1 8:30-10:30
+> - Break 10:30-11
+> - Part 2 11-1
   
-### **Lunch**
+### **Lunch: 1-2pm**
 
 ### **Afternoon Session**
-> - Part 3
-> - Break: tea and coffee
-> - Part 4
+> - Part 3 2-4
 
 <!----------------------------------------------------------------------------->
 ## Getting Help
 
-```{r, out.width = "500px", out.height = "500px"}
+```{r, out.width = "400px", out.height = "400px"}
 library(png)
 knitr::include_graphics("figures/sticky notes.jpg")
  
 ```
+
+> - **Yellow:** task completed
+> - **Pink:** for help
 
 <!----------------------------------------------------------------------------->
 ## Deadly virus spreads through Tanzania!
@@ -340,6 +341,9 @@ To select the observations you want it is useful to know some comparison operato
   - ``%in% c(....)`` **one in** a list of elements
 
 <!----------------------------------------------------------------------------->
+
+
+<!----------------------------------------------------------------------------->
 ## Subsetting rows using ``filter()`` {.smaller}
 
 <b>E.g. Filter by value that is equal to:</b>
@@ -375,13 +379,25 @@ filter_4 <- filter(raw_data, species %in% c("jackal", "lion"))
 head(filter_4, 3)
 ```
 
+## Ifelse statements
+
+Operators naturally pair well with ifelse statements.
+
+```{r, echo = T, eval = T}
+ifelse("dog" %in% c("dog", "lion", "jackal"), "Hi", 2+2)
+
+ifelse("cat" %in% c("dog", "lion", "jackal"), "Hi", 2+2)
+
+```
+
+
 <!----------------------------------------------------------------------------->
 ## Your Turn
 
 Complete section 1.2a of the worksheet
 
 <!----------------------------------------------------------------------------->
-## Summary - section 1.2b
+## Summary - section 1.2a
 
 <b class="blue"> What do each of these lines of code subset the data for?</b>
 
