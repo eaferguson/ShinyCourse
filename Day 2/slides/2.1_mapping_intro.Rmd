@@ -100,74 +100,6 @@ $(document).ready(function() {
 # Recap day 1
 
 <!----------------------------------------------------------------------------->
-## ``ifelse()``
-
-What will the following line of code print?
-
-```{r, eval = F}
-ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
-```
-
-<!----------------------------------------------------------------------------->
-## ``ifelse()``
-
-What will the following line of code print?
-
-```{r, eval = T}
-ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
-```
-
-<!----------------------------------------------------------------------------->
-## ``ifelse()``
-
-What will the following line of code print?
-
-```{r, eval = T}
-ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
-```
-
-How about this one?
-
-```{r, eval = F}
-ifelse(4 %in% c(1:9), "Hi", "2+2")
-```
-<!----------------------------------------------------------------------------->
-## ``ifelse()``
-
-What will the following line of code print?
-
-```{r, eval = T}
-ifelse("dog" %in% c("dog", "bird"), "Hi", 2+2)
-```
-
-How about this one?
-
-```{r, eval = T}
-ifelse(3.5 %in% c(1:9), "Hi", "2+2")
-```
-<!----------------------------------------------------------------------------->
-
-
-
-## ``ifelse()``
-
-
-```{r, eval = F}
-ifelse("dog" %in% c("dog", "bird", "cat") == , "Hi", substr("Tanzania", 1, 3))
-```
-
-```{r, eval = F}
-ifelse(3.5 %in% 1:9, "Hi", 2+2)
-```
-
-```{r, eval = F}
-x <- 5
-ifelse(x < 9 & x > 6, mean(c(2, 4)), substr("Tanzania", 1, 3))
-```
-
-
-
-<!----------------------------------------------------------------------------->
 ## Recap day 1
 
 ```{r, echo = T}
@@ -178,6 +110,75 @@ str(raw_data)
 ```
 
 x = longitude and y = latitude in decimal degrees (not degrees, minutes and seconds)
+
+<!----------------------------------------------------------------------------->
+## The pipe (``%>%``) from the *magrittr* package 
+
+What will the following code do?
+
+```{r, eval = F}
+raw_data %>%
+  filter(species == "human") %>% 
+  summarise(new_value = mean(age))
+```
+
+<!----------------------------------------------------------------------------->
+## The pipe (``%>%``) from the *magrittr* package 
+
+What will the following code do?
+
+```{r, eval = T}
+raw_data %>%
+  filter(species == "human") %>% 
+  summarise(new_value = mean(age))
+```
+
+<!----------------------------------------------------------------------------->
+## The ``ifelse()`` function
+
+What will the following line of code do?
+
+```{r, eval = F}
+ifelse("dog" %in% c("dog", "bird"), 2+2, "Hi")
+```
+
+<!----------------------------------------------------------------------------->
+## The ``ifelse()`` function
+
+What will the following line of code do?
+
+```{r, eval = T}
+ifelse("dog" %in% c("dog", "bird"), 2+2, "Hi")
+```
+
+<!----------------------------------------------------------------------------->
+## ``ifelse()``
+
+What will the following line of code do?
+
+```{r, eval = T}
+ifelse("dog" %in% c("dog", "bird"), 2+2, "Hi")
+```
+
+How about this one?
+
+```{r, eval = F}
+ifelse(3 > 2 & 7 < 5, "Hi", mean(raw_data$density))
+```
+<!----------------------------------------------------------------------------->
+## ``ifelse()``
+
+What will the following line of code do?
+
+```{r, eval = T}
+ifelse("dog" %in% c("dog", "bird"), 2+2, "Hi")
+```
+
+How about this one?
+
+```{r, eval = T}
+ifelse(3 > 2 & 7 < 5, "Hi", mean(raw_data$density))
+```
 
 <!----------------------------------------------------------------------------->
 ## Your Turn 2.1a
@@ -199,10 +200,11 @@ Follow the code in this script to:
 Creating a column/variable for 'species type'
 
 ```{r, echo = TRUE}
-# create variable for type of species
-raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
-raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic"
-raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
+raw_data <- mutate(raw_data,
+                   species_type = ifelse(species == "human", "Human",
+                                         ifelse(species %in% c("cat", "dog"),
+                                                "Domestic", "Wildlife")))
+
 
 table(raw_data$species, raw_data$species_type)
 ```
@@ -214,12 +216,13 @@ table(raw_data$species, raw_data$species_type)
 Subsetting to only include 2014
 
 ```{r, echo = TRUE}
-raw_data$date[1]
-raw_data$date[1] %>% substr(1, 4)
+"2014-08-11" %>% substr(1, 4)
+
+"Kilimanjaro" %>% substr(1, 4)
 
 map_data <- raw_data %>% 
-  dplyr::mutate(year = substr(date, 1,4)) %>% 
-  dplyr::filter(year == 2014)
+  mutate(year = substr(date, 1,4)) %>% 
+  filter(year == 2014)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -230,7 +233,7 @@ map_data <- raw_data %>%
 
 The simplest map of this data using base ``plot()``
 
-```{r, echo = TRUE}
+```{r, echo = TRUE, fig.height=4.4}
 plot(map_data$y ~ map_data$x, asp = 1)
 ```
 
@@ -243,63 +246,6 @@ A simple verion using ``ggplot()`` with points coloured by human population dens
 ggplot(data = map_data, aes(x = x, y = y, col = density)) +
   geom_point(alpha = 0.4) + # makes points transparent
   coord_equal() # sets aspect ratio 1:1
-```
-
-<!----------------------------------------------------------------------------->
-## Shapefile data
-
-Reading in data from shape file and using and we can plot using base plotting function
-
-```{r, echo = T, fig.height = 3.2, message = F}
-region_shp <- rgdal::readOGR("data/TZ_Region_2012_density/")
-```
-
-<!----------------------------------------------------------------------------->
-## Shapefile data
-
-Reading in data from shape file and using and we can plot using base plotting function
-
-```{r, echo = T, fig.height = 4.2, message = F}
-# x = longitude and y = latitude
-plot(region_shp)
-```
-
-<!----------------------------------------------------------------------------->
-## Combining shapefile data and ``ggplot()``
-
-``ggplot()`` requires things to be in dataframe format so we use ``fortify()`` from the **ggplot2** package to convert into a dataframe.
-
-```{r, echo = T}
-region_shp$id <- rownames(region_shp@data)
-region_shp_df <- fortify(region_shp, region = "id")
-region_shp_df <- left_join(region_shp_df, region_shp@data, by = "id")
-```
-
-<!----------------------------------------------------------------------------->
-## Shapefile data with ``ggplot()`` {.smaller}
-
-Combine previous plot with shape file data outlining regions. 
-
-```{r, eval = T, echo = TRUE, fig.height = 3.5}
-ggplot() +
-  geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group),
-               fill = "white", color = "black") +
-  geom_point(data = map_data, aes(x = x, y = y), col = "dodgerblue") +
-  coord_equal()
-```
-
-<!----------------------------------------------------------------------------->
-## Shapefile data with ``ggplot()`` {.smaller}
-
-Same plot with regions colored by human population density
-
-```{r, eval = T, echo = TRUE, fig.height = 3.5}
-ggplot() +
-  geom_polygon(data = region_shp_df, aes(x = long, y = lat, group = group, fill = log(density)),
-               color = "black") +
-  geom_point(data = map_data, aes(x = x, y = y, col = I("red")), alpha = 0.4) +
-  labs(fill = expression(paste("People per km"^2, " (log)", sep = ""))) +
-  coord_equal()
 ```
 
 <!----------------------------------------------------------------------------->

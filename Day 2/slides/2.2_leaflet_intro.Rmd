@@ -15,6 +15,8 @@ library(leaflet)
 library(rgdal)
 library(mapview)
 library(magrittr)
+library(lubridate)
+library(raster)
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors = FALSE)
 
 raw_data$species_type <- ifelse(raw_data$species == "human", "Human", NA)
@@ -22,11 +24,11 @@ raw_data$species_type[which(raw_data$species %in% c("dog", "cat"))] <- "Domestic
 raw_data$species_type[which(raw_data$species %in% c("jackal", "lion"))] <- "Wildlife"
 
 map_data <- raw_data %>% 
-  dplyr::mutate(year = substr(date, 1,4)) %>% 
-  dplyr::filter(year == 2014)
+  mutate(year = substr(date, 1,4)) %>% 
+  filter(year == 2014)
 
 map_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(map_data$date))
-region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012_density")
+region_shp <- readOGR(dsn = "data/TZ_Region_2012_density")
 ```
 
 ```{r setup, include=FALSE}
@@ -138,22 +140,13 @@ m %>% addTiles()
 ```
 
 <!----------------------------------------------------------------------------->
-## Using ``addProviderTiles()`` {.smaller}
+## Using ``addProviderTiles()`` 
 
-<b>Allows us to use third party tiles (e.g. Terrain tiles from Stamen Design).</b>
+<b>Allows us to use other tile options (e.g. Terrain tiles from Stamen Design).</b>
 
 ```{r, eval = T, echo = T}
-# m created using code from previous slides
 m <- leaflet() %>%
-  addCircles(data=map_data, lng=~x, lat=~y)
-```
-
-<b>Code options</b>
-```{r, eval = F, echo = T}
-addProviderTiles(map = m, provider = "Stamen.Terrain")
-
-addProviderTiles(map = m, provider = providers$Stamen.Terrain)
-
+  addCircles(data = map_data, lng = ~x, lat = ~y)
 m %>% addProviderTiles(provider = providers$Stamen.Terrain)
 ```
 
@@ -162,36 +155,40 @@ m %>% addProviderTiles(provider = providers$Stamen.Terrain)
 
 Try some options for provider tiles.
 
-Hint: Use tab completion with ``addProviderTiles()`` to access options for arguments and available tiles.
+Hint: Use tab completion with ``addProviderTiles(providers$)`` to access options for arguments and available tiles.
 
-Hint: ``providers$``
+```{r, eval = F, echo = T}
+m <- leaflet() %>%
+  addCircles(data = map_data, lng = ~x, lat = ~y)
+m %>% addProviderTiles(provider = providers$)
+```
 
 <!----------------------------------------------------------------------------->
-## Using ``addProviderTiles()`` {.smaller}
+## Using ``addProviderTiles()`` 
 
 ```{r, eval = T, echo = T}
 m %>% addProviderTiles(providers$Esri.NatGeoWorldMap)
 ```
 
-## Using ``addProviderTiles()`` {.smaller}
+## Using ``addProviderTiles()`` 
 
 ```{r, eval = T, echo = T}
 m %>% addProviderTiles(providers$Wikimedia)
 ```
 
-## Using ``addProviderTiles()`` {.smaller}
+## Using ``addProviderTiles()`` 
 
 ```{r, eval = T, echo = T}
 m %>% addProviderTiles(providers$Esri.WorldTopoMap)
 ```
 
-## Using ``addProviderTiles()`` {.smaller}
+## Using ``addProviderTiles()`` 
 
 ```{r, eval = T, echo = T}
 m %>% addProviderTiles(providers$Esri.WorldImagery)
 ```
 
-## Using ``addProviderTiles()`` {.smaller}
+## Using ``addProviderTiles()`` 
 ```{r, eval = T, echo = T}
 m %>% addProviderTiles(providers$CartoDB.Positron)
 ```
@@ -262,7 +259,7 @@ Circle markers (``addCircleMarkers()``) are similar to circles but radius in ons
 m %>% addCircleMarkers(data=map_data, lng=~x, lat=~y, popup = popupInfo, radius = 5,
                        stroke = T, weight = 3, color = "grey", opacity = 0.8,
                        fillColor = ifelse(map_data$species == "human",
-                                          "firebrick", "dodgerblue"), fillOpacity = 0.7)
+                                          "red", "blue"), fillOpacity = 0.7)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -273,7 +270,7 @@ With, ``stroke = F``, weight, color, and opacity are irrelevant. Can also use ``
 ```{r}
 m %>% addCircleMarkers(data = map_data, lng = ~x, lat = ~y, popup = popupInfo, stroke = F,
                        radius = ifelse(map_data$species == "human", 8, 4),
-                       fillColor = ifelse(map_data$species == "human", "firebrick", "dodgerblue"),
+                       fillColor = ifelse(map_data$species == "human", "red", "blue"),
                        fillOpacity = 0.8)
 ```
 
@@ -297,14 +294,47 @@ m %>% addMarkers(data = map_data, lng = ~x, lat = ~y, label = ~species, popup = 
 ```
 
 
-
 <!----------------------------------------------------------------------------->
 # Colour palettes in leaflet
 
 <!----------------------------------------------------------------------------->
-## Discrete variable - using ``colorFactor()`` {.smaller}
+## Colour palettes in leaflet
 
-``leaflet::colourFactor()`` creates a function (we're going to call it ``myPal``) that is used as an argument when we use ``addCircles()``, ``addCircleMarkers()``etc.
+There are four functions we can use to set up a colour palette to map to one of our variables
+
+```{r, eval = F}
+colorFactor(palette = , domain = )
+
+colorNumeric(palette = , domain = )
+
+colorBin(palette = , domain = , bins = )
+
+colorQuantile(palette = , domain = , n = )
+```
+
+<!----------------------------------------------------------------------------->
+## Colour palette function inputs
+
+For **palette**, we provide either<br>
+- set of colours: ``palette = c("red", "orange", "gold")``<br><br>
+- a palette from *RColorBrewer*package: palette = ``"Dark2"``<br><br>
+
+<!----------------------------------------------------------------------------->
+## Colour palette function inputs
+
+For **palette**, we provide either<br>
+- set of colours: ``palette = c("red", "orange", "gold")``<br><br>
+- a palette from *RColorBrewer*package: palette = ``"Dark2"``<br><br>
+<br><br>
+For **domain**, we provide either<br><br>
+- a list of possibilities: domain = c("M", "F")<br><br>
+- maximum and minimum numeric values: domain = c(0, 100)<br><br>
+- a column of data : domain = map_data$species<br><br>
+
+<!----------------------------------------------------------------------------->
+## Discrete variable - using ``colorFactor()``
+
+``colourFactor()`` creates a function (we're going to call it ``myPal``) that is used as input when we use ``addCircles()``, ``addCircleMarkers()``etc.
 
 ```{r}
 # Choose 3 colours for our 3 groups  
@@ -342,9 +372,9 @@ m
 ```
 
 <!----------------------------------------------------------------------------->
-## Your turn 2.2b {.smaller}
+## Your turn 2.2b
 
-Adapt the code from previous slides to produce a map with:<br>1) tiles showing topography<br>2) circles coloured by species (instead of species type)<br>3) a colour legend<br>4) a scale bar showing distance in kilometers (hint: ?addScaleBar).
+Adapt the code from previous slides to produce a map with:<br>1) tiles showing topography (hint: look for physical or topo in name)<br>2) circles coloured by species (instead of species type)<br>3) a colour legend<br>4) a scale bar showing distance in kilometers (hint: ?addScaleBar).
 
 Previous code:
 ```{r, eval=F}
@@ -378,7 +408,7 @@ Part 2) circles coloured by species (instead of species type)
 
 ```{r}
 colour_pal <- c("gold", "forestgreen", "cornflowerblue", "red", "magenta")
-myPal <- colorFactor(palette = colour_pal, domain = unique(map_data$species))
+myPal <- colorFactor(palette = colour_pal, domain = map_data$species)
 m <- m %>% addCircles(data = map_data, lng = ~x, lat = ~y,
                       color = myPal(map_data$species), opacity = 0.9)
 m
@@ -390,7 +420,7 @@ m
 Part 2) circles coloured by species (instead of species type)
 
 ```{r}
-myPal <- colorFactor(palette = "Set2", domain = unique(map_data$species))
+myPal <- colorFactor(palette = "Set2", domain = map_data$species)
 m <- m %>% addCircles(data = map_data, lng = ~x, lat = ~y,
                       color = myPal(map_data$species), opacity = 0.9)
 m
@@ -430,7 +460,7 @@ head(map_data$date, 5)
 is.factor(map_data$date)
 
 # Use 2 functions from lubridate for conversion
-map_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(map_data$date))
+map_data$date_decimal <- decimal_date(ymd(map_data$date))
 ```
 
 <!----------------------------------------------------------------------------->
@@ -440,7 +470,7 @@ date_decimal is now a numeric variable
 
 ```{r}
 # Use 2 functions from lubridate for conversion
-map_data$date_decimal <- lubridate::decimal_date(lubridate::ymd(map_data$date))
+map_data$date_decimal <- decimal_date(ymd(map_data$date))
 
 head(map_data$date_decimal)
 is.numeric(map_data$date_decimal)
@@ -604,7 +634,7 @@ leaflet() %>%
 Load shape data and look at the structure
 
 ```{r, eval = T, message = F}
-region_shp <- rgdal::readOGR(dsn = "data/TZ_Region_2012_density")
+region_shp <- readOGR(dsn = "data/TZ_Region_2012_density")
 head(region_shp)
 ```
 
@@ -686,14 +716,14 @@ m %>% addPolygons(data = region_shp, label = region_shp$density,
 <!----------------------------------------------------------------------------->
 ## Solution 2.2d
 
-Subset using ``map_data[map_data$species == "human",]`` or alternatively ``dplyr::select()``
+Subset using ``map_data[map_data$species == "human",]`` or alternatively ``select()`` from the *dplyr* package
 
 With ``colorQuantile()``, we don't need to log density
 
 Create a second colour palette to colour cases by date using ``colorNumeric()``.
 
 ```{r, eval = F}
-human_data <- map_data[map_data$species == "human",]
+human_data <- filter(map_data, species == "human"]
 myPal <- colorQuantile(palette = "YlOrRd", domain = region_shp$density)
 myPal2 <- colorNumeric(palette = "viridis", domain = human_data$date_decimal)
 m %>% addPolygons(data = region_shp, label = region_shp$density,
@@ -742,26 +772,8 @@ m %>% addPolygons(data = region_shp, fillColor = myPal(region_shp$density), labe
 Load data using raster() from the **raster** package
 
 ```{r, eval = T}
-density <- raster::raster("data/HumanDensity/HumanPopulation.grd")
+density <- raster("data/HumanDensity/HumanPopulation.grd")
 density
-```
-
-<!----------------------------------------------------------------------------->
-## Plotting raster data
-
-We can use the base plotting function ``plot()`` on the object we've created
-
-```{r, eval = T, fig.height = 4}
-plot(density)
-```
-
-<!----------------------------------------------------------------------------->
-## Plotting raster data
-
-Logging density will provide more texture to map
-
-```{r, eval = T, fig.height = 4}
-plot(log(density))
 ```
 
 <!----------------------------------------------------------------------------->
@@ -770,9 +782,8 @@ plot(log(density))
 We use ``colorNumeric()`` again, as we did to colour by date earlier
 
 ```{r, eval = T}
-colour_pal <- c("#FFFFCC", "#41B6C4", "#0C2C84")
 raster::values(density) %>% range(na.rm = T)
-myPal <- colorNumeric(palette = colour_pal, domain = c(0, 30000), na.color = "red")
+myPal <- colorNumeric(palette = "Blues", domain = c(0, 30000), na.color = "red")
 
 m <- leaflet() %>%
   addRasterImage(x = density, colors = myPal, opacity = 0.8)
@@ -786,26 +797,19 @@ m
 ```
 
 <!----------------------------------------------------------------------------->
-## Plotting raster data with leaflet {.smaller}
+## Plotting raster data with leaflet
 
-Let's log density as we did before
+Let's log density as we did before. The min and max values then are roughly -1.5 and 11
 
 ```{r, eval = T}
 raster::values(density) %>% range(na.rm = T) %>% log
-myPal <- colorNumeric(palette = colour_pal, domain = c(-1.5, 11),
+myPal <- colorNumeric(palette = "Blues", domain = c(-1.5, 11),
                       na.color = "transparent")
-```
-
-We have to exclude some data, as there are 0 density polygons and log(0) gives -infinity
-
-```{r, eval = T}
-sum(raster::values(density) > exp(-1.5), na.rm = T) /
-  sum(raster::values(density) >= 0, na.rm = T)
 ```
 
 
 <!----------------------------------------------------------------------------->
-## Plotting raster data with leaflet {.smaller}
+## Plotting raster data with leaflet
 
 
 Plot the logged raster data with some tiles and a legend for the colour scheme.
@@ -819,7 +823,7 @@ m <- leaflet() %>%
 ```
 
 <!----------------------------------------------------------------------------->
-## Plotting raster data with leaflet {.smaller}
+## Plotting raster data with leaflet
 
 ```{r, eval = T, echo = F}
 m
@@ -859,8 +863,7 @@ m
 Adapt the code below to add region outlines that highlight when the cursor hovers an area. Use ``addPolygon()`` with ``fillOpacity = 0``
 
 ```{r, eval = T, message = F}
-colour_pal <- c("#FFFFCC", "#41B6C4", "#0C2C84")
-myPal <- colorNumeric(palette = colour_pal, domain = c(-1.5, 11),
+myPal <- colorNumeric(palette = "Blues", domain = c(-1.5, 11),
                       na.color = "transparent")
 
 m <- leaflet() %>%
