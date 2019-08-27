@@ -7,6 +7,7 @@
 # Load in the libraries
 library(shiny)
 library(ggplot2)
+library(RColorBrewer)
 
 # Load in the data
 raw_data <- read.csv("data/raw_data.csv", stringsAsFactors=FALSE)
